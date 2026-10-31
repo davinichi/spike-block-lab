@@ -50,6 +50,20 @@ export class FrameReader {
 export function alignedCRC(bytes, seed=0) {
   const padded=new Uint8Array(Math.ceil(bytes.length/4)*4);padded.set(bytes);return crc32(padded,seed);
 }
+export function connectionError(error,stage) {
+  const name=error?.name??'Error',detail=error?.message??String(error);
+  if(name==='NotFoundError'&&stage==='本体を選択')return '本体が選択されませんでした。公式SPIKEアプリの接続を切り、本体のBluetoothボタンを押してから、もう一度選んでください。';
+  if(name==='SecurityError'||name==='NotAllowedError')return 'ブラウザがBluetooth接続を許可していません。アプリのURLをChromeまたはEdgeの通常のタブで直接開き、サイトと端末のBluetooth許可を確認してください。';
+  if(name==='NetworkError')return `「${stage}」で接続できませんでした。公式SPIKEアプリと他の接続中のタブを閉じ、本体の電源を入れ直して接続してください。`;
+  return `「${stage}」で失敗しました：${detail}`;
+}
+export function bluetoothEnvironment(context=globalThis) {
+  if(context.isSecureContext===false)return {available:false,message:'HTTPSでアプリを開いてください。'};
+  if(!context.navigator?.bluetooth)return {available:false,message:'このブラウザ内ではBluetooth接続を利用できません。アプリのURLをChromeまたはEdgeの通常のタブで直接開いてください。'};
+  const policy=context.document?.permissionsPolicy??context.document?.featurePolicy;
+  if(policy?.allowsFeature&&!policy.allowsFeature('bluetooth'))return {available:false,message:'この表示枠ではBluetooth接続が許可されていません。アプリのURLをChromeまたはEdgeの通常のタブで直接開いてください。'};
+  return {available:true,message:'公式SPIKEアプリの接続を切り、本体のBluetoothボタンを押してから接続先を選びます。'};
+}
 export class SpikeConnection {
   constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onChange=()=>{},onDevices=()=>{}}={}) {
     Object.assign(this,{bluetooth,timeout,onLog,onChange,onDevices});this.pending=null;this.device=null;this.busy=false;
@@ -58,22 +72,38 @@ export class SpikeConnection {
   async connect() {
     if(this.device)throw Error('一度接続を切ってから、つなぎ直してください。');
     if(!this.bluetooth)throw Error('このブラウザはBluetooth接続に対応していません。ChromebookのChromeで開いてください。');
-    this.device=await this.bluetooth.requestDevice({filters:[{services:[SERVICE]}]});
-    this.onDisconnected=()=>this.reset(Error('本体との接続が切れました。'));
-    this.device.addEventListener('gattserverdisconnected',this.onDisconnected);
+    let stage='本体を選択';
+    const step=name=>{stage=name;this.onLog('接続確認：'+name);};
     try {
-      const server=await this.device.gatt.connect(), service=await server.getPrimaryService(SERVICE);
+      step('本体を選択');
+      this.device=await this.bluetooth.requestDevice({filters:[{services:[SERVICE]}]});
+      this.onLog('選択した本体：'+(this.device.name||'SPIKE PRIME'));
+      this.onDisconnected=()=>{this.onLog('本体との接続が切れました。');this.reset(Error('本体との接続が切れました。'));};
+      this.device.addEventListener('gattserverdisconnected',this.onDisconnected);
+      step('Bluetoothで接続');
+      const server=await this.device.gatt.connect();
+      step('SPIKEの通信機能を確認');
+      const service=await server.getPrimaryService(SERVICE);
+      step('送受信の準備');
       this.rx=await service.getCharacteristic(RX);this.tx=await service.getCharacteristic(TX);
       this.reader=new FrameReader(frame=>this.receive(frame));
       this.onNotify=e=>{try{this.reader.push(new Uint8Array(e.target.value.buffer,e.target.value.byteOffset,e.target.value.byteLength));}catch(error){this.onLog(error.message);this.disconnect();}};
       this.tx.addEventListener('characteristicvaluechanged',this.onNotify);await this.tx.startNotifications();
+      step('本体情報を取得');
       const info=await this.request(Uint8Array.of(0),1);
       if(info.length<17)throw Error('本体情報を読み取れませんでした。');
       const v=new DataView(info.buffer,info.byteOffset,info.byteLength);
       this.info={rpc:info[1],firmware:`${info[5]}.${info[6]}.${v.getUint16(7,true)}`,packet:v.getUint16(9,true),message:v.getUint16(11,true),chunk:v.getUint16(13,true)};
-      if(this.info.rpc!==1 || this.info.firmware.split('.')[0]!=='3' || this.info.packet<1 || this.info.chunk<4 || this.info.message<12)throw Error('対応するSPIKE App 3のHub OSか確認してください。');
+      this.onLog(`本体情報：RPC ${this.info.rpc}.${info[2]} / firmware ${this.info.firmware} / packet ${this.info.packet} / message ${this.info.message} / chunk ${this.info.chunk}`);
+      // SPIKE App's version is not the hub firmware version. Negotiate by protocol/capabilities.
+      if(this.info.rpc!==1)throw Error(`未対応の通信規格です（RPC ${this.info.rpc}）。ログを保存してください。`);
+      if(this.info.packet<1 || this.info.chunk<4 || this.info.message<12)throw Error('本体から届いた転送サイズが不正です。ログを保存してください。');
+      step('接続完了');
       this.onChange();return this.info;
-    } catch(error) {this.disconnect();throw error;}
+    } catch(error) {
+      this.onLog(`接続失敗：${stage} / ${error?.name??'Error'} / ${error?.message??error}`);
+      this.disconnect();throw Error(connectionError(error,stage));
+    }
   }
   reset(error) {
     const device=this.device;

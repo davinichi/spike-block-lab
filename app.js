@@ -3,7 +3,7 @@ import {setupClassroom,classroomToolbox} from './classroom-blocks.js';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection} from './spike-ble.js';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.2.1';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
@@ -38,14 +38,14 @@ function check(){
   finally{checking=false;}update();
 }
 function update(){
-  const busy=acting||connection.busy, connected=connection.connected;
-  $('connect').hidden=connected;$('disconnect').hidden=!connected;$('connect').disabled=busy||!isSecureContext||!navigator.bluetooth;$('disconnect').disabled=busy;
+  const busy=acting||connection.busy, connected=connection.connected,environment=bluetoothEnvironment();
+  $('connect').hidden=connected;$('disconnect').hidden=!connected;$('connect').disabled=busy||!environment.available;$('disconnect').disabled=busy;
   for(const id of ['upload','transferRun'])$(id).disabled=busy||!connected||!latest;
   $('run').disabled=busy||!connected||!latest||!transferred||transferred.source!==latest.source||transferred.slot!==Number($('slot').value);
   for(const id of ['stop','readSensors','stopSensors'])$(id).disabled=busy||!connected;
   $('slot').disabled=busy;$('python').disabled=busy||!latest;
   $('connection').classList.toggle('connected',connected);$('connectionLabel').textContent=connected?'接続中':'未接続';
-  $('connectionState').textContent=connected?`${connection.device.name||'SPIKE PRIME'} / Hub OS ${connection.info?.firmware??'確認中'}`:!isSecureContext?'HTTPSまたはlocalhostで開いてください。':!navigator.bluetooth?'Bluetooth接続に非対応です。ChromebookのChromeで開いてください。':'本体のBluetoothボタンを押し、接続先を選びます。';
+  $('connectionState').textContent=connected?`${connection.device.name||'SPIKE PRIME'} / 本体 ${connection.info?.firmware??'確認中'}`:environment.message;
 }
 async function action(fn){if(acting)return;acting=true;feedback('');update();try{await fn();}catch(error){feedback(error.message,true);log(error.message);}finally{acting=false;update();}}
 function openPanel(open){$('connectionPanel').hidden=!open;$('toggleConnectionPanel').setAttribute('aria-expanded',String(open));Blockly.svgResize(workspace);}
