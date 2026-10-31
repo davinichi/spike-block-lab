@@ -48,7 +48,7 @@ for name,source in sources.items():
     pair.move_for_degrees=move;pair.move_tank_for_degrees=tank
     sys.modules['motor']=motor;sys.modules['motor_pair']=pair
     for mod in ['distance_sensor','color_sensor','force_sensor','color']:sys.modules[mod]=types.ModuleType(mod)
-    async def pause(ms):pass
+    async def pause(ms):await asyncio.sleep(0)
     async def all_tasks(*tasks):await asyncio.gather(*tasks)
     runloop=types.ModuleType('runloop');runloop.sleep_ms=pause;runloop.run=lambda *tasks:asyncio.run(all_tasks(*tasks));sys.modules['runloop']=runloop
     hub=types.ModuleType('hub');hub.port=types.SimpleNamespace(**{c:i for i,c in enumerate('ABCDEF')});hub.sound=types.SimpleNamespace(stop=lambda:None)

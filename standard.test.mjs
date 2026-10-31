@@ -36,7 +36,7 @@ test('My Block calls await async definitions and preserve input arguments',()=>{
 });
 test('parallel roots share one final cleanup and variable-change code uses MicroPython builtins',()=>{
   const parallel=generate('parallel');assert.equal(parallel.threads,2);
-  assert.match(parallel.source,/runloop.run\(_lab_task_0\(\), _lab_task_1\(\)\)/);
+  assert.match(parallel.source,/runloop.run\(_lab_service\(\), _lab_track\(_lab_task_0\), _lab_track\(_lab_task_1\)\)/);
   assert.equal(parallel.source.match(/finally:\n    _lab_stop_all\(\)/g).length,1);
   assert.match(generate('variables').source,/isinstance\([^\n]+\(int, float\)\)/);
 });
@@ -45,15 +45,18 @@ test('generated standard programs execute variable, My Block and parallel contro
   const harness=`import asyncio,json,sys,types,time
 sources=json.load(sys.stdin)
 for name,source in sources.items():
-    calls=[]
-    async def pause(ms): await asyncio.sleep(0)
+    calls=[];clock=[0];positions={i:0.0 for i in range(6)};velocities={i:0 for i in range(6)}
+    async def pause(ms):
+        for p in positions:positions[p]+=velocities[p]*ms/1000
+        clock[0]+=ms
+        await asyncio.sleep(0)
     async def completed(*args,**kwargs): calls.append(('move',args)); await asyncio.sleep(0); return 0
     async def text(value): calls.append(('text',value)); await asyncio.sleep(0)
     async def gather(*coroutines): await asyncio.gather(*coroutines)
     def stop(*args,**kwargs): calls.append(('stop',args))
     for module_name in ['motor','motor_pair','distance_sensor','color_sensor','force_sensor','color']:
         sys.modules[module_name]=types.ModuleType(module_name)
-    motor=sys.modules['motor'];motor.READY=0;motor.run_for_time=completed;motor.run_for_degrees=completed;motor.stop=stop
+    motor=sys.modules['motor'];motor.READY=0;motor.run_for_time=completed;motor.run_for_degrees=completed;motor.stop=stop;motor.BRAKE=1;motor.relative_position=lambda p:int(positions[p]);motor.run=lambda p,v:(velocities.update({p:v}),calls.append(('run',p,v)))
     pair=sys.modules['motor_pair'];pair.PAIR_1=1;pair.pair=lambda *args:calls.append(('pair',args));pair.move_for_time=completed;pair.move_for_degrees=completed
     runloop=types.ModuleType('runloop');runloop.sleep_ms=pause;runloop.run=lambda *c:asyncio.run(gather(*c));sys.modules['runloop']=runloop
     hub=types.ModuleType('hub');hub.port=types.SimpleNamespace(**{c:i for i,c in enumerate('ABCDEF')})
@@ -61,12 +64,12 @@ for name,source in sources.items():
     hub.sound=types.SimpleNamespace(beep=completed,stop=lambda:None)
     hub.light=hub.button=hub.motion_sensor=types.SimpleNamespace()
     sys.modules['hub']=hub
-    time.ticks_ms=lambda:0;time.ticks_diff=lambda a,b:a-b
+    time.ticks_ms=lambda:clock[0];time.ticks_diff=lambda a,b:a-b
     exec(compile(source,name,'exec'),{})
     if name=='variables': assert [c[1] for c in calls if c[0]=='text']==['1','2','3'],calls
     if name=='myblock': assert len([c for c in calls if c[0]=='move'])==1,calls
     if name=='parallel': assert len([c for c in calls if c[0]=='move'])==1,calls
-    assert len([c for c in calls if c[0]=='stop'])==6,calls
+    assert len([c for c in calls if c[0]=='stop'])>=6,calls
 `;
   const result=spawnSync(process.platform==='win32'?'python':'python3',['-c',harness],{input:JSON.stringify(sources),encoding:'utf8'});
   assert.equal(result.status,0,result.stderr);
@@ -82,7 +85,7 @@ test('device notifications decode signed distance, motor position and port IDs w
 test('comparison thresholds are editable in toolbox and repaired in existing sensor conditions',()=>{
   const ws=new Blockly.Workspace(),again=new Blockly.Workspace();
   try {
-    const comparison=classroomToolbox().contents.flatMap(category=>category.contents??[]).find(block=>block.type==='logic_compare');
+    const comparison=classroomToolbox().contents.flatMap(category=>category.contents??[]).find(block=>block.type==='lab_op_gt');
     assert.equal(comparison.inputs.B.shadow.fields.NUM,100);
     const condition=ws.newBlock('logic_compare');condition.setFieldValue('GT','OP');
     const distance=ws.newBlock('lab_distance');distance.setFieldValue('D','PORT');

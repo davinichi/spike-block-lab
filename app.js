@@ -1,23 +1,34 @@
-import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.3.2';
+import {recordingReader,RecordingReceiver} from './recording.js';
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.0';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.3.2';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.3.2';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.0';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.0';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.3.2';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.0';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
 const workspace=Blockly.inject('blocklyDiv',{toolbox:classroomToolbox(),theme,renderer:'zelos',media:'vendor/media/',trashcan:true,grid:{spacing:24,length:2,colour:'#e5ebee',snap:false},zoom:{controls:true,wheel:true,startScale:.85,minScale:.35,maxScale:1.5},move:{scrollbars:true,drag:true,wheel:true},sounds:false});
-installCommonWorkspace(workspace,Blockly);installMyBlockFlyout(workspace,openMyBlockDialog);
+installCommonWorkspace(workspace,Blockly);
+workspace.registerButtonCallback('LAB_CREATE_VARIABLE',()=>{$('variableName').value='';$('variableError').textContent='';$('variableDialog').showModal();$('variableName').focus();});
+const duplicate=Blockly.ContextMenuRegistry.registry.getItem('blockDuplicate');
+Blockly.Msg.DUPLICATE_BLOCK='複製';
+if(duplicate)duplicate.callback=({block})=>{const data=block.toCopyData(true);if(!data)return;data.typeCounts=Object.create(null);for(const child of block.getDescendants(false))data.typeCounts[child.type]=(data.typeCounts[child.type]||0)+1;Blockly.clipboard.paste(data,block.workspace);};
+workspace.getFlyout().setAutoClose(false);
+workspace.addChangeListener(e=>{if(e.type===Blockly.Events.CLICK&&e.targetType==='workspace')workspace.getToolbox().clearSelection();});
+$('variableCancel').onclick=()=>$('variableDialog').close();
+$('variableForm').onsubmit=e=>{e.preventDefault();const name=$('variableName').value.trim();if(!name||name.length>40){$('variableError').textContent='名前を1〜40文字にしてください。';return;}if(workspace.getVariableMap().getAllVariables().some(m=>Blockly.Names.equals(m.getName(),name))){$('variableError').textContent='同じ名前が使われています。';return;}workspace.getVariableMap().createVariable(name);workspace.refreshToolboxSelection();$('variableDialog').close();saveLocal();};
+installMyBlockFlyout(workspace,openMyBlockDialog);
 let loading=false,dirty=false,latest=null,transferred=null,acting=false,checking=false;
+let recordReceiver=null;
 const logs=[];
 function log(message){logs.push(`${new Date().toISOString()} ${message}`);if(logs.length>300)logs.shift();$('log').textContent=logs.join('\n');$('lastLog').textContent=message.slice(0,80);}
 function feedback(text,error=false){$('actionStatus').textContent=text;$('actionStatus').style.color=error?'#a13f35':'#176b65';}
 function download(content,name,type='application/json') {const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 const filename=()=>($('projectName').value.trim()||'作品').replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').slice(0,80);
-const connection=new SpikeConnection({onLog:log,onChange:()=>{if(!connection.connected){transferred=null;clearSensors();}update();},onDevices:showSensors});
+const connection=new SpikeConnection({onLog:log,onConsole:text=>recordReceiver?.push(text),onChange:()=>{if(!connection.connected){transferred=null;clearSensors();}update();},onDevices:showSensors});
 for(let i=0;i<20;i++)$('slot').add(new Option(String(i),String(i)));
 for(const p of ['A','B','C','D','E','F']){const row=document.createElement('div');row.innerHTML=`<dt>ポート ${p}<small id="device${p}">未取得</small></dt><dd id="value${p}">—</dd>`;$('sensorValues').append(row);}
 function showSensors(readings){clearSensors();for(const r of readings){if(!r.port)continue;const label=$('device'+r.port),value=$('value'+r.port);if(label){label.textContent=r.device;value.textContent=r.text;}}$('sensorStatus').textContent='本体の値を更新しています。';}
@@ -47,7 +58,7 @@ function update(){
   $('connect').hidden=connected;$('disconnect').hidden=!connected;$('connect').disabled=busy||!environment.available;$('disconnect').disabled=busy;
   for(const id of ['upload','transferRun'])$(id).disabled=busy||!connected||!latest;
   $('run').disabled=busy||!connected||!latest||!transferred||transferred.source!==latest.source||transferred.slot!==Number($('slot').value);
-  for(const id of ['stop','readSensors','stopSensors'])$(id).disabled=busy||!connected;
+  for(const id of ['stop','readSensors','stopSensors','retrieveRecording'])$(id).disabled=busy||!connected;
   $('slot').disabled=busy;$('python').disabled=busy||!latest;
   $('connection').classList.toggle('connected',connected);$('connectionLabel').textContent=connected?'接続中':'未接続';
   $('connectionState').textContent=connected?`${connection.device.name||'SPIKE PRIME'} / 本体 ${connection.info?.firmware??'確認中'}`:environment.message;
@@ -81,6 +92,20 @@ $('readSensors').onclick=()=>action(async()=>{await connection.observe(500);$('s
 $('stopSensors').onclick=()=>action(async()=>{await connection.observe(0);$('sensorStatus').textContent='更新を止めました。';});
 $('python').onclick=()=>{if(latest)download(latest.source,filename()+'.py','text/x-python');};
 $('showCode').onclick=()=>$('codeDialog').showModal();$('help').onclick=()=>$('helpDialog').showModal();
+$('retrieveRecording').onclick=()=>action(async()=>{
+  const name=$('recordName').value.trim(),slot=Number($('recordSlot').value);
+  const token=Array.from(crypto.getRandomValues(new Uint8Array(12)),x=>x.toString(16).padStart(2,'0')).join('');
+  const source=recordingReader(name,token);
+  if(!confirm(`実行中のプログラムを停止し、番号 ${slot} を記録読み出し用に上書きします。この番号の作品は先に保存してください。記録ファイルは消しません。`))return;
+  const receiver=new RecordingReceiver(token,size=>{$('recordStatus').textContent=`取り出しています… ${size} バイト`;});recordReceiver=receiver;
+  try{
+    transferred=null;await connection.upload(source,slot,()=>{});await connection.run(slot);
+    const deadline=Date.now()+180000;
+    while(!receiver.finished){if(!connection.connected)throw Error('接続が切れました。再接続して取り出してください。');if(Date.now()>deadline)throw Error('記録の応答がありません。記録名と本体のファイル対応を確認してください。');await new Promise(resolve=>setTimeout(resolve,100));}
+    if(receiver.error)throw receiver.error;
+    download(receiver.bytes,name+'.csv','text/csv;charset=utf-8');$('recordStatus').textContent=`${name}.csv（${receiver.size} バイト）を照合して保存しました。`;
+  }catch(error){$('recordStatus').textContent=error.message;throw error;}finally{recordReceiver=null;}
+});
 $('saveLog').onclick=()=>download(JSON.stringify({appVersion:VERSION,userAgent:navigator.userAgent,hub:connection.info,logs},null,2),'spike-test-log.json');
 let editingMyBlockId=null;
 function myBlockArgumentRow(name='',id=''){

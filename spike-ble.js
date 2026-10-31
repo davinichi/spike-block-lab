@@ -65,8 +65,8 @@ export function bluetoothEnvironment(context=globalThis) {
   return {available:true,message:'公式SPIKEアプリの接続を切り、本体のBluetoothボタンを押してから接続先を選びます。'};
 }
 export class SpikeConnection {
-  constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onChange=()=>{},onDevices=()=>{}}={}) {
-    Object.assign(this,{bluetooth,timeout,onLog,onChange,onDevices});this.pending=null;this.device=null;this.busy=false;
+  constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onConsole=()=>{},onChange=()=>{},onDevices=()=>{}}={}) {
+    Object.assign(this,{bluetooth,timeout,onLog,onConsole,onChange,onDevices});this.pending=null;this.device=null;this.busy=false;
   }
   get connected(){return !!this.rx && !!this.device?.gatt?.connected;}
   async connect() {
@@ -115,7 +115,7 @@ export class SpikeConnection {
   }
   disconnect(){const device=this.device;this.reset(Error('接続を切りました。'));device?.gatt?.disconnect();}
   receive(frame) {
-    if(frame[0]===0x21)this.onLog(new TextDecoder().decode(frame.slice(1)).replace(/\0+$/,''));
+    if(frame[0]===0x21){const text=new TextDecoder().decode(frame.slice(1)).replace(/\0+$/,'');this.onConsole(text);this.onLog(text);}
     if(frame[0]===0x3c)this.onDevices(parseDevices(frame));
     if(this.pending?.type===frame[0]) {const p=this.pending;this.pending=null;clearTimeout(p.timer);p.resolve(frame);}
   }

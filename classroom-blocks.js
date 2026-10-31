@@ -58,7 +58,7 @@ const shadow=(n)=>({shadow:{type:'math_number',fields:{NUM:n}}});
 // Older projects and disconnected sensor inputs may have empty comparison sockets.
 export function ensureComparisonInputs(workspace) {
   for(const b of workspace.getAllBlocks(false)) {
-    if(b.type!=='logic_compare')continue;
+    if(b.type!=='logic_compare'&&!/^lab_op_(add|sub|mul|div|lt|eq|gt|lte|gte|neq)$/.test(b.type))continue;
     for(const name of ['A','B']) {
       const connection=b.getInput(name)?.connection;
       if(connection&&!connection.targetBlock())connection.setShadowState({type:'math_number',fields:{NUM:0}});

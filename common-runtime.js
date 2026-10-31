@@ -28,7 +28,7 @@ export function registerCommonGenerators({g,emit,v,stat,fail}) {
   emit('lab_light_off',()=>stat('light.color(light.POWER, color.BLACK)\n'));
   emit('lab_tone_ms',b=>stat(`await sound.beep(int(_lab_range(${v(b,'FREQUENCY')}, 44, 10000)), int(_lab_range(${v(b,'MS')}, 0, 60000)), int(_lab_range(${v(b,'VOLUME')}, 0, 100)))\n`));
   emit('lab_when_changed',()=> '');
-  emit('lab_message_wait',b=>stat(`_message_seen = _lab_messages[${quote(b.getFieldValue('MESSAGE').trim())}]\nwhile _lab_messages[${quote(b.getFieldValue('MESSAGE').trim())}] == _message_seen:\n    await _lab_tick()\n`));
+  emit('lab_message_wait',b=>stat(`await _lab_send_wait(${quote(b.getFieldValue('MESSAGE').trim())})\n`));
   emit('lab_return',b=>{if(b.getRootBlock().type!=='procedures_defnoreturn')fail(b,'「このマイブロックを終了する」は定義の中に入れてください。');return 'return\n';});
   emit('lab_argument',b=>{
     const root=b.getRootBlock(),models=root.type==='procedures_defnoreturn'?root.getVarModels():[];
@@ -39,15 +39,15 @@ export function registerCommonGenerators({g,emit,v,stat,fail}) {
   emit('lab_pid',b=>[`_lab_pid(${name(b)}, ${['TARGET','MEASURED','KP','KI','KD'].map(input=>v(b,input)).join(', ')})`,g.ORDER_ATOMIC]);
   emit('lab_pid_reset',b=>stat(`_lab_pid_state.pop(${name(b)}, None)\n`));
   emit('lab_text_get',b=>[`_lab_text_values.get(${name(b)}, '')`,g.ORDER_ATOMIC]);
-  emit('lab_text_set',b=>stat(`_lab_text_values[${name(b)}] = str(${v(b,'VALUE',"''")})[:120]\n`));
+  emit('lab_text_set',b=>stat(`_lab_text_values[${name(b)}] = _lab_string(${v(b,'VALUE',"''")})\n`));
   for(const action of ['clear','add','set','delete','item','length','contains','stat'])emit('lab_list_'+action,b=>{
     const args=[name(b),quote(action),['set','delete','item'].includes(action)?v(b,'INDEX'):'0',['add','set','contains'].includes(action)?v(b,'VALUE'):'0',quote(b.getFieldValue('OP')??'sum')];
     const expression=`_lab_list(${args.join(', ')})`;
     return ['item','length','contains','stat'].includes(action)?[expression,g.ORDER_ATOMIC]:stat(expression+'\n');
   });
-  emit('lab_log_start',b=>stat(`_lab_log_name = ${name(b)}\nprint('record,time_ms,label,value')\n`));
-  emit('lab_log_value',b=>stat(`print(_lab_csv(_lab_log_name) + ',' + str(time.ticks_ms()) + ',' + _lab_csv(${quote(b.getFieldValue('LABEL'))}) + ',' + str(${v(b,'VALUE')}))\n`));
-  emit('lab_log_end',()=>stat("print('record_end,' + _lab_csv(_lab_log_name))\n"));
+  emit('lab_log_start',b=>stat(`_lab_log_start(${name(b)})\n`));
+  emit('lab_log_value',b=>stat(`_lab_log_value(${quote(b.getFieldValue('LABEL'))}, ${v(b,'VALUE')})\n`));
+  emit('lab_log_end',()=>stat('_lab_log_end()\n'));
 }
 export const COMMON_RUNTIME=`
 def _lab_positive(value, maximum):
@@ -167,7 +167,9 @@ def _lab_list(name, action, index, value, operation):
         return value in items
     elif action == 'stat':
         if not items:
-            return 0
+            if operation == 'sum':
+                return 0
+            raise ValueError('Empty list has no average, minimum or maximum')
         return sum(items) if operation == 'sum' else sum(items) / len(items) if operation == 'average' else min(items) if operation == 'min' else max(items)
     else:
         if not isinstance(index, (int, float)) or index != int(index) or not 1 <= index <= len(items):

@@ -1,0 +1,166 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPIKE Block Lab マニュアル v0.4.0</title>
+<style>body{font-family:"Yu Gothic UI",Meiryo,sans-serif;color:#243b47;background:#f4f6f7;line-height:1.85;margin:0}header,main{max-width:1000px;margin:auto;padding:24px}header{background:#243b47;color:white;max-width:none}header>div{max-width:1000px;margin:auto}a{color:#126c67}header a{color:#f0d675}nav{background:white;padding:18px;border-radius:9px}section.page{background:white;padding:28px;margin:22px 0;border:1px solid #dce4e5;border-radius:12px}h1{font-size:27px}h2{font-size:23px;color:#126c67}h3{font-size:17px;margin-top:24px}p,li{font-size:15px}table{border-collapse:collapse;width:100%;font-size:14px}th{background:#126c67;color:white;text-align:left}td,th{padding:12px;vertical-align:top;border-bottom:1px solid #dce4e5}td:first-child{width:26%;font-weight:600}tr:nth-child(even){background:#f0f6f5}.note{background:#fff7db;padding:14px;font-size:13px;border-left:3px solid #d3a238}img{max-width:100%;height:auto;border:1px solid #dce4e5;border-radius:8px}@media(max-width:600px){header,main{padding:14px}section.page{padding:18px}td,th{padding:8px}p,li{font-size:14px}}@media print{header,nav{display:none}body{background:white}main{padding:0}section.page{page-break-before:always;border:0;margin:0;padding:0}a{color:inherit}}</style>
+<header><div><h1>SPIKE Block Lab<br>共通ブロック・操作マニュアル</h1><p>v0.4.0 / 標準Hub OS向け / 2026-10-31</p><a href="SPIKE-Block-Lab-manual-v0.4.0.pdf" download>配布・印刷用PDFを保存</a>　 <a href="index.html">アプリに戻る</a></div></header><main><nav><strong>目次</strong><ol>
+<li><a href="#chapter-1">01  はじめに・共通のグループ</a></li>
+<li><a href="#chapter-2">02  画面と保存</a></li>
+<li><a href="#chapter-3">03  接続・転送・切り離し</a></li>
+<li><a href="#chapter-4">04  モーター</a></li>
+<li><a href="#chapter-5">05  動き・直進と旋回</a></li>
+<li><a href="#chapter-6">06  センサー・条件・制御</a></li>
+<li><a href="#chapter-7">07  演算・表示・ランプ・音</a></li>
+<li><a href="#chapter-8">08  データ・記録・変数</a></li>
+<li><a href="#chapter-9">09  イベント・マイブロック・引数</a></li>
+<li><a href="#chapter-10">10  EV3版との対応・困ったとき</a></li>
+<li><a href="#chapter-11">11  追加した共通機能</a></li>
+<li><a href="#chapter-12">12  本体に記録し、CSVを取り出す</a></li>
+</ol></nav>
+<section class="page" id="chapter-1"><h2>01  はじめに・共通のグループ</h2>
+<p>EV3 Block Lab v0.22.0の分類・順序・表現を基準にした、SPIKE PRIME用のWebアプリです。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>スタート・イベント</td><td>上から順に実行。条件成立・値の変化・メッセージをきっかけにもできます。</td></tr>
+<tr><td>モーター・動き</td><td>軸を回す命令と、車体を移動・旋回させる命令を分けています。</td></tr>
+<tr><td>センサー・音・制御・演算</td><td>機器の値を読み、条件・繰り返し・計算を組み合わせます。</td></tr>
+<tr><td>表示・ランプ</td><td>SPIKE本体の5×5ライトと電源ランプです。EV3の画面とは機器が異なります。</td></tr>
+<tr><td>データ・記録・変数</td><td>文字列・数値リスト・値の共有・本体CSVへの記録です。</td></tr>
+<tr><td>マイブロック・引数</td><td>処理をまとめて名前で呼び出します。引数は定義の中だけで使います。</td></tr>
+</tbody></table>
+<h3>対象と確認状況</h3><p>標準Hub OS（SPIKE App 3対応）を使用します。SPIKE-RTへの書き換えは不要です。ChromebookのChromeでHTTPSのアプリURLを直接開きます。</p><p>オーナーから、Bluetooth接続、HELLO表示、音、単体モーター、距離による停止、走行、切断後と再起動後の本体単独実行を確認した報告があります。新しい旋回・2個モーター・PIDなどは実機確認中です。</p>
+<p class="note">v0.3.0では旧作品との互換性維持を優先せず、旧形式の動き・モーターブロックを整理しました。必要な作品は更新前に保存してください。</p>
+</section>
+<section class="page" id="chapter-2"><h2>02  画面と保存</h2>
+<p>つくる → 作品を保存 → 本体へ転送 → 動作確認 → 数値を変えて試す、を繰り返します。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>保存・開く</td><td>編集可能な.spikelab作品です。本体への転送とは別の操作です。自動保存は同じブラウザの1作品分です。</td></tr>
+<tr><td>接続・転送</td><td>右パネルを開閉します。閉じると編集領域を広く使えます。</td></tr>
+<tr><td>サンプル</td><td>11種類。元の作品を残す場合は先に保存します。新しい旋回のお手本もあります。</td></tr>
+<tr><td>数値・比較</td><td>白い数値欄をクリックして入力します。センサー・変数・演算のブロックも差し込めます。</td></tr>
+<tr><td>マイブロックを作る</td><td>上部のフォームで名前と引数を設定します。</td></tr>
+<tr><td>その他・通信ログ</td><td>Python表示、マイブロック集の保存・読み込み、通信ログ保存があります。</td></tr>
+</tbody></table>
+<h3>ブロックのつなぎ方</h3><p>「スタート」の下につないだブロックを上から実行します。離れて置いた命令は実行しません。設定だけではモーターは動きません。</p><p>生成確認のエラーを修正してから転送します。同じポートにモーターとセンサーを同時指定することはできません。</p>
+</section>
+<section class="page" id="chapter-3"><h2>03  接続・転送・切り離し</h2>
+<p>公式SPIKEアプリの接続を切ってから、Block LabでBluetooth接続します。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>接続</td><td>本体のBluetoothボタンを押し、「接続する」から選択します。通常のChrome/Edgeのタブを使います。</td></tr>
+<tr><td>保存番号</td><td>0〜19。残すプログラムのない番号から試します。</td></tr>
+<tr><td>SPIKEに転送</td><td>上書き確認後、停止確認・保存先準備・データ転送を行います。転送だけでは動きません。</td></tr>
+<tr><td>転送して実行</td><td>保存後、すぐ実行要求を送ります。車輪を浮かせて確認してください。</td></tr>
+<tr><td>停止</td><td>接続中はブラウザから停止要求を送れます。本体の停止操作も確認しておきます。</td></tr>
+<tr><td>単独実行</td><td>転送成功後に「切断」。本体で番号を選び、中央ボタンで実行します。再起動後の単独実行も確認済みです。</td></tr>
+</tbody></table>
+<h3>転送失敗時</h3><p>指定番号の古いプログラムは転送前に消します。失敗しても旧プログラムは復元されません。</p><p>エラーに出る段階と通信ログを確認します。作品と「ログを保存」のファイルを一緒に残してください。</p>
+</section>
+<section class="page" id="chapter-4"><h2>04  モーター</h2>
+<p>SPIKEのL/Mモーター共通。EV3版と同じく、1個・2個、角度・回転数・時間を分けています。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>1個／2個</td><td>ポートを選びます。2個の指定はそれぞれの軸を同じ向きに回します。車体の走行は「動き」を使います。</td></tr>
+<tr><td>回し続ける</td><td>指定の速さで開始し、すぐ次の命令へ進みます。後ろに待つ・条件待ち・停止をつなぎます。</td></tr>
+<tr><td>度回す・回転する</td><td>指定量が終わってから次の命令へ進みます。1回転は360度です。</td></tr>
+<tr><td>秒動かす</td><td>指定時間だけ動かして停止します。小数の秒も指定できます。</td></tr>
+<tr><td>速さ</td><td>−100〜100％。負は逆回転。角度・時間指定では0以外を使います。100％は1050度/秒換算です。</td></tr>
+<tr><td>停止方法</td><td>ブレーキ・惰性・保持。選んだポート、2個、すべてを停止できます。</td></tr>
+</tbody></table>
+<h3>例</h3><p>スタート → モーター1個 A 速さ20％で90度回す → 1秒待つ → 同じモーターを速さ−20％で90度回す。</p><p>2個指定の角度動作は各軸の回転量を監視して止めます。EV3版の同期補正・加減速プロファイルと同じ性能を示すものではありません。</p>
+</section>
+<section class="page" id="chapter-5"><h2>05  動き・直進と旋回</h2>
+<p>直進と曲がる命令は別々です。「センターターン」という名前は使わず、「スピンターン」に統一します。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>タイヤの直径</td><td>実際のタイヤ直径をmmで設定します。初期値56mm。距離の計算に使います。</td></tr>
+<tr><td>トレッド</td><td>左右のタイヤ中心間の距離をmmで設定します。初期値112mm。車体の旋回角度の計算に使います。</td></tr>
+<tr><td>前に進む・後ろに下がる</td><td>別ブロック。ポートは左＋右の順です。B＋Aなど左右を入れ替えた組み合わせも選べます。速さと距離は正の値です。</td></tr>
+<tr><td>右／左スピンターン</td><td>左右の車輪を逆方向に回し、その場で旋回します。数値は車体の旋回角度です。</td></tr>
+<tr><td>右／左ピボットターン</td><td>内側の車輪を止め、外側だけを回して旋回します。数値は車体の旋回角度です。</td></tr>
+<tr><td>発展：ステアリング</td><td>−100〜100の切り具合です。0は直進。30を指定しても車体が30度回る意味ではありません。</td></tr>
+<tr><td>発展：左右別の速さ</td><td>左右それぞれの速さで動かします。連続・角度・時間を分けています。</td></tr>
+</tbody></table>
+<h3>初めの確認</h3><p>スタート → タイヤの直径56mm → モーター 左＋右 速さ20％で20cm前に進む。</p><p>旋回はトレッドも設定します。実際の角度はタイヤ・取り付け・床・負荷で変わります。新しいスピン／ピボットの方向と角度は実機で確認してください。</p>
+</section>
+<section class="page" id="chapter-6"><h2>06  センサー・条件・制御</h2>
+<p>センサーを条件へ差し込み、ロボットが状況に応じて動くようにします。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>距離</td><td>cmで取得。直接比較する専用ブロックと、測定できているかの判定があります。</td></tr>
+<tr><td>カラー</td><td>色、色番号、反射光％。色番号はSPIKEの番号で、EV3の番号とは異なります。</td></tr>
+<tr><td>フォース</td><td>押されているか、力N、力の比較。EV3のタッチセンサとは機器が異なります。</td></tr>
+<tr><td>本体のジャイロ</td><td>向き・前後・左右の角度。本体の向きを0にする命令があります。</td></tr>
+<tr><td>エンコーダ・タイマー</td><td>回転角度、秒数、0へのリセット。</td></tr>
+<tr><td>制御</td><td>秒待つ、もし／でなければ、ずっと、回数、条件まで／条件の間、条件待ち、全終了、マイブロック終了。</td></tr>
+<tr><td>PID</td><td>同じ名前で状態を共有。目標値・測定値・P/I/Dから出力を計算し、リセットできます。出力の上限・下限は演算で設定してください。</td></tr>
+</tbody></table>
+<h3>距離で止まる例</h3><p>スタート → モーターAを速さ20％で回し続ける → 距離センサCの距離が15cm未満になるまで待つ → モーターAをブレーキで停止。</p><p>実際の配線とブロックのポートを一致させます。測定対象がない状態での距離値は、比較前に「測れている」で確認するか、専用の距離比較ブロックを使います。</p>
+</section>
+<section class="page" id="chapter-7"><h2>07  演算・表示・ランプ・音</h2>
+<p>グループの順序と基本表現をEV3版にそろえ、SPIKEの本体機能に置き換えています。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>演算</td><td>四則演算を別々に表示。＜、＝、＞、≦、≧、≠、かつ、または、ではない、数学関数、余り、乱数、丸め、範囲制限。</td></tr>
+<tr><td>表示</td><td>SPIKEは5×5ライト。消す、英数字文字、絵、数値、1ドットの明るさを指定できます。</td></tr>
+<tr><td>表示の違い</td><td>EV3の178×128画面、日本語画像化、文字サイズ・座標指定とは異なります。SPIKEの文字表示は英数字・記号です。</td></tr>
+<tr><td>ランプ</td><td>本体ランプの色、消灯。表示のグループと分けています。</td></tr>
+<tr><td>音</td><td>周波数Hz・時間ミリ秒・音量％。200ミリ秒は0.2秒。音は本体のスピーカーから鳴ります。</td></tr>
+</tbody></table>
+<h3>切り離して使う</h3><p>本体に保存した処理が実行されるので、表示・音・モーター・センサーはPCを切り離しても使えます。</p><p>PCだけの録音・画像・拡張音声素材は対象外です。</p>
+</section>
+<section class="page" id="chapter-8"><h2>08  データ・記録・変数</h2>
+<p>名前を付けた値を使い、試した結果を比べます。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>文字列</td><td>文字、名前付き文字の取得・代入、つなぐ、長さ、空かどうか。表示する際は英数字・記号を使います。</td></tr>
+<tr><td>数値リスト</td><td>同じ名前で共有。空にする、追加、変更、削除、取り出す、長さ、含まれるか、合計・平均・最小・最大。</td></tr>
+<tr><td>リストの番号</td><td>1から始まります。範囲外はエラー。1つのリストは1000項目までです。</td></tr>
+<tr><td>変数</td><td>「変数をつくる」から名前を付けます。代入、増減、値の取り出しを使います。</td></tr>
+<tr><td>CSV記録</td><td>本体ファイルに保存。切断後の記録と再接続後の取得を実装しました。詳しくは12章。追加機能は実機確認待ちです。</td></tr>
+</tbody></table>
+<h3>試行錯誤</h3><p>距離や反射光を変数に入れ、表示や記録で確かめてから条件の値を調整します。</p><p>演算・PID・データ・新しい動きの自動試験は行っていますが、実際のロボットでの精度は別途確認が必要です。</p>
+</section>
+<section class="page" id="chapter-9"><h2>09  イベント・マイブロック・引数</h2>
+<p>EV3版と同じグループ構成で、複数の処理を整理します。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>イベント</td><td>条件が成立したとき、値が変わったとき、メッセージを受け取ったとき。</td></tr>
+<tr><td>メッセージ</td><td>送るとすぐ次へ。「送って待つ」は受信した全処理の終了を待ちます。受信処理がなければ次へ進みます。待ちの循環は転送前に知らせます。</td></tr>
+<tr><td>並行処理</td><td>スタートやイベントを複数置けます。同じモーターへ複数の処理から同時に命令しないようにします。</td></tr>
+<tr><td>マイブロックを作る</td><td>名前を入力し、「＋ 引数を追加」で引数を1つずつ設定します。「作る」で定義を置きます。</td></tr>
+<tr><td>名前・引数を編集</td><td>「マイブロック」一覧の「編集」、または定義の右クリックから同じフォームを開きます。「変更を保存」で呼び出し側にも反映します。</td></tr>
+<tr><td>引数</td><td>独立した「引数」グループ。同じ名前の引数がある定義の中で使います。呼び出しごとに値は独立します。</td></tr>
+<tr><td>終了</td><td>「このマイブロックを終了する」は定義の中で使います。「すべて止めてプログラムを終了」は全体を終了します。</td></tr>
+</tbody></table>
+<h3>確認用サンプル</h3><p>表示・ライト、音だけ、モーターA、前進・後退、スピン・ピボットターン、距離で停止、赤で音、変数と分岐、引数付きマイブロック、動きと表示を並行、メッセージで合図、本体にCSV記録、S字加減速の13種類です。</p><p>新しい旋回サンプルは左B・右C、タイヤ56mm・トレッド112mmが初期値です。機体に合わせて変更してください。</p><p>引数を編集しても呼び出し側の値やブロックを保持します。定義の中で使っている引数は、該当する引数ブロックを外してから削除します。引数は8個までです。</p>
+</section>
+<section class="page" id="chapter-10"><h2>10  EV3版との対応・困ったとき</h2>
+<p>分類と基本操作を共通にし、本体の違いは区別して扱います。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>共通にしたもの</td><td>分類・順序・色、モーターの1個／2個・角度／回転／秒、前進／後退、スピン／ピボット、比較、データ、記録、引数。</td></tr>
+<tr><td>機器の違い</td><td>EV3のLCDはSPIKEの5×5表示。タッチはフォース、外付けジャイロは本体姿勢。赤外線・EV3の電圧／電流ブロックは用意しません。</td></tr>
+<tr><td>現在の差分</td><td>台形・S字加減速とエンコーダ同期補正をSPIKE用に実装。モーター特性や停止精度はEV3と異なります。作品形式は別です。CSV保存と追加機能は実機確認待ちです。</td></tr>
+<tr><td>設定だけでは動かない</td><td>タイヤやモーターポートの設定は動作命令ではありません。前進・モーター回転などをつなぎます。</td></tr>
+<tr><td>動かない・方向が違う</td><td>ポートと配線、左右順、速さ、タイヤ直径・トレッドを確認。エラーがあれば通信ログと作品を保存します。</td></tr>
+<tr><td>入力できない</td><td>白い数値をクリック。条件は比較やセンサーのブロックを差し込みます。</td></tr>
+<tr><td>接続できない</td><td>公式アプリを切断。通常のChrome/EdgeでHTTPSのURLを直接開き、Bluetooth許可と本体の状態を確認。</td></tr>
+</tbody></table>
+<h3>今後の開発</h3><p>まず標準Hub OSで、新しいブロックの実機確認と児童向けの操作性を改善します。SPIKE-RT向けソースコード生成は将来の発展目標です。</p>
+</section>
+<section class="page" id="chapter-11"><h2>11  追加した共通機能</h2>
+<p>EBLとの比較で挙げた1〜6をSPIKE向けに実装しました。追加機能は実機確認待ちです。</p>
+<table><thead><tr><th>項目</th><th>使い方</th></tr></thead><tbody>
+<tr><td>操作</td><td>制御の形・色、固定記号の演算、変数作成フォームを統一。複製は後続のブロックも含めます。パレットは背景をクリックすると閉じます。</td></tr>
+<tr><td>数値・文字</td><td>丸めは floor(x+0.5)。空リストは合計0、平均・最小・最大はエラー。文字はUTF-8で120バイト、文字位置は1から数えます。</td></tr>
+<tr><td>モーター</td><td>実際の速さは度/秒。停止方法を先に設定。速度変更は目標角度・終了時刻を保持し、0で一時停止します。角度移動中の反転はエラーです。</td></tr>
+<tr><td>パワー</td><td>−100〜100％の出力指定。速さの補正はありません。</td></tr>
+<tr><td>加減速</td><td>なし・台形・S字から選び、加速・減速秒を指定。短い移動では最高速度に達しない場合があります。</td></tr>
+<tr><td>同期</td><td>2個のエンコーダ進行を20ミリ秒周期で補正。車体の滑り・方位は補正しません。</td></tr>
+<tr><td>ランプ</td><td>点滅とゆっくり明暗を追加。明暗は点灯時間を変える方式で、EV3と見え方が異なります。プログラムの実行中に動きます。</td></tr>
+</tbody></table>
+<h3>確認用サンプル</h3><p>「S字加減速で前進・後退」は左B・右C、直径56mmで30cmずつ移動します。配線・寸法を合わせて、車輪を浮かせてから確認してください。</p><p>動作中の速さを変更するには、別のスタートやイベントから同じポートに速度変更命令を出します。同じポートへの別の移動命令は競合します。</p>
+</section>
+<section class="page" id="chapter-12"><h2>12  本体に記録し、CSVを取り出す</h2>
+<p>本体ファイル機能を使います。対応の有無は実機で確認します。未対応なら記録を始めずエラーを知らせます。</p>
+<table><thead><tr><th>手順</th><th>操作</th></tr></thead><tbody>
+<tr><td>1 記録を作る</td><td>「記録 Record1 を始める」→項目と値を記録→「記録を終える」。名前は英数字・-・_で1〜31文字。最大5000行。</td></tr>
+<tr><td>2 切り離す</td><td>転送し、切断して本体だけで実行します。「記録を終える」まで完了させます。サンプルの完了表示はDONEです。</td></tr>
+<tr><td>3 再接続</td><td>接続・転送パネルで同じ記録名を入力します。読み出し用の番号を選びます（初期値19）。</td></tr>
+<tr><td>4 番号を確認</td><td>「CSVを取り出す」で、その番号のプログラムを読み出し用に上書きします。残したい作品がある番号は使わないでください。</td></tr>
+<tr><td>5 保存</td><td>受信順序・バイト数・検査値を照合してCSVを保存します。通信失敗時は再実行できます。本体のCSVは消しません。</td></tr>
+<tr><td>保存されるもの</td><td>time_s,label,value。記録開始からの秒、項目名、数値または文字列です。同じ記録名で始めると以前のCSVを置き換えます。</td></tr>
+</tbody></table>
+<h3>実機で確認すること</h3><p>切断中の記録、再接続後の読み出し、電源を入れ直した後の読み出しを順に確認してください。</p><p>CSVの保存は各行で書き出しますが、記録中の電源断で最後の行が残る保証はありません。最大受信サイズは2 MiBです。</p>
+</section>
+<p>出典：<a href="https://github.com/davinichi/spike-block-lab">SPIKE Block Lab</a> / <a href="THIRD_PARTY.md">第三者ライセンス</a></p></main></html>
