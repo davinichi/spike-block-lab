@@ -51,8 +51,8 @@ export function alignedCRC(bytes, seed=0) {
   const padded=new Uint8Array(Math.ceil(bytes.length/4)*4);padded.set(bytes);return crc32(padded,seed);
 }
 export class SpikeConnection {
-  constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onChange=()=>{}}={}) {
-    Object.assign(this,{bluetooth,timeout,onLog,onChange});this.pending=null;this.device=null;this.busy=false;
+  constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onChange=()=>{},onDevices=()=>{}}={}) {
+    Object.assign(this,{bluetooth,timeout,onLog,onChange,onDevices});this.pending=null;this.device=null;this.busy=false;
   }
   get connected(){return !!this.rx && !!this.device?.gatt?.connected;}
   async connect() {
@@ -68,7 +68,7 @@ export class SpikeConnection {
       this.onNotify=e=>{try{this.reader.push(new Uint8Array(e.target.value.buffer,e.target.value.byteOffset,e.target.value.byteLength));}catch(error){this.onLog(error.message);this.disconnect();}};
       this.tx.addEventListener('characteristicvaluechanged',this.onNotify);await this.tx.startNotifications();
       const info=await this.request(Uint8Array.of(0),1);
-      if(info.length<15)throw Error('本体情報を読み取れませんでした。');
+      if(info.length<17)throw Error('本体情報を読み取れませんでした。');
       const v=new DataView(info.buffer,info.byteOffset,info.byteLength);
       this.info={rpc:info[1],firmware:`${info[5]}.${info[6]}.${v.getUint16(7,true)}`,packet:v.getUint16(9,true),message:v.getUint16(11,true),chunk:v.getUint16(13,true)};
       if(this.info.rpc!==1 || this.info.firmware.split('.')[0]!=='3' || this.info.packet<1 || this.info.chunk<4 || this.info.message<12)throw Error('対応するSPIKE App 3のHub OSか確認してください。');
@@ -86,6 +86,7 @@ export class SpikeConnection {
   disconnect(){const device=this.device;this.reset(Error('接続を切りました。'));device?.gatt?.disconnect();}
   receive(frame) {
     if(frame[0]===0x21)this.onLog(new TextDecoder().decode(frame.slice(1)).replace(/\0+$/,''));
+    if(frame[0]===0x3c)this.onDevices(parseDevices(frame));
     if(this.pending?.type===frame[0]) {const p=this.pending;this.pending=null;clearTimeout(p.timer);p.resolve(frame);}
   }
   async request(payload,type) {
@@ -134,4 +135,21 @@ export class SpikeConnection {
   }
   async run(slot){if(this.busy)throw Error('転送が終わるまで待ってください。');await this.status(Uint8Array.of(0x1e,0,slot),0x1f);}
   async stop(slot=0){if(this.busy)throw Error('転送が終わるまで待ってください。');await this.status(Uint8Array.of(0x1e,1,slot),0x1f);}
+  async observe(interval=500){if(this.busy)throw Error('転送が終わるまで待ってください。');const data=new Uint8Array(3);data[0]=0x28;new DataView(data.buffer).setUint16(1,interval,true);await this.status(data,0x29);}
+}
+export function parseDevices(frame) {
+  if(frame.length<3)return [];
+  const v=new DataView(frame.buffer,frame.byteOffset,frame.byteLength),size=v.getUint16(1,true);
+  if(size!==frame.length-3)throw Error('センサー通知のサイズが不正です。');
+  const lengths={0:2,1:21,2:26,10:12,11:4,12:9,13:4,14:11},out=[];
+  for(let i=3;i<frame.length;) {
+    const type=frame[i],length=lengths[type];if(!length)break;if(i+length>frame.length)throw Error('センサー通知が途中で終わりました。');
+    const port=['A','B','C','D','E','F'][frame[i+1]];
+    if(type===10)out.push({port,device:'モーター',text:`${v.getInt32(i+8,true)}° / ${v.getInt8(i+7)}％`});
+    if(type===11)out.push({port,device:'フォースセンサー',text:`${frame[i+2]}％ / ${frame[i+3]?'押されている':'離されている'}`});
+    if(type===12)out.push({port,device:'カラーセンサー',text:`色 ${v.getInt8(i+2)}`});
+    if(type===13){const mm=v.getInt16(i+2,true);out.push({port,device:'距離センサー',text:mm<0?'測定できません':`${mm/10} cm`});}
+    i+=length;
+  }
+  return out;
 }

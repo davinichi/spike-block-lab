@@ -26,6 +26,6 @@ https://github.com/LEGO/spike-prime-docs/tree/main/examples/python
 
 https://github.com/davinichi/ev3-block-lab
 
-v0.20.1の設計を参考に、SPIKE用の最小編集・保存・コード生成を新規実装しています。元リポジトリの独自コードには再利用ライセンスが未設定です。本リポジトリでも独自コードの公開ライセンスは未設定です。
+v0.20.1の画面用CSSを引き継ぎ、SPIKEの標準Hub OS用に編集・保存・Python生成を実装しています。元リポジトリの独自コードには再利用ライセンスが未設定です。本リポジトリでも独自コードの公開ライセンスは未設定です。
 
 LEGO、SPIKE、MINDSTORMSはLEGO Groupの商標です。本アプリはLEGO Groupの提供・承認によるものではありません。
