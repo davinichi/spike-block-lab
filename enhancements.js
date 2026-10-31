@@ -259,7 +259,15 @@ _lab_native_pair = _lab_pair
 _lab_pair_ports = None
 
 def _lab_pair(left, right):
-    global _lab_pair_ports
+    global _lab_pair_ports, _lab_pair_ready
+    if left == right:
+        raise ValueError('Choose two different motor ports')
+    if _lab_pair_ports == (left, right):
+        return
+    if _lab_pair_ports is not None:
+        motor_pair.unpair(motor_pair.PAIR_1)
+        _lab_pair_ports = None
+        _lab_pair_ready = False
     _lab_native_pair(left, right)
     _lab_pair_ports = (left, right)
 

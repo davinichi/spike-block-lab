@@ -39,7 +39,11 @@ for name,source in sources.items():
     calls=[]
     motor=types.ModuleType('motor');motor.READY=0;motor.BRAKE=1;motor.stop=lambda *a,**k:calls.append(('stop',a))
     pair=types.ModuleType('motor_pair');pair.PAIR_1=0
-    pair.pair=lambda slot,left,right:calls.append(('pair',left,right))
+    assigned=[]
+    def register_pair(slot,left,right):
+        if assigned:raise ValueError('PORTB is assigned to PAIR_1')
+        assigned.append((left,right));calls.append(('pair',left,right))
+    pair.pair=register_pair
     async def move(slot,degrees,steering,*,velocity):
         assert degrees!=0 and velocity>0
         calls.append(('drive',degrees,steering,velocity));return 0
@@ -55,6 +59,7 @@ for name,source in sources.items():
     hub.light_matrix=hub.light=hub.button=hub.motion_sensor=types.SimpleNamespace();sys.modules['hub']=hub
     time.ticks_ms=lambda:0;time.ticks_diff=lambda a,b:a-b
     exec(compile(source,name,'exec'),{})
+    assert len([c for c in calls if c[0]=='pair'])==1,calls
     if name.startswith('lab_drive'):
         move=next(c for c in calls if c[0]=='drive')
         expected=int(20*10*360/(math.pi*56))
@@ -91,6 +96,41 @@ assert pid('p',10,4,2,1,1)==12
 clock[0]=2000
 assert pid('p',10,5,2,1,1)==14
 assert scope['_lab_csv']('a,"b')=='"a,""b"'
+`,generate(classroomSample('sound')));
+});
+
+test('repeated motion reuses a pair, changed ports release it, and failed pairing leaves no ready pair',()=>{
+  python(`import json,sys,types,time
+source=json.load(sys.stdin)
+for mod in ['runloop','motor','motor_pair','distance_sensor','color_sensor','force_sensor','color','hub']:sys.modules[mod]=types.ModuleType(mod)
+hub=sys.modules['hub'];hub.port=types.SimpleNamespace(**{c:i for i,c in enumerate('ABCDEF')});hub.sound=types.SimpleNamespace(stop=lambda:None)
+hub.light_matrix=hub.light=hub.button=hub.motion_sensor=types.SimpleNamespace()
+sys.modules['motor'].stop=lambda *a,**k:None
+def consume(*tasks):
+    for task in tasks:task.close()
+sys.modules['runloop'].run=consume
+time.ticks_ms=lambda:0
+scope={};exec(source,scope)
+assigned=[None];calls=[]
+def pair(slot,left,right):
+    if assigned[0] is not None:raise ValueError('PORTB is assigned to PAIR_1')
+    if right==99:raise OSError(19)
+    assigned[0]=(left,right);calls.append(('pair',left,right))
+def unpair(slot):assigned[0]=None;calls.append(('unpair',))
+sys.modules['motor_pair'].PAIR_1=0;sys.modules['motor_pair'].pair=pair;sys.modules['motor_pair'].unpair=unpair
+register=scope['_lab_pair']
+register(1,0);register(1,0)
+assert calls==[('pair',1,0)]
+register(0,1)
+assert calls==[('pair',1,0),('unpair',),('pair',0,1)]
+assert scope['_lab_pair_ready']
+try:register(0,0);raise AssertionError()
+except ValueError:pass
+assert assigned[0]==(0,1)
+try:register(0,99);raise AssertionError()
+except OSError:pass
+assert scope['_lab_pair_ports'] is None and not scope['_lab_pair_ready']
+register(1,0);assert scope['_lab_pair_ready']
 `,generate(classroomSample('sound')));
 });
 test('new port checks reject conflicting devices and invalid My Block return/arguments',()=>{
