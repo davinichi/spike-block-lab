@@ -59,3 +59,31 @@ aside#connectionPanel{z-index:1000}
 .manual-download{display:inline-flex;align-items:center;white-space:nowrap;gap:4px;padding:7px 10px;border:1px solid #b9d9d4;border-radius:6px;color:#08766e;background:#edf7f4;text-decoration:none;font-size:12px;font-weight:600}.manual-download:hover{background:#dff0eb}.manual-download:focus-visible{outline:3px solid #d3a238;outline-offset:2px}.manual-links{padding:16px;background:#edf7f4;border:1px solid #c6ddd8;border-radius:8px;margin:14px 0}.manual-links p{margin:6px 0 10px}.manual-links a{color:#08766e;font-weight:600}@media(max-width:600px){.manual-download{font-size:11px;padding:6px}}
 /* SPIKE standard Hub OS, preserving EV3 Block Lab layout. */
 main{grid-template-columns:minmax(0,1fr)}.sample-tools select{font:inherit;font-size:12px;max-width:195px;padding:5px;border:1px solid var(--line);border-radius:6px;background:#fff;color:#314953}.sample-label{font-size:12px;color:#657d86}#connectionPanel select{box-sizing:border-box;width:100%;font:inherit;padding:8px;border:1px solid #bcd3cb;border-radius:7px;background:white;color:#243b47}#connectionPanel .slot-label{display:block;font-size:12px;margin-bottom:8px;font-weight:600}#upload{background:#1565c0;color:#fff;box-shadow:0 3px 5px #1565c026}#upload:hover:not(:disabled){background:#0d47a1}#codeDialog{width:min(1000px,95vw);max-width:1000px}#codeDialog pre{background:#203b43;color:#e1eee4;font:12px/1.65 Consolas,monospace;padding:18px;max-height:65vh;overflow:auto;border-radius:8px}#sensorValues dt small{max-width:190px}#myBlockError{color:#a33329}@media(max-width:760px){.sample-label{display:none}.sample-tools select{max-width:140px}.project-names label{flex:initial}.projectbar .project-actions{margin-left:auto}.project-actions{gap:5px}.project-names{flex:initial}.project-names input{max-width:180px}}@media(max-width:480px){.project-names input{max-width:115px}.project-actions .toolbar-menu{display:none}.sample-tools #fit{display:none}}
+
+
+/* Reserve space for the connection panel instead of covering the editor. */
+body{grid-template-rows:auto auto minmax(0,1fr) auto 18px}
+header{height:auto;min-height:48px;flex-wrap:wrap;gap:6px 12px;padding-top:6px;padding-bottom:6px}
+.header-right{flex-wrap:wrap;justify-content:flex-end;gap:6px 10px;min-width:0}
+.project-actions{flex-wrap:wrap;min-width:0}
+main{display:flex;flex-direction:row;gap:8px;min-width:0;overflow:hidden}
+.editor{flex:1 1 0;min-width:0;max-width:100%}
+aside#connectionPanel{position:relative;inset:auto;flex:0 0 300px;width:300px;max-width:100%;height:100%;min-height:0;min-width:0;box-shadow:none}
+#connectionPanel>section{min-width:0;overflow-wrap:anywhere}
+#connectionPanel input{width:100%;min-width:0;max-width:100%}
+.editor-toolbar{height:auto;min-height:38px;flex-wrap:wrap;flex-shrink:0}
+.sample-tools{min-width:0;max-width:100%;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
+.sample-tools select{min-width:0;max-width:min(195px,100%)}
+.editor-caption{min-width:0;flex-shrink:0}
+.editor-caption .build-status{min-width:0}
+@media(max-width:900px){aside#connectionPanel{flex-basis:280px;width:280px}.header-right{gap:6px}.sample-label{display:none}}
+@media(max-width:640px){
+ main{flex-direction:column;gap:6px}
+ .editor{height:auto;min-height:160px;flex:1 1 0}
+ aside#connectionPanel{width:100%;flex:0 1 42%;height:42%;max-height:350px}
+ header{padding-left:8px;padding-right:8px}
+ .header-right{margin-left:auto}
+ .projectbar .project-actions{flex:1 1 100%;justify-content:flex-end}
+ .editor-toolbar{padding:3px 6px;gap:4px}
+ .sample-tools{gap:4px}
+}

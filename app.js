@@ -1,12 +1,12 @@
 import {recordingReader,RecordingReceiver} from './recording.js';
-import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.2';
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.3';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.2';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.2';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.3';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.3';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.2';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.3';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
@@ -152,6 +152,7 @@ $('libraryFile').onchange=()=>action(async()=>{
     backup.workspace.variables=variables;backup.workspace.blocks.blocks.push(...defs);restore(backup);dirty=true;feedback('マイブロックを読み込みました。');
   }finally{$('libraryFile').value='';}
 });
+new ResizeObserver(()=>Blockly.svgResize(workspace)).observe($('blocklyDiv'));
 window.addEventListener('resize',()=>Blockly.svgResize(workspace));window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
 try{const saved=localStorage.getItem(STORAGE);if(saved)restore(JSON.parse(saved));else restore({format:'spike-block-lab',version:1,name:'DisplayTest',language:'standard',workspace:classroomSample('lights')});}
 catch(error){log('復元できませんでした: '+error.message);loading=true;Blockly.serialization.workspaces.load(classroomSample('lights'),workspace);loading=false;check();$('saveState').textContent='前の自動保存を復元できませんでした。';}
