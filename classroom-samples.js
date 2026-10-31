@@ -14,6 +14,7 @@ export function classroomSample(name) {
   const blockList={
     recording:[start([node('lab_log_start',{NAME:'Record1'}),node('controls_repeat_ext',{}, {TIMES:10,DO:chain([node('lab_log_value',{LABEL:'time_s'},{VALUE:node('lab_timer')}),wait(.1)])}),node('lab_log_end'),node('lab_text',{}, {TEXT:{type:'text',fields:{TEXT:'DONE'}}})])],
     ramp:[start([node('lab_ramp',{PROFILE:'s'},{UP:1,DOWN:1}),node('lab_geometry',{DIAMETER:56}),drive(20,30),wait(1),drive(-20,30)])],
+    battery:[start([node('lab_wait_until',{}, {BOOL:node('lab_button',{BUTTON:'LEFT'})}),node('lab_tone_ms',{}, {FREQUENCY:262,MS:1000,VOLUME:25}),node('lab_display_abacus',{}, {VALUE:node('lab_battery_voltage')})])],
     sound:[start([tone()])],
     motor:[start([node('lab_motor_single_angle',{PORT:'A'},{SPEED:20,DEGREES:90}),wait(.5),node('lab_motor_single_angle',{PORT:'A'},{SPEED:-20,DEGREES:90})])],
     drive:[start([node('lab_geometry',{DIAMETER:56}),drive(20),wait(1),drive(-20)])],
@@ -31,6 +32,6 @@ export function classroomSample(name) {
   if(name==='myblock')result.variables=[{id:'distance-arg',name:'距離'}];
   return result;
 }
-export const SAMPLE_NAMES={lights:'DisplayTest',sound:'SoundTest',motor:'MotorTest',drive:'DriveTest',turn:'TurnTest',distance:'DistanceStop',color:'ColorSound',variables:'Variables',myblock:'MyBlock',parallel:'ParallelTest',message:'MessageTest',recording:'RecordingTest',ramp:'RampTest'};
+export const SAMPLE_NAMES={lights:'DisplayTest',sound:'SoundTest',motor:'MotorTest',drive:'DriveTest',turn:'TurnTest',distance:'DistanceStop',color:'ColorSound',variables:'Variables',myblock:'MyBlock',parallel:'ParallelTest',message:'MessageTest',recording:'RecordingTest',ramp:'RampTest',battery:'BatteryAbacus'};
 
 

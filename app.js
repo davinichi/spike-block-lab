@@ -1,12 +1,12 @@
 import {recordingReader,RecordingReceiver} from './recording.js';
-import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.0';
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.1';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.0';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.0';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.1';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.1';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.0';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.1';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});

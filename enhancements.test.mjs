@@ -9,6 +9,35 @@ import {EXTRA_RUNTIME} from './enhancements.js';
 import {RecordingReceiver,recordingReader} from './recording.js';
 setupClassroom(Blockly);
 const py=script=>{const result=spawnSync(process.platform==='win32'?'python':'python3',['-c',script],{encoding:'utf8',env:{...process.env,PYTHONUTF8:'1'}});assert.equal(result.status,0,result.stderr);};
+test('battery value uses hub API and abacus pixels match five-bead digits and right alignment',()=>{
+ py(`import sys,types,math
+${EXTRA_RUNTIME.replace('_lab_native_drive = _lab_drive','_lab_native_drive = None').replace('_lab_native_turn = _lab_turn','_lab_native_turn = None').replace('_lab_native_pair = _lab_pair','_lab_native_pair = None')}
+pixels={};cleared=[]
+def clear():pixels.clear();cleared.append(True)
+def pixel(x,y,v):
+    assert 0<=x<5 and 0<=y<5 and v==100
+    pixels[x,y]=v
+light_matrix=types.SimpleNamespace(clear=clear,set_pixel=pixel)
+hub=types.ModuleType('hub');hub.battery_voltage=lambda:7800;sys.modules['hub']=hub
+assert _lab_battery_voltage()==7800
+_lab_display_abacus(_lab_battery_voltage())
+assert set(pixels)=={(1,0),(1,1),(1,2),(2,0),(2,1),(2,2),(2,3)},pixels
+for number in list(range(10))+[12345,50789,99999,0]:
+    _lab_display_abacus(number)
+    digits=str(number);decoded=[]
+    for x in range(5-len(digits),5):
+        decoded.append(5*((x,0) in pixels)+sum((x,y) in pixels for y in range(1,5)))
+    assert decoded==[int(c) for c in digits],(number,pixels)
+for invalid in [-1,1.5,100000,float('nan'),float('inf'),'7800']:
+    before=len(cleared)
+    try:_lab_display_abacus(invalid);raise AssertionError(invalid)
+    except ValueError:pass
+    assert len(cleared)==before
+del hub.battery_voltage
+try:_lab_battery_voltage();raise AssertionError()
+except RuntimeError:pass
+`);
+});
 test('CSV receiver checks fragment boundaries, sequence, byte count and checksum',()=>{
  const token='123456789012abcdefabcdef',r=new RecordingReceiver(token),bytes=new TextEncoder().encode('time_s,label,value\n0,"温度","20"\n');let h=2166136261;
  for(const byte of bytes)h=Math.imul(h^byte,16777619)>>>0;

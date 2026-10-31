@@ -9,6 +9,8 @@ const add=(type,message0,args0,properties)=>defs.push({type,message0,args0,...pr
 const operators={add:['＋','+','Number'],sub:['−','-','Number'],mul:['×','*','Number'],div:['÷','/','Number'],lt:['＜','<','Boolean'],eq:['＝','==','Boolean'],gt:['＞','>','Boolean'],lte:['≦','<=','Boolean'],gte:['≧','>=','Boolean'],neq:['≠','!=','Boolean'],and:['かつ','and','Boolean'],or:['または','or','Boolean']};
 for(const [op,[label,,output]] of Object.entries(operators))add('lab_op_'+op,'%1 '+label+' %2',[input('A',['and','or'].includes(op)?'Boolean':'Number'),input('B',['and','or'].includes(op)?'Boolean':'Number')],{output,inputsInline:true,colour:'#00b84a'});
 const modes=menu('MODE',[['ブレーキ','BRAKE'],['惰性','COAST'],['保持','HOLD']]);
+add('lab_battery_voltage','本体のバッテリー電圧（mV）',[],{output:'Number',colour:'#34ccf1',tooltip:'本体の電圧をmVで読みます。1000mV＝1V。対応する標準Hub OSで使用できます。'});
+add('lab_display_abacus','数値 %1 をそろばん形式で表示',[input('VALUE')],{...stmt,colour:'#9966ff',tooltip:'0〜99999の整数を右詰めで表示。1列が1桁で、最上段は5、下4段は1の玉です。0の桁は点灯しません。'});
 add('lab_motor_velocity','モーター %1 の実際の速さ（度/秒）',[port()],{output:'Number',colour:'#0090f5'});
 add('lab_motor_stop_mode','モーター %1 の動作後の停止を %2 にする',[menu('PORTS',[...ports.map(p=>[p,p]),['すべて','ALL']]),modes],{...stmt,colour:'#0090f5'});
 add('lab_motor_change_speed','モーター %1 の速さを %2 ％に変える',[port(),input('SPEED')],{...stmt,colour:'#0090f5',tooltip:'動作中の目標角度・終了時刻を保ったまま速さを変えます。0は一時停止。'});
@@ -56,6 +58,8 @@ export function checkMessageCycles(hats,workspace,fail){
 }
 export function registerEnhancements({g,emit,v,stat}){
  const p=b=>'port.'+b.getFieldValue('PORT');
+ emit('lab_battery_voltage',()=>['_lab_battery_voltage()',g.ORDER_ATOMIC]);
+ emit('lab_display_abacus',b=>stat(`_lab_display_abacus(${v(b,'VALUE')})\n`));
  for(const [op,[,symbol]] of Object.entries(operators))emit('lab_op_'+op,b=>[`((${v(b,'A',['and','or'].includes(op)?'False':'0')}) ${symbol} (${v(b,'B',['and','or'].includes(op)?'False':'0')}))`,g.ORDER_ATOMIC]);
  emit('math_round',b=>{const op=b.getFieldValue('OP');return [op==='ROUND'?`math.floor((${v(b,'NUM')}) + 0.5)`:`math.${op==='ROUNDUP'?'ceil':'floor'}(${v(b,'NUM')})`,g.ORDER_ATOMIC];});
  emit('lab_math_function',b=>[`_lab_math(${JSON.stringify(b.getFieldValue('FUNCTION'))}, ${v(b,'VALUE')})`,g.ORDER_ATOMIC]);
@@ -77,6 +81,28 @@ _lab_active_motors = {}
 _lab_motion_config = {'profile': 'none', 'up': 0, 'down': 0, 'sync': True}
 _lab_lamp = {}
 _lab_log = {}
+
+def _lab_battery_voltage():
+    import hub
+    read = getattr(hub, 'battery_voltage', None)
+    if read is None:
+        raise RuntimeError('This Hub OS does not support hub.battery_voltage()')
+    return read()
+
+def _lab_display_abacus(value):
+    if not isinstance(value, (int, float)) or not 0 <= value <= 99999 or value != int(value):
+        raise ValueError('Abacus display needs an integer from 0 to 99999')
+    digits = str(int(value))
+    start_x = 5 - len(digits)
+    light_matrix.clear()
+    for i in range(len(digits)):
+        digit = int(digits[i])
+        x = start_x + i
+        if digit >= 5:
+            light_matrix.set_pixel(x, 0, 100)
+            digit -= 5
+        for y in range(digit):
+            light_matrix.set_pixel(x, y + 1, 100)
 
 def _lab_string(value):
     text = str(value)
