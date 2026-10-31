@@ -1,6 +1,6 @@
 export function registerCommonGenerators({g,emit,v,stat,fail}) {
   const quote=x=>JSON.stringify(String(x)),name=b=>quote(b.getFieldValue('NAME'));
-  const pair=b=>`port.${b.getFieldValue('LEFT')}, port.${b.getFieldValue('RIGHT')}`;
+  const pair=()=> '_lab_motion_ports()[0], _lab_motion_ports()[1]';
   for(const paired of [false,true])for(const action of ['run','angle','rotation','time'])emit('lab_motor_'+(paired?'pair':'single')+'_'+action,b=>{
     const ports=paired?b.getFieldValue('PORTS').split(','):[b.getFieldValue('PORT')];
     const list='['+ports.map(p=>'port.'+p).join(', ')+']',speed=v(b,'SPEED');
@@ -10,7 +10,7 @@ export function registerCommonGenerators({g,emit,v,stat,fail}) {
   });
   emit('lab_motor_group_stop',b=>{const selected=b.getFieldValue('PORTS'),ports=selected==='ALL'?['A','B','C','D','E','F']:selected.split(',');return stat(ports.map(p=>`_lab_stop_port(port.${p}, motor.${b.getFieldValue('MODE')}, ${selected==='ALL'?'True':'False'})\n`).join(''));});
   emit('lab_tread',b=>stat(`_lab_tread = ${Number(b.getFieldValue('TREAD'))}\n`));
-  for(const direction of ['forward','backward'])emit('lab_drive_'+direction,b=>{const [left,right]=b.getFieldValue('PORTS').split(',');return stat(`_lab_pair(port.${left}, port.${right})\nawait _lab_drive(${direction==='backward'?'-':''}_lab_positive(${v(b,'SPEED')}, 100), _lab_positive(${v(b,'CM')}, 360000), 'cm', 0)\n`);});
+  for(const direction of ['forward','backward'])emit('lab_drive_'+direction,b=>stat(`await _lab_drive(${direction==='backward'?'-':''}_lab_positive(${v(b,'SPEED')}, 100), _lab_positive(${v(b,'CM')}, 360000), 'cm', 0)\n`));
   for(const kind of ['spin','pivot'])for(const direction of ['right','left'])emit('lab_'+kind+'_'+direction,b=>stat(`await _lab_turn(${pair(b)}, ${v(b,'SPEED')}, ${v(b,'ANGLE')}, ${kind==='pivot'?'True':'False'}, ${direction==='right'?1:-1})\n`));
   for(const action of ['run','angle','time']) {
     const amount=b=>action==='run'?'0':v(b,action==='angle'?'DEGREES':'SECONDS');

@@ -1,8 +1,8 @@
 import {setupBlocks} from './blocks.js';
 import {BLOCK_TYPES,PORTS} from './model.js';
-import {COMMON_TYPES,setupCommon,commonToolbox} from './common-blocks.js';
+import {COMMON_TYPES,setupCommon,commonToolbox} from './common-blocks.js?v=0.5.0';
 export const STANDARD_TYPES = [
-  'lab_geometry',
+  'lab_pair','lab_geometry',
   'lab_wait','lab_wait_until','lab_forever','lab_end','lab_text','lab_pixel','lab_light',
   'lab_distance','lab_distance_valid','lab_color','lab_color_is','lab_reflection','lab_force','lab_pressed',
   'lab_angle','lab_encoder','lab_encoder_reset','lab_button','lab_timer','lab_timer_reset','lab_yaw_reset',
@@ -28,7 +28,7 @@ export function setupClassroom(Blockly) {
     ...['motor','motor_run','motor_stop'].map(kind=>kind==='motor'?{
       type:'lab_motor',message0:'モーター %1 速さ %2 ％で %3 %4 回す',args0:[port(),input('SPEED'),input('AMOUNT'),choice('UNIT',[['度','degrees'],['回転','rotations'],['秒','seconds']])],previousStatement:null,nextStatement:null,inputsInline:true,colour:'#0090f5'
     }:kind==='motor_run'?{type:'lab_motor_run',message0:'モーター %1 を速さ %2 ％で回し続ける',args0:[port(),input('SPEED')],previousStatement:null,nextStatement:null,inputsInline:true,colour:'#0090f5'}:{type:'lab_motor_stop',message0:'モーター %1 を %2 で停止',args0:[choice('PORT',[...PORTS.map(p=>[p,p]),['すべて','ALL']]),choice('MODE',[['ブレーキ','BRAKE'],['惰性','COAST'],['保持','HOLD']])],previousStatement:null,nextStatement:null,colour:'#0090f5'}),
-    {type:'lab_pair',message0:'走行の左モーターを %1 右モーターを %2 にする',args0:[port('LEFT'),port('RIGHT')],previousStatement:null,nextStatement:null,colour:'#ff4ccd'},
+    {type:'lab_pair',message0:'動きに使うモーターを 左 %1 右 %2 にする',args0:[{...port('LEFT'),options:[['B','B'],...PORTS.filter(p=>p!=='B').map(p=>[p,p])]},{...port('RIGHT'),options:[['C','C'],...PORTS.filter(p=>p!=='C').map(p=>[p,p])]}],previousStatement:null,nextStatement:null,colour:'#ff4ccd'},
     {type:'lab_drive',message0:'速さ %1 ％で %2 %3 進む 曲がり方 %4',args0:[input('SPEED'),input('AMOUNT'),choice('UNIT',[['cm','cm'],['秒','seconds'],['度（モーター）','degrees']]),input('STEERING')],previousStatement:null,nextStatement:null,inputsInline:true,colour:'#ff4ccd',tooltip:'曲がり方は−100〜100。0は直進、±100はその場で旋回。負の速さで後退します。'},
     {type:'lab_tank',message0:'左を速さ %1 ％ 右を速さ %2 ％で走り続ける',args0:[input('LEFT'),input('RIGHT')],previousStatement:null,nextStatement:null,colour:'#ff4ccd',inputsInline:true},
     {type:'lab_geometry',message0:'タイヤの直径を %1 mm にする',args0:[number('DIAMETER',56,10,200)],previousStatement:null,nextStatement:null,colour:'#ff4ccd'},
@@ -51,7 +51,7 @@ export function setupClassroom(Blockly) {
     {type:'lab_when',message0:'%1 になったとき',args0:[{type:'input_value',name:'BOOL',check:'Boolean'}],nextStatement:null,colour:'#d3a238'},
     {type:'lab_message_hat',message0:'メッセージ %1 を受け取ったとき',args0:[{type:'field_input',name:'MESSAGE',text:'合図'}],nextStatement:null,colour:'#d3a238'},
     {type:'lab_broadcast',message0:'メッセージ %1 を送る',args0:[{type:'field_input',name:'MESSAGE',text:'合図'}],previousStatement:null,nextStatement:null,colour:'#d3a238'}
-  ].filter(def=>!['lab_motor','lab_motor_run','lab_motor_stop','lab_pair','lab_drive','lab_tank','lab_tone'].includes(def.type)));
+  ].filter(def=>!['lab_motor','lab_motor_run','lab_motor_stop','lab_drive','lab_tank','lab_tone'].includes(def.type)));
   setupCommon(Blockly);
 }
 const shadow=(n)=>({shadow:{type:'math_number',fields:{NUM:n}}});

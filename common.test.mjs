@@ -9,15 +9,15 @@ import {generateStandard} from './standard.js';
 import {COMMON_TYPES} from './common-blocks.js';
 setupClassroom(Blockly);
 const palette=classroomToolbox().contents.flatMap(c=>c.contents??[]).filter(b=>b.kind==='block');
-function program(block){return {blocks:{languageVersion:0,blocks:[{type:'spike_start',next:{block}}]}};}
+function program(block){return {blocks:{languageVersion:0,blocks:[{type:'spike_start',next:{block:{type:'lab_pair',fields:{LEFT:'B',RIGHT:'C'},next:{block}}}}]}};}
 function generate(state){const ws=new Blockly.Workspace();try{Blockly.serialization.workspaces.load(state,ws);return generateStandard(ws,pythonGenerator).source;}finally{ws.dispose();}}
 const python=(script,data)=>{const result=spawnSync(process.platform==='win32'?'python':'python3',['-c',script],{input:JSON.stringify(data),encoding:'utf8',env:{...process.env,PYTHONUTF8:'1'}});assert.equal(result.status,0,result.stderr);};
 test('categories follow EV3 order, motion separates straight drives and spin/pivot turns',()=>{
   assert.deepEqual(classroomToolbox().contents.map(c=>c.name),['スタート','イベント','モーター','動き','センサー','音','制御','演算','表示','ランプ','データ','記録','変数','マイブロック','引数']);
   const types=classroomToolbox().contents.find(c=>c.name==='動き').contents.map(b=>b.type);
   for(const type of ['lab_drive_forward','lab_drive_backward','lab_spin_right','lab_spin_left','lab_pivot_right','lab_pivot_left'])assert.ok(types.includes(type));
-  assert.ok(!types.includes('lab_drive'));assert.ok(!types.includes('lab_pair'));
-  const ws=new Blockly.Workspace();try{const block=ws.newBlock('lab_drive_forward');assert.ok(block.getField('PORTS').getOptions().some(o=>o[1]==='B,A'));}finally{ws.dispose();}
+  assert.ok(!types.includes('lab_drive'));assert.ok(types.includes('lab_pair'));
+  const ws=new Blockly.Workspace();try{const block=ws.newBlock('lab_drive_forward');assert.equal(block.getField('PORTS'),null);}finally{ws.dispose();}
 });
 test('every new palette instruction and expression generates valid Python',()=>{
   const sources=[];
@@ -134,8 +134,53 @@ register(1,0);assert scope['_lab_pair_ready']
 `,generate(classroomSample('sound')));
 });
 test('new port checks reject conflicting devices and invalid My Block return/arguments',()=>{
-  assert.throws(()=>generate(program({type:'lab_spin_left',fields:{LEFT:'A',RIGHT:'A'}})),/違う2個/);
+  assert.throws(()=>generate(program({type:'lab_pair',fields:{LEFT:'A',RIGHT:'A'}})),/違う2個/);
   assert.throws(()=>generate(program({type:'lab_return'})),/定義/);
   assert.throws(()=>generate(program({type:'lab_text',inputs:{TEXT:{block:{type:'lab_argument',extraState:{name:'距離'}}}}})),/引数/);
 });
 
+
+
+test('movement requires executed settings and My Blocks inherit them',()=>{
+  const drive={...palette.find(b=>b.type==='lab_drive_forward')};
+  const raw=block=>({blocks:{languageVersion:0,blocks:[{type:'spike_start',next:{block}}]}});
+  assert.throws(()=>generate(raw(drive)),/動きに使うモーターを設定/);
+  assert.throws(()=>generate(raw({...drive,next:{block:{type:'lab_pair'}}})),/この動きの前/);
+  const conditional={type:'controls_if',inputs:{IF0:{shadow:{type:'logic_boolean',fields:{BOOL:'TRUE'}}},DO0:{block:{type:'lab_pair'}}},next:{block:drive}};
+  assert.throws(()=>generate(raw(conditional)),/この動きの前/);
+  const detached=raw(drive);detached.blocks.blocks.push({type:'lab_pair'});
+  assert.throws(()=>generate(detached),/動きに使うモーターを設定/);
+  const source=generate(classroomSample('myblock'));assert.match(source,/_lab_set_motion_pair\(port.B, port.C\)/);
+  for(const type of ['lab_drive_forward','lab_drive_backward','lab_spin_right','lab_pivot_left','lab_steering_angle','lab_tank_time']){
+    const ws=new Blockly.Workspace();try{const b=ws.newBlock(type);for(const field of ['LEFT','RIGHT','PORTS'])assert.equal(b.getField(field),null,type);}finally{ws.dispose();}
+  }
+});
+
+test('shared movement selection reuses a pair and stops old motors on change',()=>{
+  python(`import json,sys,types,time
+source=json.load(sys.stdin)
+for mod in ['runloop','motor','motor_pair','distance_sensor','color_sensor','force_sensor','color','hub']:sys.modules[mod]=types.ModuleType(mod)
+hub=sys.modules['hub'];hub.port=types.SimpleNamespace(**{c:i for i,c in enumerate('ABCDEF')});hub.sound=types.SimpleNamespace(stop=lambda:None)
+hub.light_matrix=hub.light=hub.button=hub.motion_sensor=types.SimpleNamespace()
+sys.modules['motor'].stop=lambda *a,**k:None
+sys.modules['motor'].BRAKE=1
+sys.modules['runloop'].run=lambda *tasks:[task.close() for task in tasks]
+time.ticks_ms=lambda:0
+scope={};exec(source,scope)
+try:scope['_lab_motion_ports']();raise AssertionError('missing guard')
+except ValueError:pass
+calls=[];pair=sys.modules['motor_pair'];pair.PAIR_1=0
+pair.pair=lambda *a:calls.append(('pair',a[1:]))
+pair.unpair=lambda *a:calls.append(('unpair',))
+scope['_lab_stop_port']=lambda p,mode:calls.append(('stop',p))
+select=scope['_lab_set_motion_pair'];select(1,0);select(1,0)
+assert scope['_lab_motion_ports']()==(1,0)
+assert calls==[('pair',(1,0))],calls
+select(1,2)
+assert calls==[('pair',(1,0)),('stop',1),('stop',0),('unpair',),('pair',(1,2))],calls
+assert scope['_lab_motion_ports']()==(1,2)
+try:select(1,1);raise AssertionError()
+except ValueError:pass
+assert scope['_lab_motion_ports']()==(1,2)
+`,generate(classroomSample('sound')));
+});

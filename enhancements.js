@@ -271,6 +271,18 @@ def _lab_pair(left, right):
     _lab_native_pair(left, right)
     _lab_pair_ports = (left, right)
 
+def _lab_motion_ports():
+    _lab_require_pair()
+    return _lab_pair_ports
+
+def _lab_set_motion_pair(left, right):
+    if left == right:
+        raise ValueError('Choose two different motor ports')
+    if _lab_pair_ports is not None and _lab_pair_ports != (left, right):
+        for p in _lab_pair_ports:
+            _lab_stop_port(p, motor.BRAKE)
+    _lab_pair(left, right)
+
 def _lab_use_managed():
     return _lab_motion_config.get('managed', False) or _lab_motion_config['profile'] != 'none' or any(p in _lab_stop_modes for p in _lab_pair_ports)
 
