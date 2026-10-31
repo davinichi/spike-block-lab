@@ -134,9 +134,14 @@ export class SpikeConnection {
       return await response;
     } catch(error){this.disconnect();throw error;}
   }
-  async status(payload,type) {
+  async status(payload,type,label='処理') {
     const response=await this.request(payload,type);
-    if(response.length!==2||response[1]!==0)throw Error(`本体が処理を受け付けませんでした（${response[1]??'応答不正'}）。`);
+    if(response.length!==2||response[1]!==0)throw Error(`「${label}」を本体が受け付けませんでした（${response[1]??'応答不正'}）。`);
+  }
+  async prepareStatus(payload,type,label) {
+    const response=await this.request(payload,type);
+    if(response.length!==2||![0,1].includes(response[1]))throw Error(`「${label}」の応答が不正です。`);
+    this.onLog(`${label}：${response[1]===0?'確認できました':'対象がない場合もあるため、次の要求で準備状態を確認します'}（応答 ${response[1]}）`);
   }
   async upload(source, slot, progress=()=>{}) {
     if(this.busy)throw Error('転送が終わるまで待ってください。');
@@ -146,25 +151,30 @@ export class SpikeConnection {
     if(!bytes.length||bytes.length>128*1024)throw Error('転送できるプログラムは128 KiBまでです。');
     this.busy=true;this.onChange();
     try {
-      // No ClearSlot: do not erase a slot before the replacement transfer is accepted.
-      await this.status(Uint8Array.of(0x1e,1,slot),0x1f);
+      this.onLog(`転送準備：番号 ${slot} の停止確認`);
+      // A stopped hub can NAK Stop. Do not mistake that for a failed file upload.
+      await this.prepareStatus(Uint8Array.of(0x1e,1,slot),0x1f,'転送前の停止確認');
+      this.onLog(`転送準備：番号 ${slot} の保存先を空にします`);
+      // Official example clears the slot before upload; NAK is allowed for an empty slot.
+      await this.prepareStatus(Uint8Array.of(0x46,slot),0x47,'保存先の準備');
       const name=new TextEncoder().encode('program.py\0');
       const start=new Uint8Array(1+name.length+1+4);start[0]=0x0c;start.set(name,1);start[1+name.length]=slot;
       new DataView(start.buffer).setUint32(2+name.length,alignedCRC(bytes),true);
-      await this.status(start,0x0d);
+      this.onLog(`転送開始：番号 ${slot} / ${bytes.length} bytes`);
+      await this.status(start,0x0d,'転送の開始');
       const chunkSize=Math.floor(Math.min(this.info.chunk,this.info.message-7)/4)*4;
       if(chunkSize<4)throw Error('本体の転送サイズに対応できません。');
       let crc=0;
       for(let i=0;i<bytes.length;i+=chunkSize) {
         const chunk=bytes.slice(i,i+chunkSize);crc=alignedCRC(chunk,crc);
         const data=new Uint8Array(7+chunk.length),v=new DataView(data.buffer);data[0]=0x10;v.setUint32(1,crc,true);v.setUint16(5,chunk.length,true);data.set(chunk,7);
-        await this.status(data,0x11);progress(Math.round((i+chunk.length)*100/bytes.length));
+        await this.status(data,0x11,`データの転送 ${i+chunk.length}/${bytes.length} bytes`);progress(Math.round((i+chunk.length)*100/bytes.length));
       }
       return {slot,bytes:bytes.length,crc};
     } finally {this.busy=false;this.onChange();}
   }
-  async run(slot){if(this.busy)throw Error('転送が終わるまで待ってください。');await this.status(Uint8Array.of(0x1e,0,slot),0x1f);}
-  async stop(slot=0){if(this.busy)throw Error('転送が終わるまで待ってください。');await this.status(Uint8Array.of(0x1e,1,slot),0x1f);}
+  async run(slot){if(this.busy)throw Error('転送が終わるまで待ってください。');this.onLog(`実行要求：番号 ${slot}`);await this.status(Uint8Array.of(0x1e,0,slot),0x1f,'プログラムの実行');}
+  async stop(slot=0){if(this.busy)throw Error('転送が終わるまで待ってください。');await this.status(Uint8Array.of(0x1e,1,slot),0x1f,'プログラムの停止');}
   async observe(interval=500){if(this.busy)throw Error('転送が終わるまで待ってください。');const data=new Uint8Array(3);data[0]=0x28;new DataView(data.buffer).setUint16(1,interval,true);await this.status(data,0x29);}
 }
 export function parseDevices(frame) {

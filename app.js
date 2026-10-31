@@ -3,7 +3,7 @@ import {setupClassroom,classroomToolbox} from './classroom-blocks.js';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.2.1';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.2.2';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
@@ -67,7 +67,7 @@ async function transfer(run){
   if(!confirm(`本体の番号 ${slot} を上書きします。${run?'転送後、すぐ動き始めます。':'転送だけでは動きません。'}`))return;
   transferred=null;$('progress').hidden=false;$('progress').value=0;$('transferStatus').textContent='転送しています…';
   try{const result=await connection.upload(source,slot,n=>$('progress').value=n);transferred={slot,source};$('transferStatus').textContent=`番号 ${slot} への転送応答を確認しました。`;log(`転送完了: slot ${slot}, ${result.bytes} bytes, CRC ${result.crc.toString(16)}`);if(run){await connection.run(slot);$('transferStatus').textContent+=' 実行の指示を送りました。';}}
-  catch(error){$('transferStatus').textContent=transferred?'保存済みです。実行の指示に失敗しました。':'転送は完了していません。再接続してやり直してください。';throw error;}finally{$('progress').hidden=true;}
+  catch(error){$('transferStatus').textContent=transferred?'保存済みです。実行の指示に失敗しました。':'転送は完了していません。下のエラーと通信ログを確認してください。';throw error;}finally{$('progress').hidden=true;}
 }
 $('upload').onclick=()=>action(()=>transfer(false));$('transferRun').onclick=()=>action(()=>transfer(true));
 $('run').onclick=()=>action(async()=>{if(transferred&&latest?.source===transferred.source&&confirm('プログラムを実行します。準備はできていますか？'))await connection.run(transferred.slot);});
@@ -107,3 +107,4 @@ $('libraryFile').onchange=()=>action(async()=>{
 window.addEventListener('resize',()=>Blockly.svgResize(workspace));window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
 try{const saved=localStorage.getItem(STORAGE);if(saved)restore(JSON.parse(saved));else restore({format:'spike-block-lab',version:1,name:'DisplayTest',language:'standard',workspace:classroomSample('lights')});}
 catch(error){log('復元できませんでした: '+error.message);loading=true;Blockly.serialization.workspaces.load(classroomSample('lights'),workspace);loading=false;check();$('saveState').textContent='前の自動保存を復元できませんでした。';}
+

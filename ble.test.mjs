@@ -25,13 +25,17 @@ test('protocol CRC pads to four bytes, and aligned chunk CRC equals the full-fil
   assert.equal(alignedCRC(bytes),alignedCRC(bytes.slice(8),alignedCRC(bytes.slice(0,8))));
 });
 
-function mock({timeout=100,failType=null,dropType=null,firmware=[1,6,42],rpc=1,onLog=()=>{}}={}) {
-  const requests=[],listeners=new Map();let connection;
+function mock({timeout=100,failType=null,dropType=null,firmware=[1,6,42],rpc=1,onLog=()=>{},stopStatus=0,clearStatus=0}={}) {
+  const requests=[],listeners=new Map();let connection,prepared=false;
   const info=Uint8Array.of(1,rpc,0,0,0,firmware[0],firmware[1],firmware[2],0,20,0,64,0,16,0,0,0);
   const reader=new FrameReader(payload=>{
     requests.push(payload);
     if(payload[0]===dropType)return;
-    const reply=payload[0]===0?info:Uint8Array.of(({0x1e:0x1f,0x0c:0x0d,0x10:0x11})[payload[0]],payload[0]===failType?1:0);
+    let status=payload[0]===failType?1:0;
+    if(payload[0]===0x1e&&payload[1]===1)status=stopStatus;
+    if(payload[0]===0x46){prepared=true;status=clearStatus;}
+    if(payload[0]===0x0c&&!prepared)status=1;
+    const reply=payload[0]===0?info:Uint8Array.of(({0x1e:0x1f,0x46:0x47,0x0c:0x0d,0x10:0x11})[payload[0]],status);
     queueMicrotask(()=>{
       const frame=encodeFrame(reply);
       for(let i=0;i<frame.length;i+=3){const value=new DataView(frame.buffer,i,Math.min(3,frame.length-i));listeners.get('characteristicvaluechanged')?.({target:{value}});}
@@ -44,7 +48,7 @@ function mock({timeout=100,failType=null,dropType=null,firmware=[1,6,42],rpc=1,o
   connection=new SpikeConnection({bluetooth:{requestDevice:async()=>device},timeout,onLog});
   return {connection,requests,device};
 }
-test('connect, source upload, separate run and stop use the expected slot without erasing first',async()=>{
+test('connect, prepare slot, upload, separate run and stop follow the official request sequence',async()=>{
   const {connection,requests}=mock();await connection.connect();assert.equal(connection.info.firmware,'1.6.42');
   const source='print("こんにちは")\n',result=await connection.upload(source,7);
   assert.equal(result.slot,7);assert.ok(connection.connected);
@@ -54,7 +58,8 @@ test('connect, source upload, separate run and stop use the expected slot withou
   const reconstructed=Uint8Array.from(chunks.flatMap(p=>[...p.slice(7)]));
   assert.equal(new TextDecoder().decode(reconstructed),source);
   assert.equal(new DataView(chunks.at(-1).buffer).getUint32(1,true),result.crc);
-  assert.ok(!requests.some(p=>p[0]===0x46));
+  assert.deepEqual(requests.slice(1,4).map(p=>[...p.slice(0,2)]),[[0x1e,1],[0x46,7],[0x0c,112]]);
+  assert.deepEqual([...requests[1]],[0x1e,1,7]);
   assert.ok(!requests.some(p=>p[0]===0x1e&&p[1]===0));
   await connection.run(7);assert.deepEqual([...requests.at(-1)],[0x1e,0,7]);
   await connection.stop(7);assert.deepEqual([...requests.at(-1)],[0x1e,1,7]);connection.disconnect();
@@ -101,4 +106,22 @@ test('Bluetooth availability distinguishes insecure, unsupported and embedded co
   assert.match(bluetoothEnvironment({...supported,isSecureContext:false}).message,/HTTPS/);
   assert.match(bluetoothEnvironment({...supported,navigator:{}}).message,/通常のタブ/);
   assert.match(bluetoothEnvironment({...supported,document:{permissionsPolicy:{allowsFeature:()=>false}}}).message,/表示枠/);
+});
+
+test('idle stop and empty-slot NAKs do not abort upload, but file-start NAK does',async()=>{
+  const logs=[],{connection,requests}=mock({stopStatus:1,clearStatus:1,onLog:message=>logs.push(message)});
+  await connection.connect();await connection.upload('print(1)',0);await connection.run(0);
+  assert.deepEqual([...requests.at(-1)],[0x1e,0,0]);
+  assert.ok(logs.some(message=>message.includes('停止確認')&&message.includes('応答 1')));
+  assert.ok(logs.some(message=>message.includes('保存先の準備')&&message.includes('応答 1')));
+  connection.disconnect();
+  const rejected=mock({stopStatus:1,clearStatus:1,failType:0x0c});await rejected.connection.connect();
+  await assert.rejects(()=>rejected.connection.upload('print(1)',0),/転送の開始/);
+  assert.ok(!rejected.requests.some(p=>p[0]===0x10));
+  assert.ok(!rejected.requests.some(p=>p[0]===0x1e&&p[1]===0));rejected.connection.disconnect();
+});
+test('a missing preparation reply aborts before clearing or transferring any program',async()=>{
+  const {connection,requests}=mock({dropType:0x1e,timeout:15});await connection.connect();
+  await assert.rejects(()=>connection.upload('print(1)',0),/返事がありません/);
+  assert.ok(!requests.some(p=>p[0]===0x46||p[0]===0x0c));
 });
