@@ -14,7 +14,7 @@ test('all advertised classroom blocks construct and serialize using the real Blo
   const types=new Set(STANDARD_TYPES);function visit(x){if(x.type)types.add(x.type);for(const item of x.contents??[])visit(item);}visit(classroomToolbox());
   for(const type of types){const ws=new Blockly.Workspace();try{const b=ws.newBlock(type);const p={format:'spike-block-lab',version:1,name:'test',language:'standard',workspace:Blockly.serialization.workspaces.save(ws)};validateProject(p);assert.ok(b);}finally{ws.dispose();}}
 });
-test('all ten standard-Hub-OS samples generate Python after project save and reload',()=>{
+test('all standard-Hub-OS samples generate Python after project save and reload',()=>{
   const sources=[];
   for(const name of Object.keys(SAMPLE_NAMES)) {
     const ws=new Blockly.Workspace(),again=new Blockly.Workspace();
@@ -32,7 +32,7 @@ test('all ten standard-Hub-OS samples generate Python after project save and rel
 });
 test('My Block calls await async definitions and preserve input arguments',()=>{
   const source=generate('myblock').source;
-  assert.match(source,/async def _E5/);assert.match(source,/await _E5[^\n]+\(10\)/);assert.match(source,/await _lab_drive\(20, _E8/);
+  assert.match(source,/async def _E5/);assert.match(source,/await _E5[^\n]+\(10\)/);assert.match(source,/await _lab_drive\(_lab_positive\(20, 100\), _lab_positive\(_E8/);
 });
 test('parallel roots share one final cleanup and variable-change code uses MicroPython builtins',()=>{
   const parallel=generate('parallel');assert.equal(parallel.threads,2);
@@ -83,7 +83,7 @@ test('comparison thresholds are editable in toolbox and repaired in existing sen
   const ws=new Blockly.Workspace(),again=new Blockly.Workspace();
   try {
     const comparison=classroomToolbox().contents.flatMap(category=>category.contents??[]).find(block=>block.type==='logic_compare');
-    assert.equal(comparison.inputs.B.shadow.fields.NUM,0);
+    assert.equal(comparison.inputs.B.shadow.fields.NUM,100);
     const condition=ws.newBlock('logic_compare');condition.setFieldValue('GT','OP');
     const distance=ws.newBlock('lab_distance');distance.setFieldValue('D','PORT');
     condition.getInput('A').connection.connect(distance.outputConnection);
@@ -103,3 +103,4 @@ test('comparison thresholds are editable in toolbox and repaired in existing sen
     assert.equal(condition.getInputTargetBlock('A').getFieldValue('NUM'),0);
   }finally{ws.dispose();again.dispose();}
 });
+

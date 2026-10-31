@@ -29,3 +29,5 @@ https://github.com/davinichi/ev3-block-lab
 v0.20.1の画面用CSSを引き継ぎ、SPIKEの標準Hub OS用に編集・保存・Python生成を実装しています。元リポジトリの独自コードには再利用ライセンスが未設定です。本リポジトリでも独自コードの公開ライセンスは未設定です。
 
 LEGO、SPIKE、MINDSTORMSはLEGO Groupの商標です。本アプリはLEGO Groupの提供・承認によるものではありません。
+
+v0.3.0の分類・順序・表現は、davinichi/ev3-block-lab v0.22.0（dist/app.js、blob d5d1d3fdbdf22c1c3f9189564b95bee9ac9a623e）を参照してSPIKEの機器へ適応しました。EV3の通信・実行形式は使用しません。

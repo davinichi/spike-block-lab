@@ -13,7 +13,7 @@ export function setupBlocks(Blockly) {
 }
 const labels={
   basic:{spike_image:'%1 をひょうじする',spike_wait:'%1 びょう まつ',spike_motor:'モーター %1 を %2 %3 で %4 びょう まわす',spike_repeat:'%1 かい くりかえす',spike_forever:'ずっと くりかえす',spike_if_distance:'もし きょりセンサー %1 が %2 cm より ちかいなら'},
-  standard:{spike_image:'%1 を表示する',spike_wait:'%1 秒待つ',spike_motor:'モーター %1 を %2 %3 で %4 秒回す',spike_repeat:'%1 回繰り返す',spike_forever:'ずっと繰り返す',spike_if_distance:'もし 距離センサー %1 が %2 cm より近いなら'}
+  standard:{spike_image:'本体に画像 %1 を表示',spike_wait:'%1 秒待つ',spike_motor:'モーター %1 を %2 %3 で %4 秒回す',spike_repeat:'%1 回繰り返す',spike_forever:'ずっと繰り返す',spike_if_distance:'もし 距離センサー %1 が %2 cm より近いなら'}
 };
 // Re-register definitions before restoring a workspace, so labels change without changing IDs.
 export function setBlockLanguage(Blockly,language) {
@@ -76,3 +76,4 @@ export function sampleWorkspace(name) {
   const first=chain(SAMPLES[name].body);
   return {blocks:{languageVersion:0,blocks:[{type:'spike_start',x:50,y:40,next:{block:first}}]}};
 }
+
