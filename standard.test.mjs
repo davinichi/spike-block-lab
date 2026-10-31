@@ -10,6 +10,36 @@ import {validateProject} from './model.js';
 import {parseDevices} from './spike-ble.js';
 setupClassroom(Blockly);
 const generate=name=>{const ws=new Blockly.Workspace();try{Blockly.serialization.workspaces.load(classroomSample(name),ws);return generateStandard(ws,pythonGenerator);}finally{ws.dispose();}};
+
+test('custom loops containing motor commands produce consistent executable Python indentation',()=>{
+  const number=n=>({shadow:{type:'math_number',fields:{NUM:n}}});
+  const motors={type:'lab_motor_single_run',fields:{PORT:'A'},inputs:{SPEED:number(20)},next:{block:{type:'lab_motor_single_run',fields:{PORT:'B'},inputs:{SPEED:number(20)}}}};
+  const sources=[];
+  for(const [type,input,fields] of [['lab_forever','DO',{}],['spike_forever','BODY',{}],['spike_repeat','BODY',{COUNT:3}]]){
+    const ws=new Blockly.Workspace();try{
+      Blockly.serialization.workspaces.load({blocks:{languageVersion:0,blocks:[{type:'spike_start',next:{block:{type,fields,inputs:{[input]:{block:structuredClone(motors)}}}}}]}},ws);
+      sources.push(generateStandard(ws,pythonGenerator).source);
+    }finally{ws.dispose();}
+  }
+  const script=`import ast,asyncio,json,sys,types
+class EndTest(Exception):pass
+for i,source in enumerate(json.load(sys.stdin)):
+    compile(source,'loop-test','exec')
+    task=next(n for n in ast.parse(source).body if isinstance(n,ast.AsyncFunctionDef) and n.name=='_lab_task_0')
+    calls=[];ticks=[0]
+    async def tick():
+        ticks[0]+=1
+        if ticks[0]>20:raise EndTest()
+    scope={'_lab_tick':tick,'port':types.SimpleNamespace(A=0,B=1),'_lab_motor_group_run':lambda ports,speed:calls.append((ports,speed))}
+    exec(compile(ast.Module(body=[task],type_ignores=[]),'task','exec'),scope)
+    try:asyncio.run(scope['_lab_task_0']())
+    except EndTest:pass
+    assert calls[:4]==[([0],20),([1],20),([0],20),([1],20)],calls
+    if i==2:assert calls==[([0],20),([1],20)]*3,calls
+`;
+  const result=spawnSync(process.platform==='win32'?'python':'python3',['-c',script],{input:JSON.stringify(sources),encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr);
+});
 test('all advertised classroom blocks construct and serialize using the real Blockly library',()=>{
   const types=new Set(STANDARD_TYPES);function visit(x){if(x.type)types.add(x.type);for(const item of x.contents??[])visit(item);}visit(classroomToolbox());
   for(const type of types){const ws=new Blockly.Workspace();try{const b=ws.newBlock(type);const p={format:'spike-block-lab',version:1,name:'test',language:'standard',workspace:Blockly.serialization.workspaces.save(ws)};validateProject(p);assert.ok(b);}finally{ws.dispose();}}
