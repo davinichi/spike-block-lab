@@ -1,12 +1,12 @@
 import {recordingReader,RecordingReceiver} from './recording.js';
-import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.1';
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.2';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.1';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.1';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.2';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.2';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.1';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.2';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
@@ -60,6 +60,7 @@ function update(){
   $('run').disabled=busy||!connected||!latest||!transferred||transferred.source!==latest.source||transferred.slot!==Number($('slot').value);
   for(const id of ['stop','readSensors','stopSensors','retrieveRecording'])$(id).disabled=busy||!connected;
   $('slot').disabled=busy;$('python').disabled=busy||!latest;
+  $('transferNotice').textContent=`番号 ${$('slot').value} のプログラムを上書きします。「転送して実行」は転送後すぐ動き始めます。`;
   $('connection').classList.toggle('connected',connected);$('connectionLabel').textContent=connected?'接続中':'未接続';
   $('connectionState').textContent=connected?`${connection.device.name||'SPIKE PRIME'} / 本体 ${connection.info?.firmware??'確認中'}`:environment.message;
 }
@@ -80,13 +81,12 @@ $('connect').onclick=()=>action(async()=>{const info=await connection.connect();
 $('disconnect').onclick=()=>{connection.disconnect();feedback('接続を切りました。本体で保存番号を選んで実行できます。');};
 async function transfer(run){
   if(!latest)return;const slot=Number($('slot').value),source=latest.source;
-  if(!confirm(`本体の番号 ${slot} を上書きします。${run?'転送後、すぐ動き始めます。':'転送だけでは動きません。'}`))return;
   transferred=null;$('progress').hidden=false;$('progress').value=0;$('transferStatus').textContent='転送しています…';
   try{const result=await connection.upload(source,slot,n=>$('progress').value=n);transferred={slot,source};$('transferStatus').textContent=`番号 ${slot} への転送応答を確認しました。`;log(`転送完了: slot ${slot}, ${result.bytes} bytes, CRC ${result.crc.toString(16)}`);if(run){await connection.run(slot);$('transferStatus').textContent+=' 実行の指示を送りました。';}}
   catch(error){$('transferStatus').textContent=transferred?'保存済みです。実行の指示に失敗しました。':'転送は完了していません。下のエラーと通信ログを確認してください。';throw error;}finally{$('progress').hidden=true;}
 }
 $('upload').onclick=()=>action(()=>transfer(false));$('transferRun').onclick=()=>action(()=>transfer(true));
-$('run').onclick=()=>action(async()=>{if(transferred&&latest?.source===transferred.source&&confirm('プログラムを実行します。準備はできていますか？'))await connection.run(transferred.slot);});
+$('run').onclick=()=>action(async()=>{if(transferred&&latest?.source===transferred.source)await connection.run(transferred.slot);});
 $('stop').onclick=()=>action(async()=>{await connection.stop(Number($('slot').value));feedback('停止の指示を送りました。');});
 $('readSensors').onclick=()=>action(async()=>{await connection.observe(500);$('sensorStatus').textContent='本体から値が届くまで待っています。';});
 $('stopSensors').onclick=()=>action(async()=>{await connection.observe(0);$('sensorStatus').textContent='更新を止めました。';});
