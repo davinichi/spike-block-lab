@@ -8,7 +8,7 @@ import {generateStandard} from './standard.js';
 import {EXTRA_RUNTIME} from './enhancements.js';
 import {RecordingReceiver,recordingReader} from './recording.js';
 setupClassroom(Blockly);
-const py=script=>{const result=spawnSync('python',['-c',script],{encoding:'utf8',env:{...process.env,PYTHONUTF8:'1'}});assert.equal(result.status,0,result.stderr);};
+const py=script=>{const result=spawnSync(process.platform==='win32'?'python':'python3',['-c',script],{encoding:'utf8',env:{...process.env,PYTHONUTF8:'1'}});assert.equal(result.status,0,result.stderr);};
 test('CSV receiver checks fragment boundaries, sequence, byte count and checksum',()=>{
  const token='123456789012abcdefabcdef',r=new RecordingReceiver(token),bytes=new TextEncoder().encode('time_s,label,value\n0,"温度","20"\n');let h=2166136261;
  for(const byte of bytes)h=Math.imul(h^byte,16777619)>>>0;

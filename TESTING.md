@@ -1,4 +1,4 @@
-# 実機テスト / SPIKE Block Lab v0.2.0
+# 実機テスト / SPIKE Block Lab v0.4.0
 
 標準Hub OS向けを優先します。実機担当：プロジェクトオーナー。SPIKE-RTは今回のテスト対象ではありません。
 
