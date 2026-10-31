@@ -1,0 +1,39 @@
+name: Check prototype
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm run build
+      - run: npm run export:sample
+      - name: Check Python syntax and ZIP integrity
+        run: |
+          python3 - <<'PY'
+          import ast, pathlib, zipfile
+          for file in pathlib.Path('generated').glob('*.py'):
+              ast.parse(file.read_text(encoding='utf-8'))
+          for file in pathlib.Path('generated').glob('*.zip'):
+              with zipfile.ZipFile(file) as archive:
+                  assert archive.testzip() is None
+                  assert 'app.c' in archive.namelist()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spike-block-lab-preview-and-samples
+          path: |
+            dist/
+            generated/*.py
+            generated/*.zip
