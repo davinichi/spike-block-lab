@@ -1,5 +1,8 @@
 // Same form, argument rows, editing entries and connection preservation as EV3 Lab.
 export function configureMyBlockBlocks(Blockly,openDialog) {
+  const call=Blockly.Blocks.procedures_callnoreturn;
+  const callInit=call._formInit??call.init;call._formInit=callInit;
+  call.init=function(){callInit.call(this);this.setInputsInline(true);};
   const definition=Blockly.Blocks.procedures_defnoreturn;
   const original=definition._formInit??definition.init;definition._formInit=original;
   definition.init=function(){
