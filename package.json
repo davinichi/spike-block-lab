@@ -1,6 +1,6 @@
 {
   "name": "spike-block-lab",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "type": "module",
   "engines": { "node": ">=24" },
@@ -12,6 +12,7 @@
   },
   "dependencies": { "blockly": "13.4.0" }
 }
+
 
 
 

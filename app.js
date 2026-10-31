@@ -1,15 +1,16 @@
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.3.2';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.3.1';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.3.1';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.3.2';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.3.2';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.3.1';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.3.2';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
-setupClassroom(Blockly);setBlockLanguage(Blockly,'standard');
+setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
 const workspace=Blockly.inject('blocklyDiv',{toolbox:classroomToolbox(),theme,renderer:'zelos',media:'vendor/media/',trashcan:true,grid:{spacing:24,length:2,colour:'#e5ebee',snap:false},zoom:{controls:true,wheel:true,startScale:.85,minScale:.35,maxScale:1.5},move:{scrollbars:true,drag:true,wheel:true},sounds:false});
-installCommonWorkspace(workspace,Blockly);
+installCommonWorkspace(workspace,Blockly);installMyBlockFlyout(workspace,openMyBlockDialog);
 let loading=false,dirty=false,latest=null,transferred=null,acting=false,checking=false;
 const logs=[];
 function log(message){logs.push(`${new Date().toISOString()} ${message}`);if(logs.length>300)logs.shift();$('log').textContent=logs.join('\n');$('lastLog').textContent=message.slice(0,80);}
@@ -81,14 +82,32 @@ $('stopSensors').onclick=()=>action(async()=>{await connection.observe(0);$('sen
 $('python').onclick=()=>{if(latest)download(latest.source,filename()+'.py','text/x-python');};
 $('showCode').onclick=()=>$('codeDialog').showModal();$('help').onclick=()=>$('helpDialog').showModal();
 $('saveLog').onclick=()=>download(JSON.stringify({appVersion:VERSION,userAgent:navigator.userAgent,hub:connection.info,logs},null,2),'spike-test-log.json');
-$('createMyBlock').onclick=()=>{$('myBlockError').textContent='';$('myBlockDialog').showModal();};$('cancelMyBlock').onclick=()=>$('myBlockDialog').close();
-$('myBlockForm').onsubmit=event=>{event.preventDefault();try{
-  const name=$('myBlockName').value.trim(),args=$('myBlockArgs').value.split(/[,、]/).map(s=>s.trim()).filter(Boolean);
-  if(!name||name.length>60||args.length>8||new Set(args).size!==args.length)throw Error('名前と、重複しない8個までの引数を入力してください。');
-  if(workspace.getAllBlocks(false).some(b=>b.type==='procedures_defnoreturn'&&b.getFieldValue('NAME')===name))throw Error('同じ名前のマイブロックがあります。');
-  const block=Blockly.serialization.blocks.append({type:'procedures_defnoreturn',fields:{NAME:name},extraState:{params:args.map(name=>({name,id:crypto.randomUUID()}))},x:70,y:220},workspace);
-  block.select();$('myBlockDialog').close();$('myBlockName').value='';$('myBlockArgs').value='';check();saveLocal();
-}catch(error){$('myBlockError').textContent=error.message;}};
+let editingMyBlockId=null;
+function myBlockArgumentRow(name='',id=''){
+  const row=document.createElement('div');row.className='myblock-argument';row.dataset.parameterId=id;
+  const input=document.createElement('input');input.value=name;input.maxLength=40;input.placeholder='例：距離';input.setAttribute('aria-label','引数の名前');
+  const remove=document.createElement('button');remove.type='button';remove.textContent='削除';remove.onclick=()=>row.remove();
+  row.append(input,remove);$('myBlockArguments').append(row);
+}
+function openMyBlockDialog(id=null){
+  editingMyBlockId=id;const def=id?workspace.getBlockById(id):null;
+  $('myBlockTitle').textContent=def?'マイブロックを編集':'マイブロックを作る';
+  $('myBlockName').value=def?.getFieldValue('NAME')??'';$('myBlockArguments').replaceChildren();$('myBlockError').textContent='';
+  for(const model of def?.getVarModels()??[])myBlockArgumentRow(model.getName(),model.getId());
+  $('myBlockSubmit').textContent=def?'変更を保存':'作る';$('myBlockDialog').showModal();$('myBlockName').focus();
+}
+$('createMyBlock').onclick=()=>openMyBlockDialog();
+$('myBlockAddArgument').onclick=()=>{if($('myBlockArguments').children.length>=8){$('myBlockError').textContent='引数は8個までです。';return;}myBlockArgumentRow();$('myBlockArguments').lastElementChild.querySelector('input').focus();};
+$('myBlockCancel').onclick=()=>$('myBlockDialog').close();
+$('myBlockForm').onsubmit=event=>{
+  event.preventDefault();
+  try{
+    const rows=[...$('myBlockArguments').children].map(row=>({id:row.dataset.parameterId,name:row.querySelector('input').value}));
+    const def=saveMyBlock(Blockly,workspace,$('myBlockName').value,rows,editingMyBlockId);
+    syncArgumentColours(workspace);workspace.refreshToolboxSelection();dirty=true;check();saveLocal();$('myBlockDialog').close();workspace.centerOnBlock(def.id);
+    feedback('定義の中に命令をつなぎ、マイブロックの同じ名前のブロックをスタートにつなげて使います。');
+  }catch(error){$('myBlockError').textContent=error.message;}
+};
 $('exportMyBlocks').onclick=()=>{const state=Blockly.serialization.workspaces.save(workspace),defs=state.blocks.blocks.filter(b=>b.type==='procedures_defnoreturn');if(!defs.length){feedback('マイブロックを作ってから書き出してください。',true);return;}download(JSON.stringify({format:'spike-block-library',version:1,workspace:{...state,blocks:{...state.blocks,blocks:defs}}},null,2),'my-blocks.spikeblocks');};
 $('importMyBlocks').onclick=()=>$('libraryFile').click();
 $('libraryFile').onchange=()=>action(async()=>{
@@ -111,6 +130,8 @@ $('libraryFile').onchange=()=>action(async()=>{
 window.addEventListener('resize',()=>Blockly.svgResize(workspace));window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
 try{const saved=localStorage.getItem(STORAGE);if(saved)restore(JSON.parse(saved));else restore({format:'spike-block-lab',version:1,name:'DisplayTest',language:'standard',workspace:classroomSample('lights')});}
 catch(error){log('復元できませんでした: '+error.message);loading=true;Blockly.serialization.workspaces.load(classroomSample('lights'),workspace);loading=false;check();$('saveState').textContent='前の自動保存を復元できませんでした。';}
+
+
 
 
 
