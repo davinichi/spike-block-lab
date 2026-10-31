@@ -1,0 +1,14 @@
+{
+  "name": "spike-block-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node build.mjs",
+    "test": "node --test *.test.mjs",
+    "export:sample": "node export-sample.mjs"
+  },
+  "dependencies": { "blockly": "13.4.0" }
+}

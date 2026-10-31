@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ブロックでつくって、SPIKE PRIMEでためす。Chromebook向けプログラミングラボ。">
+  <title>SPIKE Block Lab</title><link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23f2c94c'/%3E%3Cpath d='M10 12h20v16H10z' fill='%23223843'/%3E%3C/svg%3E">
+</head>
+<body>
+<header><div class="brand"><span class="logo" aria-hidden="true">▦</span><div>SPIKE <strong>Block Lab</strong><small>つくる。ためす。また、ひらめく。</small></div></div><div class="top-actions"><span class="version">試作版 0.1.0</span><button id="help">使い方</button></div></header>
+<nav class="steps" aria-label="学びの流れ"><span><b>1</b> つくる</span><i>→</i><span><b>2</b> 本体におくる</span><i>→</i><span><b>3</b> はずしてためす</span><i>↻</i><span>くふうして、もういちど</span></nav>
+<section class="projectbar" aria-label="作品の管理"><label>作品の名前 <input id="projectName" value="はじめての作品" maxlength="80"></label><span id="saveState" role="status">この端末に自動保存</span><div><button id="newProject">＋ 新しくつくる</button><button id="saveProject">作品を保存</button><button id="openProject">開く</button><input id="projectFile" type="file" accept=".spikelab,.json" hidden></div></section>
+<main>
+  <section class="editor-card" aria-label="ブロック編集">
+    <div class="editorbar"><h1>ブロックをつなごう</h1><div><label class="compact">お手本 <select id="sample"><option value="">えらぶ</option><option value="lights">ひかりであいさつ</option><option value="motor">まわして、もどす</option><option value="distance">ちかづくとハート</option></select></label><button id="undo" aria-label="元に戻す">↶</button><button id="redo" aria-label="やり直す">↷</button><button id="fit">全体を見る</button></div></div>
+    <div id="blocklyDiv"></div>
+    <div class="editor-status"><span id="buildStatus" role="status">準備しています…</span><span id="blockCount"></span></div>
+  </section>
+  <aside>
+    <section class="action-card"><div class="eyebrow">TRY YOUR IDEA</div><h2>SPIKEでためそう</h2><label for="target">使う環境</label><select id="target"><option value="standard">授業：標準のHub OS</option><option value="rt">発展：SPIKE-RT</option></select>
+    <div id="standardPanel">
+      <div class="hub" aria-hidden="true"><div class="matrix" id="hubPixels"></div><div class="hub-button">●</div><span>SPIKE PRIME</span></div>
+      <p>本体におくると、Chromebookをはずしても動かせます。</p><p class="notice">実機確認前の試作版です。最初は「ひかり」のお手本で確かめてください。</p>
+      <div class="connection-state" id="connectionState">● まだつながっていません</div><button id="connect" class="wide">本体をつなぐ</button><button id="disconnect" class="wide" hidden>接続を切る</button>
+      <label for="slot">本体の保存番号 <small>同じ番号のプログラムは置きかわります</small></label><select id="slot"></select>
+      <button id="upload" class="primary wide" disabled>↑ 本体におくる</button><progress id="progress" max="100" value="0" hidden></progress>
+      <p id="transferStatus" role="status" class="transfer-status">おくった後、本体の番号をえらんで中央ボタンでスタート。</p>
+      <button id="run" class="wide" disabled>▶ 今おくったプログラムを動かす</button><button id="stop" class="stop wide" disabled>■ 本体をとめる</button>
+      <button id="python" class="text-button">Pythonを保存する</button>
+    </div>
+    <div id="rtPanel" hidden><div class="rt-mark">C <span>＋ SPIKE-RT</span></div><h3>ブロックの先へ。</h3><p>Cソースとタスク設定をまとめて保存できます。クラブ活動など、もっと学びたいときに。</p><ol><li>ソース一式を保存</li><li>SPIKE-RT v0.2.0の環境でビルド</li><li>USBで書き込み、本体で実行</li></ol><p class="notice">この版ではブラウザからSPIKE-RTを書き込めません。標準Hub OSとは別の実行環境です。</p><button id="rtExport" class="primary wide">↓ Cソース一式を保存（ZIP）</button><p>本体起動後、中央ボタンを押して離すとスタート。もう一度押すと停止します。</p></div>
+    <p id="actionStatus" role="status"></p>
+    </section>
+    <section class="settings-card"><h2>学びに合わせる</h2><label for="language">ブロックのことば</label><select id="language"><option value="basic">やさしいことば</option><option value="standard">漢字を使うことば</option></select><p>学年や、読みやすさに合わせてえらべます。</p><details><summary>先生・クラブ向けの情報</summary><p>速さは90 / 180 / 360度/秒です。未接続のブロックは作品に保存されますが、実行には含めません。</p><p>試作版ではスタートは1個です。変数・マイブロック・並行処理は今後追加します。</p><a href="TESTING.md" target="_blank" rel="noopener">実機テストの確認表</a></details></section>
+  </aside>
+</main>
+<details class="code-panel"><summary>プログラムの中を見てみよう <span id="codeLabel">Python</span></summary><p>ブロックを変えると、コードも変わります。ここでは表示だけできます。</p><pre id="code"></pre></details>
+<details class="log-panel"><summary>接続と実行の記録</summary><button id="saveLog">記録を保存</button><pre id="log" aria-live="off"></pre></details>
+<footer><span>SPIKE Block Lab · 非公式の試作アプリ</span><span>作品はこのブラウザに保存されます。授業のおわりにファイルでも保存しよう。</span><a href="THIRD_PARTY.md">出典・ライセンス</a></footer>
+<dialog id="helpDialog"><button id="closeHelp" class="dialog-close" aria-label="閉じる">×</button><h2>つくって、ためして、くふうしよう。</h2><ol><li>左のグループからブロックを出し、「スタート」の下につなぎます。</li><li>「作品を保存」で、後から直せる作品ファイルを保存できます。</li><li>標準Hub OSでは、本体のBluetoothボタンを押して「本体をつなぐ」から選びます。</li><li>保存番号を確認して「本体におくる」を押します。転送だけでは動き始めません。</li><li>接続を切り、ケーブルもはずして、本体の番号を選び、中央ボタンで動かします。</li><li>変えたいところを直して、もう一度おくってみましょう。</li></ol><p>ブラウザの停止ボタンは接続中だけ使えます。本体での停止操作も最初に確かめてください。モーターを初めて試すときは車輪を浮かせます。</p><p>自動保存はこのブラウザの1作品分です。学校の端末でデータが消える場合に備え、作品ファイルを残してください。</p><p>SPIKE-RTのZIPにはCソース、設定、ビルド手順が入っています。標準Hub OS用の転送ボタンでは書き込めません。</p></dialog>
+<script src="vendor/blockly_compressed.js"></script><script src="vendor/blocks_compressed.js"></script><script src="vendor/ja.js"></script><script type="module" src="app.js"></script>
+</body></html>
