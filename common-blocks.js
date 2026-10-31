@@ -89,15 +89,16 @@ const block=(type,values={},fields={})=>({kind:'block',type,fields,inputs:Object
 const label=text=>({kind:'label',text});
 const category=(name,colour,contents)=>({kind:'category',name,colour,contents});
 export function commonToolbox() {
-  const motors=[label('SPIKE L/Mモーター共通')];
+  const motors=[label('加速・減速（L・M共通）'),...extraPalette('ramp')];
   for(const paired of [false,true]) {motors.push(label(paired?'モーター2個':'モーター1個'));for(const action of ['run','angle','rotation','time'])motors.push(block('lab_motor_'+(paired?'pair':'single')+'_'+action,{SPEED:20,...(action==='run'?{}:{[{angle:'DEGREES',rotation:'ROTATIONS',time:'SECONDS'}[action]]:action==='angle'?90:1})}));}
-  motors.push(block('lab_motor_group_stop'),...extraPalette('motor'),...extraPalette('ramp'));
+  const motorExtras=extraPalette('motor');
+  motors.push(label('L・M共通の速度・パワー・停止方法'),...['lab_motor_change_speed','lab_motor_power','lab_motor_stop_mode'].map(type=>motorExtras.find(item=>item.type===type)),label('モーターを停止（L・M共通）'),block('lab_motor_group_stop'),label('モーターの計測'),motorExtras.find(item=>item.type==='lab_motor_velocity'));
   const advanced=['run','angle','time'].map(action=>block('lab_steering_'+action,{TURN:25,SPEED:20,...(action==='run'?{}:{[action==='angle'?'DEGREES':'SECONDS']:action==='angle'?360:2})}));
   return {kind:'categoryToolbox',contents:[
     category('スタート','#d3a238',[block('spike_start')]),
     category('イベント','#d3a238',[label('センサー・比較を条件の欄に入れます'),block('lab_when'),block('lab_when_changed',{VALUE:0}),label('同じ名前のメッセージで連携します'),block('lab_message_hat'),block('lab_broadcast'),block('lab_message_wait')]),
     category('モーター',motor,motors),
-    category('動き',motion,[block('lab_geometry'),block('lab_tread'),block('lab_tank_run',{LEFT_SPEED:20,RIGHT_SPEED:20}),...['spin','pivot'].flatMap(kind=>['right','left'].map(direction=>block('lab_'+kind+'_'+direction,{SPEED:20,ANGLE:90}))),block('lab_drive_forward',{SPEED:20,CM:20}),block('lab_drive_backward',{SPEED:20,CM:20}),label('発展：ステアリング・左右別の速さ'),...advanced,...['angle','time'].map(action=>block('lab_tank_'+action,{LEFT_SPEED:30,RIGHT_SPEED:15,[action==='angle'?'DEGREES':'SECONDS']:action==='angle'?360:1}))]),
+    category('動き',motion,[block('lab_geometry'),block('lab_tread'),...advanced,...['angle','time'].map(action=>block('lab_tank_'+action,{LEFT_SPEED:30,RIGHT_SPEED:15,[action==='angle'?'DEGREES':'SECONDS']:action==='angle'?360:1})),block('lab_tank_run',{LEFT_SPEED:20,RIGHT_SPEED:20}),...['spin','pivot'].flatMap(kind=>['right','left'].map(direction=>block('lab_'+kind+'_'+direction,{SPEED:20,ANGLE:90}))),block('lab_drive_forward',{SPEED:20,CM:20}),block('lab_drive_backward',{SPEED:20,CM:20})]),
     category('センサー',sensor,[label('本体のバッテリー'),block('lab_battery_voltage'),label('タイマー'),block('lab_timer'),block('lab_timer_reset'),label('モーターのエンコーダ'),block('lab_encoder'),block('lab_encoder_reset'),label('本体のジャイロ・ボタン'),block('lab_angle'),block('lab_yaw_reset'),block('lab_button'),label('フォースセンサー'),block('lab_pressed'),block('lab_force'),block('lab_force_compare',{VALUE:2}),label('カラーセンサー'),block('lab_color_is'),block('lab_color'),block('lab_reflection_compare',{VALUE:50}),block('lab_reflection'),label('距離センサー'),block('lab_distance_compare',{VALUE:15}),block('lab_distance'),block('lab_distance_valid')]),
     category('音','#a570b3',[block('lab_tone_ms',{FREQUENCY:440,MS:200,VOLUME:25})]),
     category('制御',control,[block('lab_wait',{SECONDS:1}),block('controls_if'),{...block('controls_if'),extraState:{hasElse:true}},block('lab_forever'),block('controls_repeat_ext',{TIMES:10}),block('controls_whileUntil',{}, {MODE:'UNTIL'}),block('controls_whileUntil',{}, {MODE:'WHILE'}),block('lab_wait_until'),block('lab_end'),block('lab_return'),label('PID制御'),block('lab_pid',{TARGET:0,MEASURED:0,KP:1,KI:0,KD:0}),block('lab_pid_reset')]),
