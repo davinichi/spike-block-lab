@@ -71,3 +71,7 @@ v0.3.0ではオーナーの指示により旧作品との互換性維持を優�
 `app.js`：画面・保存・転送、`classroom-blocks.js`：SPIKE基本ブロック、`common-blocks.js`：共通の分類・命令・引数、`standard.js`と`common-runtime.js`：本体Python生成、`classroom-samples.js`：11サンプル、`spike-ble.js`：BLE転送、`model.js`：保存検証。`generate.js`と`rt-template.cdl`は将来のSPIKE-RT用初期検討で、現在の画面には出しません。
 
 LEGO公式アプリではありません。独自コードの公開ライセンスは未設定です。出典は[THIRD_PARTY.md](THIRD_PARTY.md)。元のEV3リポジトリは変更していません。
+
+## v0.3.1 配色の統一
+
+EV3 v0.22.0の色をブロック本体にも適用しました。制御は#f5a400、演算は#00b84a、センサーは#34ccf1、表示・ランプは#9966ff。データ、変数、マイブロック、引数も統一し、標準Blocklyブロックや復元した作品にも適用します。操作マニュアルはv0.3.0を引き続き使用できます。

@@ -1,10 +1,10 @@
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.3.0';
-import {installCommonWorkspace} from './common-blocks.js?v=0.3.0';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.3.1';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.3.1';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.3.0';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.3.1';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
@@ -34,6 +34,7 @@ function check(){
   try{
     for(const b of workspace.getAllBlocks(false))b.setWarningText(null);
     ensureComparisonInputs(workspace);
+    syncArgumentColours(workspace);
     // Keep call arguments directly editable, just as in EV3 Block Lab.
     for(const b of workspace.getAllBlocks(false))if(b.type==='procedures_callnoreturn')for(const input of b.inputList)if(/^ARG\d+$/.test(input.name)&&input.connection&&!input.connection.targetBlock())input.connection.setShadowState({type:'math_number',fields:{NUM:0}});
     latest=generateStandard(workspace,Blockly.Python);$('code').textContent=latest.source;$('buildStatus').textContent='✓ 転送用プログラムを生成できます';$('buildStatus').className='build-status';$('blockCount').textContent=`${latest.count} ブロック / ${latest.threads} 処理`;
@@ -110,6 +111,7 @@ $('libraryFile').onchange=()=>action(async()=>{
 window.addEventListener('resize',()=>Blockly.svgResize(workspace));window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
 try{const saved=localStorage.getItem(STORAGE);if(saved)restore(JSON.parse(saved));else restore({format:'spike-block-lab',version:1,name:'DisplayTest',language:'standard',workspace:classroomSample('lights')});}
 catch(error){log('復元できませんでした: '+error.message);loading=true;Blockly.serialization.workspaces.load(classroomSample('lights'),workspace);loading=false;check();$('saveState').textContent='前の自動保存を復元できませんでした。';}
+
 
 
 

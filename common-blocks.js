@@ -7,7 +7,7 @@ const pairPort=()=>field('PORTS',[pairs.find(p=>p[1]==='B,C'),...pairs.filter(p=
 const value=(name,check='Number')=>({type:'input_value',name,...(check?{check}:{})});
 const textField=(name,text)=>({type:'field_input',name,text});
 const stmt={previousStatement:null,nextStatement:null,inputsInline:true};
-const motion='#ff4ccd',motor='#0090f5',sensor='#34ccf1',control='#d19636',operator='#668b6d';
+const motion='#ff4ccd',motor='#0090f5',sensor='#34ccf1',control='#f5a400',operator='#00b84a';
 const definitions=[];
 function define(type,message0,args0,properties={}){definitions.push({type,message0,...(args0.length?{args0}:{}),...properties});}
 const comparison=()=>field('OP',[['＜','LT'],['＝','EQ'],['＞','GT'],['≦','LTE'],['≧','GTE'],['≠','NEQ']]);
@@ -56,6 +56,28 @@ export function setupCommon(Blockly) {
     if(!Blockly.Blocks[type])continue;
     const original=Blockly.Blocks[type]._commonInit??Blockly.Blocks[type].init;Blockly.Blocks[type]._commonInit=original;
     Blockly.Blocks[type].init=function(){original.call(this);this.setColour(operator);};
+  }
+  // Blockly built-ins otherwise retain their default category colours.
+  // Apply the EV3 palette after every definition, including restored blocks.
+  const recolour=(types,colour)=>{for(const type of types){
+    const definition=Blockly.Blocks[type];if(!definition)continue;
+    const original=definition._ev3ColourInit??definition.init;definition._ev3ColourInit=original;
+    definition.init=function(){original.call(this);this.setColour(colour);};
+  }};
+  recolour(['spike_start','lab_when','lab_when_changed','lab_message_hat','lab_broadcast','lab_message_wait'],'#d3a238');
+  recolour(['lab_wait','lab_wait_until','lab_forever','lab_end','lab_return','lab_pid_reset','controls_if','controls_repeat_ext','controls_whileUntil'],control);
+  recolour(['lab_distance','lab_distance_valid','lab_color','lab_color_is','lab_reflection','lab_force','lab_pressed','lab_angle','lab_encoder','lab_encoder_reset','lab_button','lab_timer','lab_timer_reset','lab_yaw_reset','lab_distance_compare','lab_reflection_compare','lab_force_compare'],sensor);
+  recolour(['lab_text','lab_pixel','spike_image','lab_light','lab_light_off','lab_display_clear','lab_display_number'],'#9966ff');
+  recolour(['text','text_join','text_length','text_isEmpty','text_print','text_charAt','text_indexOf','lab_text_get','lab_text_set',...COMMON_TYPES.filter(type=>type.startsWith('lab_list_')),'lists_create_with','lists_length','lists_isEmpty','lists_getIndex','lists_setIndex','lists_indexOf','math_modulo','math_random_int','math_round','math_constrain'],'#00b85b');
+  recolour(['variables_get','variables_set','math_change'],'#c58245');
+  recolour(['procedures_defnoreturn','procedures_callnoreturn','lab_argument'],'#aa597e');
+  recolour(['lab_pid'],'#00b85d');
+}
+export function syncArgumentColours(workspace) {
+  for(const block of workspace.getAllBlocks(false))if(block.type==='variables_get'){
+    const root=block.getRootBlock(),model=block.getField('VAR')?.getVariable();
+    const argument=root.type==='procedures_defnoreturn'&&root.getVarModels().some(parameter=>parameter.getId()===model?.getId());
+    const colour=argument?'#aa597e':'#c58245';if(block.getColour()!==colour)block.setColour(colour);
   }
 }
 const shadow=n=>({shadow:{type:'math_number',fields:{NUM:n}}});
