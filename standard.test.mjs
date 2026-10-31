@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import * as Blockly from 'blockly';
 import {pythonGenerator} from 'blockly/python';
-import {setupClassroom,classroomToolbox,STANDARD_TYPES} from './classroom-blocks.js';
+import {setupClassroom,classroomToolbox,STANDARD_TYPES,ensureComparisonInputs} from './classroom-blocks.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
 import {generateStandard} from './standard.js';
 import {validateProject} from './model.js';
@@ -77,4 +77,29 @@ test('device notifications decode signed distance, motor position and port IDs w
   assert.equal(readings[0].port,'A');assert.match(readings[0].text,/-360°/);
   assert.equal(readings[1].port,'D');assert.equal(readings[1].text,'測定できません');
   assert.throws(()=>parseDevices(bytes.slice(0,-1)),/サイズ/);
+});
+
+test('comparison thresholds are editable in toolbox and repaired in existing sensor conditions',()=>{
+  const ws=new Blockly.Workspace(),again=new Blockly.Workspace();
+  try {
+    const comparison=classroomToolbox().contents.flatMap(category=>category.contents??[]).find(block=>block.type==='logic_compare');
+    assert.equal(comparison.inputs.B.shadow.fields.NUM,0);
+    const condition=ws.newBlock('logic_compare');condition.setFieldValue('GT','OP');
+    const distance=ws.newBlock('lab_distance');distance.setFieldValue('D','PORT');
+    condition.getInput('A').connection.connect(distance.outputConnection);
+    ensureComparisonInputs(ws);
+    assert.equal(condition.getInputTargetBlock('A'),distance);
+    const threshold=condition.getInputTargetBlock('B');assert.equal(threshold.isShadow(),true);
+    threshold.setFieldValue(15,'NUM');ensureComparisonInputs(ws);
+    assert.equal(condition.getInputTargetBlock('B').getFieldValue('NUM'),15);
+    const saved=Blockly.serialization.workspaces.save(ws);
+    Blockly.serialization.workspaces.load(saved,again);ensureComparisonInputs(again);
+    const restored=again.getBlockById(condition.id);
+    assert.equal(restored.getInputTargetBlock('B').getFieldValue('NUM'),15);
+    assert.equal(restored.getInputTargetBlock('A').getFieldValue('PORT'),'D');
+    pythonGenerator.init(again);
+    assert.match(pythonGenerator.blockToCode(restored)[0],/_lab_distance\(port.D\) > 15/);
+    distance.unplug();ensureComparisonInputs(ws);
+    assert.equal(condition.getInputTargetBlock('A').getFieldValue('NUM'),0);
+  }finally{ws.dispose();again.dispose();}
 });

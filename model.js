@@ -1,5 +1,5 @@
 // Shared, target-independent program model. No Blockly, DOM or device APIs.
-export const VERSION = '0.2.2';
+export const VERSION = '0.2.3';
 export const PORTS = ['A', 'B', 'C', 'D', 'E', 'F'];
 export const IMAGES = {
   smile: ['00000','01010','00000','10001','01110'],
@@ -66,4 +66,5 @@ export const SAMPLES = {
   motor: { version: 1, body: [{type:'motor',port:'A',speed:90,seconds:1},{type:'wait',seconds:1},{type:'motor',port:'A',speed:-90,seconds:1}] },
   distance: { version: 1, body: [{type:'repeat',count:10,body:[{type:'ifDistance',port:'D',cm:15,then:[{type:'image',image:'heart'}],else:[{type:'image',image:'smile'}]},{type:'wait',seconds:.2}]}] }
 };
+
 

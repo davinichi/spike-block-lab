@@ -53,6 +53,16 @@ export function setupClassroom(Blockly) {
   ]);
 }
 const shadow=(n)=>({shadow:{type:'math_number',fields:{NUM:n}}});
+// Older projects and disconnected sensor inputs may have empty comparison sockets.
+export function ensureComparisonInputs(workspace) {
+  for(const b of workspace.getAllBlocks(false)) {
+    if(b.type!=='logic_compare')continue;
+    for(const name of ['A','B']) {
+      const connection=b.getInput(name)?.connection;
+      if(connection&&!connection.targetBlock())connection.setShadowState({type:'math_number',fields:{NUM:0}});
+    }
+  }
+}
 const block=(type,values={})=>({kind:'block',type,inputs:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,typeof v==='number'?shadow(v):{shadow:{type:'text',fields:{TEXT:v}}}]))});
 export function classroomToolbox(level='standard') {
   const simple=level==='basic';
@@ -65,7 +75,7 @@ export function classroomToolbox(level='standard') {
     cat(simple?'おと':'音','#a570b3',[block('lab_tone',{HZ:440,SECONDS:.3,VOLUME:30})]),
     cat(simple?'くりかえし':'制御','#d19636',[block('lab_wait',{SECONDS:1}),block('controls_repeat_ext',{TIMES:3}),block('lab_forever'),block('controls_if'),block('lab_wait_until'),block('controls_whileUntil'),block('lab_end')]),
     cat(simple?'しらべる':'センサー','#34bbcc',['lab_distance','lab_distance_valid','lab_color_is','lab_color','lab_reflection','lab_pressed','lab_force','lab_button','lab_angle','lab_yaw_reset','lab_encoder','lab_encoder_reset','lab_timer','lab_timer_reset'].map(t=>block(t))),
-    cat(simple?'けいさん':'演算','#668b6d',['math_number','math_arithmetic','logic_compare','logic_operation','logic_negate','logic_boolean','math_single','math_trig','math_round','math_modulo','math_random_int','math_constrain'].map(t=>block(t))),
+    cat(simple?'けいさん':'演算','#668b6d',['math_number','math_arithmetic','logic_compare','logic_operation','logic_negate','logic_boolean','math_single','math_trig','math_round','math_modulo','math_random_int','math_constrain'].map(t=>block(t,t==='logic_compare'?{A:0,B:0}:{}))),
     {kind:'category',name:simple?'へんすう':'変数',colour:'#c58245',custom:'VARIABLE'},
     cat(simple?'ことば・リスト':'文字・リスト','#668b6d',['text','text_join','text_length','text_print','lists_create_with','lists_length','lists_isEmpty','lists_getIndex','lists_setIndex','lists_indexOf'].map(t=>block(t))),
     {kind:'category',name:'マイブロック',colour:'#aa597e',custom:'PROCEDURE'}
