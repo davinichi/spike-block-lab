@@ -35,7 +35,7 @@ function mock({timeout=100,failType=null,dropType=null,firmware=[1,6,42],rpc=1,o
     if(payload[0]===0x1e&&payload[1]===1)status=stopStatus;
     if(payload[0]===0x46){prepared=true;status=clearStatus;}
     if(payload[0]===0x0c&&!prepared)status=1;
-    const reply=payload[0]===0?info:Uint8Array.of(({0x1e:0x1f,0x46:0x47,0x0c:0x0d,0x10:0x11})[payload[0]],status);
+    const reply=payload[0]===0?info:Uint8Array.of(({0x1e:0x1f,0x46:0x47,0x0c:0x0d,0x10:0x11,0x28:0x29})[payload[0]],status);
     queueMicrotask(()=>{
       const frame=encodeFrame(reply);
       for(let i=0;i<frame.length;i+=3){const value=new DataView(frame.buffer,i,Math.min(3,frame.length-i));listeners.get('characteristicvaluechanged')?.({target:{value}});}
@@ -46,8 +46,26 @@ function mock({timeout=100,failType=null,dropType=null,firmware=[1,6,42],rpc=1,o
   const device={name:'Fake SPIKE',addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
   device.gatt={connected:false,connect:async()=>{device.gatt.connected=true;return {getPrimaryService:async()=>({getCharacteristic:async uuid=>uuid.includes('0001-')?rx:tx})};},disconnect:()=>{device.gatt.connected=false;listeners.get('gattserverdisconnected')?.();}};
   connection=new SpikeConnection({bluetooth:{requestDevice:async()=>device},timeout,onLog});
-  return {connection,requests,device};
+  const notify=payload=>{const frame=encodeFrame(payload);for(let i=0;i<frame.length;i+=3)listeners.get('characteristicvaluechanged')?.({target:{value:new DataView(frame.buffer,i,Math.min(3,frame.length-i))}});};
+  return {connection,requests,device,notify};
 }
+
+test('a truncated sensor record preserves BLE, reports diagnostics once and accepts the next valid reading',async()=>{
+  const logs=[],readings=[],errors=[];
+  const {connection,device,notify,requests}=mock({onLog:message=>logs.push(message)});
+  connection.onDevices=values=>readings.push(values);connection.onDeviceError=message=>errors.push(message);
+  await connection.connect();await connection.observe(500);
+  const truncated=Uint8Array.of(0x3c,3,0,10,0,48);
+  notify(truncated);notify(truncated);
+  assert.equal(connection.connected,true);assert.equal(device.gatt.connected,true);
+  assert.equal(readings.length,0);assert.equal(errors.length,2);
+  assert.equal(logs.filter(x=>x.includes('HEX')).length,1);
+  assert.ok(logs.some(x=>x.includes('種類 10')));
+  notify(Uint8Array.of(0x3c,4,0,13,3,150,0));
+  assert.equal(readings[0][0].port,'D');assert.equal(readings[0][0].text,'15 cm');
+  await connection.observe(0);assert.deepEqual([...requests.at(-1)],[0x28,0,0]);
+  await connection.run(0);assert.equal(connection.connected,true);
+});
 test('connect, prepare slot, upload, separate run and stop follow the official request sequence',async()=>{
   const {connection,requests}=mock();await connection.connect();assert.equal(connection.info.firmware,'1.6.42');
   const source='print("こんにちは")\n',result=await connection.upload(source,7);

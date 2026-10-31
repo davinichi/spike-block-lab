@@ -1,12 +1,12 @@
 import {recordingReader,RecordingReceiver} from './recording.js';
-import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.4';
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.4.6';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.4';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.4';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.4.6';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.4.6';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.4';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.4.6';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
 const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
@@ -28,7 +28,7 @@ function log(message){logs.push(`${new Date().toISOString()} ${message}`);if(log
 function feedback(text,error=false){$('actionStatus').textContent=text;$('actionStatus').style.color=error?'#a13f35':'#176b65';}
 function download(content,name,type='application/json') {const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 const filename=()=>($('projectName').value.trim()||'作品').replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').slice(0,80);
-const connection=new SpikeConnection({onLog:log,onConsole:text=>recordReceiver?.push(text),onChange:()=>{if(!connection.connected){transferred=null;clearSensors();}update();},onDevices:showSensors});
+const connection=new SpikeConnection({onLog:log,onConsole:text=>recordReceiver?.push(text),onChange:()=>{if(!connection.connected){transferred=null;clearSensors();}update();},onDevices:showSensors,onDeviceError:message=>{clearSensors();$('sensorStatus').textContent=message;}});
 for(let i=0;i<20;i++)$('slot').add(new Option(String(i),String(i)));
 for(const p of ['A','B','C','D','E','F']){const row=document.createElement('div');row.innerHTML=`<dt>ポート ${p}<small id="device${p}">未取得</small></dt><dd id="value${p}">—</dd>`;$('sensorValues').append(row);}
 function showSensors(readings){clearSensors();for(const r of readings){if(!r.port)continue;const label=$('device'+r.port),value=$('value'+r.port);if(label){label.textContent=r.device;value.textContent=r.text;}}$('sensorStatus').textContent='本体の値を更新しています。';}
@@ -108,6 +108,7 @@ $('retrieveRecording').onclick=()=>action(async()=>{
   }catch(error){$('recordStatus').textContent=error.message;throw error;}finally{recordReceiver=null;}
 });
 $('saveLog').onclick=()=>download(JSON.stringify({appVersion:VERSION,userAgent:navigator.userAgent,hub:connection.info,logs},null,2),'spike-test-log.json');
+$('clearLog').onclick=()=>{logs.length=0;$('log').textContent='';$('lastLog').textContent='ログを消去しました';};
 let editingMyBlockId=null;
 function myBlockArgumentRow(name='',id=''){
   const row=document.createElement('div');row.className='myblock-argument';row.dataset.parameterId=id;

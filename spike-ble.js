@@ -65,8 +65,8 @@ export function bluetoothEnvironment(context=globalThis) {
   return {available:true,message:'公式SPIKEアプリの接続を切り、本体のBluetoothボタンを押してから接続先を選びます。'};
 }
 export class SpikeConnection {
-  constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onConsole=()=>{},onChange=()=>{},onDevices=()=>{}}={}) {
-    Object.assign(this,{bluetooth,timeout,onLog,onConsole,onChange,onDevices});this.pending=null;this.device=null;this.busy=false;
+  constructor({bluetooth=globalThis.navigator?.bluetooth,timeout=10000,onLog=()=>{},onConsole=()=>{},onChange=()=>{},onDevices=()=>{},onDeviceError=()=>{}}={}) {
+    Object.assign(this,{bluetooth,timeout,onLog,onConsole,onChange,onDevices,onDeviceError});this.pending=null;this.device=null;this.busy=false;this.sensorParseWarned=false;
   }
   get connected(){return !!this.rx && !!this.device?.gatt?.connected;}
   async connect() {
@@ -116,7 +116,19 @@ export class SpikeConnection {
   disconnect(){const device=this.device;this.reset(Error('接続を切りました。'));device?.gatt?.disconnect();}
   receive(frame) {
     if(frame[0]===0x21){const text=new TextDecoder().decode(frame.slice(1)).replace(/\0+$/,'');this.onConsole(text);this.onLog(text);}
-    if(frame[0]===0x3c)this.onDevices(parseDevices(frame));
+    if(frame[0]===0x3c){
+      let readings;
+      try{readings=parseDevices(frame);}catch(error){
+        this.onDeviceError('本体の値を読み取れませんでした。接続は維持しています。通信ログを確認してください。');
+        if(!this.sensorParseWarned){
+          this.sensorParseWarned=true;
+          this.onLog(`値の読み取りエラー（接続は維持）：${error.message}`);
+          this.onLog(`センサー通知 ${frame.length} bytes / Hub OS ${this.info?.firmware??'不明'} / HEX ${Array.from(frame.slice(0,256),b=>b.toString(16).padStart(2,'0')).join(' ')}${frame.length>256?' …（先頭256バイト）':''}`);
+        }
+        return;
+      }
+      this.onDevices(readings);
+    }
     if(this.pending?.type===frame[0]) {const p=this.pending;this.pending=null;clearTimeout(p.timer);p.resolve(frame);}
   }
   async request(payload,type) {
@@ -175,7 +187,7 @@ export class SpikeConnection {
   }
   async run(slot){if(this.busy)throw Error('転送が終わるまで待ってください。');this.onLog(`実行要求：番号 ${slot}`);await this.status(Uint8Array.of(0x1e,0,slot),0x1f,'プログラムの実行');}
   async stop(slot=0){if(this.busy)throw Error('転送が終わるまで待ってください。');await this.status(Uint8Array.of(0x1e,1,slot),0x1f,'プログラムの停止');}
-  async observe(interval=500){if(this.busy)throw Error('転送が終わるまで待ってください。');const data=new Uint8Array(3);data[0]=0x28;new DataView(data.buffer).setUint16(1,interval,true);await this.status(data,0x29);}
+  async observe(interval=500){if(this.busy)throw Error('転送が終わるまで待ってください。');this.sensorParseWarned=false;const data=new Uint8Array(3);data[0]=0x28;new DataView(data.buffer).setUint16(1,interval,true);await this.status(data,0x29);}
 }
 export function parseDevices(frame) {
   if(frame.length<3)return [];
@@ -183,7 +195,7 @@ export function parseDevices(frame) {
   if(size!==frame.length-3)throw Error('センサー通知のサイズが不正です。');
   const lengths={0:2,1:21,2:26,10:12,11:4,12:9,13:4,14:11},out=[];
   for(let i=3;i<frame.length;) {
-    const type=frame[i],length=lengths[type];if(!length)break;if(i+length>frame.length)throw Error('センサー通知が途中で終わりました。');
+    const type=frame[i],length=lengths[type];if(!length)throw Error(`未対応のセンサー通知です（種類 ${type}、位置 ${i}）。`);if(i+length>frame.length)throw Error(`センサー通知が途中で終わりました（種類 ${type}、位置 ${i}、必要 ${length}、残り ${frame.length-i}）。`);
     const port=['A','B','C','D','E','F'][frame[i+1]];
     if(type===10)out.push({port,device:'モーター',text:`${v.getInt32(i+8,true)}° / ${v.getInt8(i+7)}％`});
     if(type===11)out.push({port,device:'フォースセンサー',text:`${frame[i+2]}％ / ${frame[i+3]?'押されている':'離されている'}`});
