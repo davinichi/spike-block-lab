@@ -1,7 +1,7 @@
 import {setupReturnBlocks} from './returns.js';
 import {setupBlocks} from './blocks.js';
 import {BLOCK_TYPES,PORTS} from './model.js';
-import {COMMON_TYPES,setupCommon,commonToolbox} from './common-blocks.js?v=0.5.0';
+import {COMMON_TYPES,setupCommon,commonToolbox} from './common-blocks.js?v=0.7.0';
 export const STANDARD_TYPES = [
   'lab_pair','lab_geometry',
   'lab_wait','lab_wait_until','lab_forever','lab_end','lab_text','lab_pixel','lab_light',

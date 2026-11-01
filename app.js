@@ -67,7 +67,15 @@ function update(){
   $('connectionState').textContent=connected?`${connection.device.name||'SPIKE PRIME'} / 本体 ${connection.info?.firmware??'確認中'}`:environment.message;
 }
 async function action(fn){if(acting)return;acting=true;feedback('');update();try{await fn();}catch(error){feedback(error.message,true);log(error.message);}finally{acting=false;update();}}
-function openPanel(open){$('connectionPanel').hidden=!open;$('toggleConnectionPanel').setAttribute('aria-expanded',String(open));Blockly.svgResize(workspace);}
+let connectionLayoutFrame=0;
+function openPanel(open){
+  $('connectionPanel').hidden=!open;
+  $('toggleConnectionPanel').setAttribute('aria-expanded',String(open));
+  cancelAnimationFrame(connectionLayoutFrame);
+  connectionLayoutFrame=requestAnimationFrame(()=>{connectionLayoutFrame=0;Blockly.svgResize(workspace);});
+  $(open?'closeConnectionPanel':'toggleConnectionPanel').focus();
+}
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.querySelector('dialog[open]')&&!$('connectionPanel').hidden)openPanel(false);});
 $('toggleConnectionPanel').onclick=()=>openPanel($('connectionPanel').hidden);$('closeConnectionPanel').onclick=()=>openPanel(false);
 $('toggleLog').onclick=()=>{const open=$('logContent').hidden;$('logContent').hidden=!open;$('toggleLog').setAttribute('aria-expanded',String(open));Blockly.svgResize(workspace);};
 workspace.addChangeListener(event=>{if(loading||checking||event.isUiEvent)return;dirty=true;transferred=null;check();saveLocal();});
