@@ -1,15 +1,16 @@
+import {isMyBlockDefinition,outputNames} from './returns.js';
 import {recordingReader,RecordingReceiver} from './recording.js';
-import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.5.0';
+import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=0.6.0';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.5.0';
-import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.5.0';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=0.6.0';
+import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=0.6.0';
 import {setBlockLanguage} from './blocks.js';
-import {generateStandard} from './standard.js?v=0.5.0';
-import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js?v=0.5.0';
-import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.5.0';
+import {generateStandard} from './standard.js?v=0.6.0';
+import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js?v=0.6.0';
+import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=0.6.0';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 setupClassroom(Blockly);configureMyBlockBlocks(Blockly,openMyBlockDialog);setBlockLanguage(Blockly,'standard');
-const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#f4f7f8',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
+const theme=Blockly.Theme.defineTheme('spikelab',{base:Blockly.Themes.Classic,fontStyle:{family:'"Yu Gothic UI", Meiryo, sans-serif',size:12},componentStyles:{workspaceBackgroundColour:'#fbfcfd',toolboxBackgroundColour:'#fff8d6',flyoutBackgroundColour:'#eef3f5',flyoutOpacity:1,scrollbarColour:'#b9c9ce',insertionMarkerColour:'#126c67'}});
 const workspace=Blockly.inject('blocklyDiv',{toolbox:classroomToolbox(),theme,renderer:'zelos',media:'vendor/media/',trashcan:true,grid:{spacing:24,length:2,colour:'#e5ebee',snap:false},zoom:{controls:true,wheel:true,startScale:.85,minScale:.35,maxScale:1.5},move:{scrollbars:true,drag:true,wheel:true},sounds:false});
 installCommonWorkspace(workspace,Blockly);
 workspace.registerButtonCallback('LAB_CREATE_VARIABLE',()=>{$('variableName').value='';$('variableError').textContent='';$('variableDialog').showModal();$('variableName').focus();});
@@ -47,7 +48,7 @@ function check(){
     for(const b of workspace.getAllBlocks(false))b.setWarningText(null);
     ensureComparisonInputs(workspace);
     syncArgumentColours(workspace);
-    for(const block of workspace.getAllBlocks(false))if(block.type==='procedures_callnoreturn'&&!block.getInputsInline())block.setInputsInline(true);
+    for(const block of workspace.getAllBlocks(false))if(['procedures_callnoreturn','procedures_callreturn','lab_call_outputs'].includes(block.type)&&!block.getInputsInline())block.setInputsInline(true);
     // Keep call arguments directly editable, just as in EV3 Block Lab.
     for(const b of workspace.getAllBlocks(false))if(b.type==='procedures_callnoreturn')for(const input of b.inputList)if(/^ARG\d+$/.test(input.name)&&input.connection&&!input.connection.targetBlock())input.connection.setShadowState({type:'math_number',fields:{NUM:0}});
     latest=generateStandard(workspace,Blockly.Python);$('code').textContent=latest.source;$('buildStatus').textContent='✓ 転送用プログラムを生成できます';$('buildStatus').className='build-status';$('blockCount').textContent=`${latest.count} ブロック / ${latest.threads} 処理`;
@@ -116,8 +117,15 @@ function myBlockArgumentRow(name='',id=''){
   const remove=document.createElement('button');remove.type='button';remove.textContent='削除';remove.onclick=()=>row.remove();
   row.append(input,remove);$('myBlockArguments').append(row);
 }
+function myBlockReturnRow(name=''){
+ const row=document.createElement('div');row.className='myblock-argument';const input=document.createElement('input');input.value=name;input.maxLength=40;input.placeholder='例：距離';input.setAttribute('aria-label','戻り値の名前');const remove=document.createElement('button');remove.type='button';remove.textContent='削除';remove.onclick=()=>row.remove();row.append(input,remove);$('myBlockReturns').append(row);
+}
+function showMyBlockReturns(){$('myBlockReturnSettings').hidden=$('myBlockReturn').value!=='number';if($('myBlockReturn').value==='number'&&!$('myBlockReturns').children.length)myBlockReturnRow('値');}
+$('myBlockReturn').onchange=showMyBlockReturns;
+$('myBlockAddReturn').onclick=()=>{if($('myBlockReturns').children.length>=8){$('myBlockError').textContent='戻り値は8個までです。';return;}myBlockReturnRow();};
 function openMyBlockDialog(id=null){
   editingMyBlockId=id;const def=id?workspace.getBlockById(id):null;
+  $('myBlockReturn').value=def?.type==='procedures_defreturn'?'number':'none';$('myBlockReturns').replaceChildren();for(const name of outputNames(def))myBlockReturnRow(name);showMyBlockReturns();
   $('myBlockTitle').textContent=def?'マイブロックを編集':'マイブロックを作る';
   $('myBlockName').value=def?.getFieldValue('NAME')??'';$('myBlockArguments').replaceChildren();$('myBlockError').textContent='';
   for(const model of def?.getVarModels()??[])myBlockArgumentRow(model.getName(),model.getId());
@@ -130,13 +138,13 @@ $('myBlockForm').onsubmit=event=>{
   event.preventDefault();
   try{
     const rows=[...$('myBlockArguments').children].map(row=>({id:row.dataset.parameterId,name:row.querySelector('input').value}));
-    const def=saveMyBlock(Blockly,workspace,$('myBlockName').value,rows,editingMyBlockId);
+    const def=saveMyBlock(Blockly,workspace,$('myBlockName').value,rows,editingMyBlockId,$('myBlockReturn').value==='number',[...$('myBlockReturns').children].map(row=>row.querySelector('input').value.trim()));
     syncArgumentColours(workspace);
-    for(const block of workspace.getAllBlocks(false))if(block.type==='procedures_callnoreturn'&&!block.getInputsInline())block.setInputsInline(true);workspace.refreshToolboxSelection();dirty=true;check();saveLocal();$('myBlockDialog').close();workspace.centerOnBlock(def.id);
-    feedback('定義の中に命令をつなぎ、マイブロックの同じ名前のブロックをスタートにつなげて使います。');
+    for(const block of workspace.getAllBlocks(false))if(['procedures_callnoreturn','procedures_callreturn','lab_call_outputs'].includes(block.type)&&!block.getInputsInline())block.setInputsInline(true);workspace.refreshToolboxSelection();dirty=true;check();saveLocal();$('myBlockDialog').close();workspace.centerOnBlock(def.id);
+    feedback(outputNames(def).length?'定義の各「返す値」に計算式を入れます。丸い呼び出しは数値欄へ、変数へ受け取る呼び出しは命令としてつなぎます。':'定義の中に命令をつなぎ、マイブロックの同じ名前のブロックをスタートにつなげて使います。');
   }catch(error){$('myBlockError').textContent=error.message;}
 };
-$('exportMyBlocks').onclick=()=>{const state=Blockly.serialization.workspaces.save(workspace),defs=state.blocks.blocks.filter(b=>b.type==='procedures_defnoreturn');if(!defs.length){feedback('マイブロックを作ってから書き出してください。',true);return;}download(JSON.stringify({format:'spike-block-library',version:1,workspace:{...state,blocks:{...state.blocks,blocks:defs}}},null,2),'my-blocks.spikeblocks');};
+$('exportMyBlocks').onclick=()=>{const state=Blockly.serialization.workspaces.save(workspace),defs=state.blocks.blocks.filter(isMyBlockDefinition);if(!defs.length){feedback('マイブロックを作ってから書き出してください。',true);return;}download(JSON.stringify({format:'spike-block-library',version:1,workspace:{...state,blocks:{...state.blocks,blocks:defs}}},null,2),'my-blocks.spikeblocks');};
 $('importMyBlocks').onclick=()=>$('libraryFile').click();
 $('libraryFile').onchange=()=>action(async()=>{
   const file=$('libraryFile').files[0];if(!file)return;
@@ -145,12 +153,12 @@ $('libraryFile').onchange=()=>action(async()=>{
     const data=JSON.parse(await file.text());if(data.format!=='spike-block-library'||data.version!==1)throw Error('SPIKEのマイブロック集を選んでください。');
     validateProject({format:'spike-block-lab',version:1,name:'library',language:'standard',workspace:data.workspace});
     const backup=project(),defs=data.workspace.blocks.blocks,existing=backup.workspace.blocks.blocks;
-    if(!defs.length||defs.some(b=>b.type!=='procedures_defnoreturn'))throw Error('マイブロックの定義を確認してください。');
-    const names=new Set(existing.filter(b=>b.type==='procedures_defnoreturn').map(b=>b.fields.NAME.toLowerCase()));
+    if(!defs.length||defs.some(b=>!isMyBlockDefinition(b)))throw Error('マイブロックの定義を確認してください。');
+    const names=new Set(existing.filter(isMyBlockDefinition).map(b=>b.fields.NAME.toLowerCase()));
     for(const b of defs){const key=b.fields.NAME.toLowerCase();if(names.has(key))throw Error('同じ名前のマイブロックがあります。');names.add(key);}
     const map=new Map(),variables=backup.workspace.variables??[];
     for(const variable of data.workspace.variables??[]){let target=variables.find(v=>v.name===variable.name);if(!target){target={...variable,id:crypto.randomUUID()};variables.push(target);}map.set(variable.id,target.id);}
-    function remap(value){if(!value||typeof value!=='object')return;if(value.type)delete value.id;if(value.fields?.VAR?.id)value.fields.VAR.id=map.get(value.fields.VAR.id)??value.fields.VAR.id;if(value.extraState?.params)for(const p of value.extraState.params)p.id=map.get(p.id)??p.id;for(const child of Object.values(value))remap(child);}
+    function remap(value){if(!value||typeof value!=='object')return;if(value.type)delete value.id;if(value.fields?.VAR?.id)value.fields.VAR.id=map.get(value.fields.VAR.id)??value.fields.VAR.id;if(value.extraState?.parameterId)value.extraState.parameterId=map.get(value.extraState.parameterId)??value.extraState.parameterId;if(value.fields)for(const [key,field] of Object.entries(value.fields))if(/^OUT\d+$/.test(key)&&field?.id)field.id=map.get(field.id)??field.id;if(value.extraState?.params)for(const p of value.extraState.params)p.id=map.get(p.id)??p.id;for(const child of Object.values(value))remap(child);}
     remap(defs);const bottom=Math.max(0,...existing.map(b=>b.y??0))+350;defs.forEach((b,i)=>{b.x=50+i*300;b.y=bottom;});
     backup.workspace.variables=variables;backup.workspace.blocks.blocks.push(...defs);restore(backup);dirty=true;feedback('マイブロックを読み込みました。');
   }finally{$('libraryFile').value='';}

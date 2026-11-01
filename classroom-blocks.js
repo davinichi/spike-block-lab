@@ -1,3 +1,4 @@
+import {setupReturnBlocks} from './returns.js';
 import {setupBlocks} from './blocks.js';
 import {BLOCK_TYPES,PORTS} from './model.js';
 import {COMMON_TYPES,setupCommon,commonToolbox} from './common-blocks.js?v=0.5.0';
@@ -11,7 +12,7 @@ export const STANDARD_TYPES = [
   'logic_compare','logic_operation','logic_negate','logic_boolean','controls_if','controls_repeat_ext','controls_whileUntil',
   'variables_get','variables_set','math_change','text','text_join','text_length','text_isEmpty','text_print',
   'lists_create_with','lists_length','lists_isEmpty','lists_getIndex','lists_setIndex','lists_indexOf',
-  'procedures_defnoreturn','procedures_callnoreturn',...COMMON_TYPES
+  'procedures_defnoreturn','procedures_callnoreturn','procedures_defreturn','procedures_callreturn','lab_call_outputs','lab_return_values','lab_return_value',...COMMON_TYPES
 ];
 for(const type of STANDARD_TYPES)BLOCK_TYPES.add(type);
 const number=(name,value,min,max)=>({type:'field_number',name,value,min,max});
@@ -52,7 +53,7 @@ export function setupClassroom(Blockly) {
     {type:'lab_message_hat',message0:'メッセージ %1 を受け取ったとき',args0:[{type:'field_input',name:'MESSAGE',text:'合図'}],nextStatement:null,colour:'#d3a238'},
     {type:'lab_broadcast',message0:'メッセージ %1 を送る',args0:[{type:'field_input',name:'MESSAGE',text:'合図'}],previousStatement:null,nextStatement:null,colour:'#d3a238'}
   ].filter(def=>!['lab_motor','lab_motor_run','lab_motor_stop','lab_drive','lab_tank','lab_tone'].includes(def.type)));
-  setupCommon(Blockly);
+  setupCommon(Blockly);setupReturnBlocks(Blockly);
 }
 const shadow=(n)=>({shadow:{type:'math_number',fields:{NUM:n}}});
 // Older projects and disconnected sensor inputs may have empty comparison sockets.

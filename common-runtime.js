@@ -31,7 +31,7 @@ export function registerCommonGenerators({g,emit,v,stat,fail}) {
   emit('lab_message_wait',b=>stat(`await _lab_send_wait(${quote(b.getFieldValue('MESSAGE').trim())})\n`));
   emit('lab_return',b=>{if(b.getRootBlock().type!=='procedures_defnoreturn')fail(b,'「このマイブロックを終了する」は定義の中に入れてください。');return 'return\n';});
   emit('lab_argument',b=>{
-    const root=b.getRootBlock(),models=root.type==='procedures_defnoreturn'?root.getVarModels():[];
+    const root=b.getRootBlock(),models=['procedures_defnoreturn','procedures_defreturn'].includes(root.type)?root.getVarModels():[];
     const model=models.find(m=>m.getId()===b.parameterId)??models.find(m=>m.getName()===b.getFieldValue('ARG_NAME'));
     if(!model)fail(b,'引数は、同じ名前の引数があるマイブロックの定義の中で使ってください。');
     return [g.getVariableName(model.getId()),g.ORDER_ATOMIC];

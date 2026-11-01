@@ -51,7 +51,7 @@ export function setupEnhancements(Blockly){
 }
 export function checkMessageCycles(hats,workspace,fail){
  const edges=new Map();
- const waits=(root,seen=new Set())=>{const result=new Set();for(const b of root.getDescendants(false)){if(!b.isEnabled())continue;if(b.type==='lab_message_wait')result.add(b.getFieldValue('MESSAGE').trim());if(b.type==='procedures_callnoreturn'){const name=b.getProcedureCall();if(!seen.has(name)){seen.add(name);const d=workspace.getAllBlocks(false).find(d=>d.type==='procedures_defnoreturn'&&d.getFieldValue('NAME')===name);if(d)for(const m of waits(d,seen))result.add(m);}}}return result;};
+ const waits=(root,seen=new Set())=>{const result=new Set();for(const b of root.getDescendants(false)){if(!b.isEnabled())continue;if(b.type==='lab_message_wait')result.add(b.getFieldValue('MESSAGE').trim());if(['procedures_callnoreturn','procedures_callreturn','lab_call_outputs'].includes(b.type)){const name=b.getProcedureCall();if(!seen.has(name)){seen.add(name);const d=workspace.getAllBlocks(false).find(d=>['procedures_defnoreturn','procedures_defreturn'].includes(d.type)&&d.getFieldValue('NAME')===name);if(d)for(const m of waits(d,seen))result.add(m);}}}return result;};
  for(const h of hats.filter(h=>h.type==='lab_message_hat')){const name=h.getFieldValue('MESSAGE').trim();const set=edges.get(name)??new Set();for(const m of waits(h))set.add(m);edges.set(name,set);}
  const visit=(name,path)=>{if(path.has(name))fail(hats.find(h=>h.type==='lab_message_hat'&&h.getFieldValue('MESSAGE').trim()===name),'メッセージを送って待つ処理が循環しています。');for(const next of edges.get(name)??[])visit(next,new Set([...path,name]));};
  for(const name of edges.keys())visit(name,new Set());

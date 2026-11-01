@@ -24,7 +24,7 @@ for(const name of Object.keys(SAMPLE_NAMES)) {
   try {
     Blockly.serialization.workspaces.load(classroomSample(name),workspace);
     await writeFile(`generated/standard/${name}.py`,generateStandard(workspace,pythonGenerator).source);
-    await writeFile(`generated/standard/${name}.spikelab`,JSON.stringify({format:'spike-block-lab',version:1,appVersion:'0.5.0',name:SAMPLE_NAMES[name],language:'standard',workspace:Blockly.serialization.workspaces.save(workspace)},null,2));
+    await writeFile(`generated/standard/${name}.spikelab`,JSON.stringify({format:'spike-block-lab',version:1,appVersion:'0.6.0',name:SAMPLE_NAMES[name],language:'standard',workspace:Blockly.serialization.workspaces.save(workspace)},null,2));
   }finally{workspace.dispose();}
 }
 console.log(`Exported ${Object.keys(SAMPLE_NAMES).length} standard Hub OS samples and editable projects to generated/standard/.`);

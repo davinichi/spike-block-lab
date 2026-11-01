@@ -70,7 +70,7 @@ out.append('</ol></nav>')
 for i,page in enumerate(data['pages'],1):
  out.append(f'<section class="page" id="chapter-{i}"><h2>{html.escape(page["title"])}</h2>')
  if page.get('lead'):out.append(f'<p>{html.escape(page["lead"])}</p>')
- if page.get('image'):out.append('<img src="manual-overview.jpg" alt="SPIKE Block Lab v0.2.0の画面。上部に保存とマイブロック、左にグループ、右に接続パネル。">')
+ if page.get('image'):out.append('<img src="manual-overview.jpg" alt="SPIKE Block Lab v0.6.0の画面。淡い黄色のプログラム名バーと左のグループ一覧、戻り値の呼び出しと定義。">')
  if page.get('steps'):out.append('<ol>'+''.join(f'<li>{html.escape(x)}</li>' for x in page['steps'])+'</ol>')
  if page.get('table'):
   t=page['table'];out.append('<table><thead><tr>'+''.join(f'<th>{html.escape(x)}</th>' for x in t['headers'])+'</tr></thead><tbody>')

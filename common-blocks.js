@@ -73,13 +73,13 @@ export function setupCommon(Blockly) {
   recolour(['text','text_join','text_length','text_isEmpty','text_print','text_charAt','text_indexOf','lab_text_get','lab_text_set',...COMMON_TYPES.filter(type=>type.startsWith('lab_list_')),'lists_create_with','lists_length','lists_isEmpty','lists_getIndex','lists_setIndex','lists_indexOf','math_modulo','math_random_int','math_round','math_constrain'],'#00b85b');
   recolour(['lab_text_get','lab_text_set',...COMMON_TYPES.filter(type=>type.startsWith('lab_list_'))],'#ff8c1a');
   recolour(['variables_get','variables_set','math_change'],'#c58245');
-  recolour(['procedures_defnoreturn','procedures_callnoreturn','lab_argument'],'#aa597e');
+  recolour(['procedures_defnoreturn','procedures_callnoreturn','procedures_defreturn','procedures_callreturn','lab_call_outputs','lab_return_values','lab_return_value','lab_argument'],'#aa597e');
   recolour(['lab_pid'],'#00b85d');
 }
 export function syncArgumentColours(workspace) {
   for(const block of workspace.getAllBlocks(false))if(block.type==='variables_get'){
     const root=block.getRootBlock(),model=block.getField('VAR')?.getVariable();
-    const argument=root.type==='procedures_defnoreturn'&&root.getVarModels().some(parameter=>parameter.getId()===model?.getId());
+    const argument=['procedures_defnoreturn','procedures_defreturn'].includes(root.type)&&root.getVarModels().some(parameter=>parameter.getId()===model?.getId());
     const colour=argument?'#aa597e':'#c58245';if(block.getColour()!==colour)block.setColour(colour);
   }
 }
@@ -114,11 +114,11 @@ export function commonToolbox() {
 }
 export function installCommonWorkspace(workspace,Blockly) {
   workspace.registerToolboxCategoryCallback('ARGUMENTS',ws=>{
-    const names=new Map();for(const def of ws.getAllBlocks(false).filter(b=>b.type==='procedures_defnoreturn'))for(const model of def.getVarModels())if(!names.has(model.getName()))names.set(model.getName(),model);
+    const names=new Map();for(const def of ws.getAllBlocks(false).filter(b=>['procedures_defnoreturn','procedures_defreturn'].includes(b.type)))for(const model of def.getVarModels())if(!names.has(model.getName()))names.set(model.getName(),model);
     return [label('定義の中だけで使う引数'),...[...names.values()].map(model=>({kind:'block',type:'lab_argument',extraState:{parameterId:model.getId(),name:model.getName()}})),...(!names.size?[label('「マイブロックを作る」で引数を追加します')]:[])];
   });
   workspace.registerToolboxCategoryCallback('LAB_VARIABLES',ws=>{
-    const parameters=new Set(ws.getAllBlocks(false).filter(b=>b.type==='procedures_defnoreturn').flatMap(b=>b.getVarModels().map(m=>m.getId())));
+    const parameters=new Set(ws.getAllBlocks(false).filter(b=>['procedures_defnoreturn','procedures_defreturn'].includes(b.type)).flatMap(b=>b.getVarModels().map(m=>m.getId())));
     const variables=ws.getVariableMap().getAllVariables().filter(m=>!parameters.has(m.getId()));
     return [label('プログラム全体で使う変数'),{kind:'button',text:'変数をつくる',callbackKey:'LAB_CREATE_VARIABLE'},...(variables.length?[block('variables_set',{VALUE:0},{VAR:{id:variables[0].getId()}}),block('math_change',{DELTA:1},{VAR:{id:variables[0].getId()}}),...variables.map(m=>block('variables_get',{}, {VAR:{id:m.getId()}}))]:[])];
   });

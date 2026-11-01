@@ -11,6 +11,16 @@ const pair=()=>node('lab_pair',{LEFT:'B',RIGHT:'C'});
 const drive=(speed,amount=10)=>node(speed<0?'lab_drive_backward':'lab_drive_forward',{},{SPEED:Math.abs(speed),CM:amount});
 export function classroomSample(name) {
   if(name==='lights')return sampleWorkspace('lights');
+  if(name==='returns'||name==='multiReturns'){
+    const outputs=name==='returns'?['平均']:['合計','差'];
+    const arg=n=>node('lab_argument',{},{});
+    const a={type:'lab_argument',extraState:{name:'a',parameterId:'return-a'}},b={type:'lab_argument',extraState:{name:'b',parameterId:'return-b'}};
+    const expression=op=>node('lab_op_'+op,{}, {A:structuredClone(a),B:structuredClone(b)});
+    const def={type:'procedures_defreturn',fields:{NAME:name==='returns'?'平均を求める':'和と差'},x:480,y:60,extraState:{params:[{name:'a',id:'return-a'},{name:'b',id:'return-b'}],outputs},inputs:{RETURN:input(name==='returns'?node('lab_op_div',{}, {A:expression('add'),B:2}):expression('add')),...(outputs.length>1?{RETURN1:input(expression('sub'))}:{})}};
+    const call={...node(outputs.length>1?'lab_call_outputs':'procedures_callreturn',outputs.length>1?{OUT0:{id:'return-sum',name:'合計'},OUT1:{id:'return-diff',name:'差'}}:{}, {ARG0:name==='returns'?440:8,ARG1:name==='returns'?880:5}),extraState:{name:def.fields.NAME,params:['a','b'],outputs,output:0}};
+    const steps=outputs.length>1?[call,node('lab_display_number',{}, {VALUE:node('variables_get',{VAR:{id:'return-sum',name:'合計'}})}),wait(1),node('lab_display_number',{}, {VALUE:node('variables_get',{VAR:{id:'return-diff',name:'差'}})})]:[node('lab_tone_ms',{}, {FREQUENCY:call,MS:500,VOLUME:25})];
+    return {blocks:{languageVersion:0,blocks:[start(steps),def]},variables:[{id:'return-a',name:'a'},{id:'return-b',name:'b'},...(outputs.length>1?[{id:'return-sum',name:'合計'},{id:'return-diff',name:'差'}]:[])]};
+  }
   const blockList={
     recording:[start([node('lab_log_start',{NAME:'Record1'}),node('controls_repeat_ext',{}, {TIMES:10,DO:chain([node('lab_log_value',{LABEL:'time_s'},{VALUE:node('lab_timer')}),wait(.1)])}),node('lab_log_end'),node('lab_text',{}, {TEXT:{type:'text',fields:{TEXT:'DONE'}}})])],
     ramp:[start([pair(),node('lab_ramp',{PROFILE:'s'},{UP:1,DOWN:1}),node('lab_geometry',{DIAMETER:56}),drive(20,30),wait(1),drive(-20,30)])],
@@ -32,6 +42,6 @@ export function classroomSample(name) {
   if(name==='myblock')result.variables=[{id:'distance-arg',name:'距離'}];
   return result;
 }
-export const SAMPLE_NAMES={lights:'DisplayTest',sound:'SoundTest',motor:'MotorTest',drive:'DriveTest',turn:'TurnTest',distance:'DistanceStop',color:'ColorSound',variables:'Variables',myblock:'MyBlock',parallel:'ParallelTest',message:'MessageTest',recording:'RecordingTest',ramp:'RampTest',battery:'BatteryAbacus'};
+export const SAMPLE_NAMES={lights:'DisplayTest',sound:'SoundTest',motor:'MotorTest',drive:'DriveTest',turn:'TurnTest',distance:'DistanceStop',color:'ColorSound',variables:'Variables',myblock:'MyBlock',parallel:'ParallelTest',message:'MessageTest',recording:'RecordingTest',ramp:'RampTest',battery:'BatteryAbacus',returns:'NumericReturn',multiReturns:'NamedReturns'};
 
 

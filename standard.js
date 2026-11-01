@@ -1,7 +1,8 @@
-import {registerEnhancements,EXTRA_RUNTIME,checkMessageCycles} from './enhancements.js?v=0.5.0';
+import {registerReturnGenerators,RETURN_RUNTIME} from './return-runtime.js';
+import {registerEnhancements,EXTRA_RUNTIME,checkMessageCycles} from './enhancements.js?v=0.6.0';
 import {IMAGES,PORTS} from './model.js';
 import {STANDARD_TYPES} from './classroom-blocks.js';
-import {registerCommonGenerators,COMMON_RUNTIME} from './common-runtime.js?v=0.5.0';
+import {registerCommonGenerators,COMMON_RUNTIME} from './common-runtime.js?v=0.6.0';
 const VALID=new Set([...STANDARD_TYPES,'spike_start','spike_image','spike_wait','spike_motor','spike_repeat','spike_forever','spike_if_distance']);
 export function generateStandard(workspace,generator,settings={}) {
   const roots=workspace.getTopBlocks(true).filter(b=>b.isEnabled());
@@ -23,9 +24,9 @@ export function generateStandard(workspace,generator,settings={}) {
     if(/^lab_(distance|color|reflection|force|pressed)/.test(b.type))device(b,b.getFieldValue('PORT'),b.type.includes('distance')?'distance':/color|reflection/.test(b.type)?'color':'force');
     if(b.type==='lab_pair') {if(b.getFieldValue('LEFT')===b.getFieldValue('RIGHT'))fail(b,'動きには違う2個のポートを選んでください。');for(const p of ['LEFT','RIGHT'])device(b,b.getFieldValue(p),'motor');}
     if(['lab_message_hat','lab_broadcast','lab_message_wait'].includes(b.type)){const name=b.getFieldValue('MESSAGE').trim();if(!name||name.length>40)fail(b,'メッセージ名を1〜40文字にしてください。');messages.add(name);}
-    if(b.type==='procedures_callnoreturn') {
-      const name=b.getProcedureCall(),def=workspace.getAllBlocks(false).find(d=>d.type==='procedures_defnoreturn'&&d.getFieldValue('NAME')===name);
-      if(!def)fail(b,'呼び出すマイブロックの定義がありません。');walk(def,depth+1);
+    if(['procedures_callnoreturn','procedures_callreturn','lab_call_outputs'].includes(b.type)) {
+      const name=b.getProcedureCall(),def=workspace.getAllBlocks(false).find(d=>['procedures_defnoreturn','procedures_defreturn'].includes(d.type)&&d.getFieldValue('NAME')===name);
+      if(!def)fail(b,'呼び出すマイブロックの定義がありません。');if(b.type==='procedures_callnoreturn'&&def.type!=='procedures_defnoreturn')fail(b,'戻り値ありの呼び出しを置き直してください。');walk(def,depth+1);
     }
     for(const input of b.inputList)if(input.connection)walk(input.connection.targetBlock(),depth+1);
     walk(b.getNextBlock(),depth+1);
@@ -40,8 +41,8 @@ export function generateStandard(workspace,generator,settings={}) {
     for(;b&&b.isEnabled();b=b.getNextBlock()){
       if(b.type==='lab_pair')ready=true;
       if(isMotion(b)&&!ready)fail(b,'この動きの前に、動きに使うモーターを設定してください。');
-      if(b.type==='procedures_callnoreturn'){
-        const def=workspace.getAllBlocks(false).find(d=>d.type==='procedures_defnoreturn'&&d.getFieldValue('NAME')===b.getProcedureCall());
+      if(['procedures_callnoreturn','procedures_callreturn','lab_call_outputs'].includes(b.type)){
+        const def=workspace.getAllBlocks(false).find(d=>['procedures_defnoreturn','procedures_defreturn'].includes(d.type)&&d.getFieldValue('NAME')===b.getProcedureCall());
         if(def&&!visiting.has(def.id)){const seen=new Set(visiting);seen.add(def.id);ready=checkMotionOrder(def.getInputTargetBlock('STACK'),ready,seen);}
       }else if(b.type==='controls_if'){
         const paths=[];for(let i=0;b.getInput('DO'+i);i++)paths.push(checkMotionOrder(b.getInputTargetBlock('DO'+i),ready,visiting));
@@ -100,11 +101,12 @@ export function generateStandard(workspace,generator,settings={}) {
     const args=b.getVarModels().map((_,i)=>v(b,'ARG'+i));return stat(`await ${name}(${args.join(', ')})\n`);
   });
   registerEnhancements({g,emit,v,stat});
+  registerReturnGenerators({g,emit,v,stat,fail,workspace});
   g.INFINITE_LOOP_TRAP='await _lab_tick()\n';
   g.init(workspace);
   const allGlobals=[...workspace.getVariableMap().getAllVariables().map(variable=>g.getVariableName(variable.getId())),'_lab_wheel','_lab_tread','_lab_timer_start','_lab_log_name'];
   const globalLine=allGlobals.length?'    global '+[...new Set(allGlobals)].join(', ')+'\n':'';
-  for(const b of roots.filter(b=>b.type==='procedures_defnoreturn'&&reachable.has(b.id)))g.blockToCode(b);
+  for(const b of roots.filter(b=>['procedures_defnoreturn','procedures_defreturn'].includes(b.type)&&reachable.has(b.id)))g.blockToCode(b);
   const tasks=[];
   hats.forEach((hat,index)=>{
     const body=g.blockToCode(hat)||'pass\n';
@@ -127,7 +129,7 @@ export function generateStandard(workspace,generator,settings={}) {
   for(const key of Object.keys(g.definitions_))if(g.definitions_[key].startsWith('async def '))g.definitions_[key]=g.definitions_[key].replace(/^(async def [^\n]+\n)/,'$1'+g.INDENT+'global _lab_wheel, _lab_tread, _lab_timer_start, _lab_log_name\n');
   const managed=[...reachable].some(id=>['lab_motor_change_speed','lab_sync'].includes(workspace.getBlockById(id).type));
   const definitions=g.finish('');
-  const source=`# SPIKE Block Lab 0.5.0 / Standard SPIKE App 3 Hub OS\n# Hardware verification pending. All control runs on the hub.\nimport runloop, motor, motor_pair, distance_sensor, color_sensor, force_sensor, color, time, math\nfrom hub import port, light_matrix, light, sound, button, motion_sensor\n\n${RUNTIME}\n${COMMON_RUNTIME}\n${EXTRA_RUNTIME}\n_lab_motion_config['managed'] = ${managed?'True':'False'}\n_lab_receivers = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,hats.flatMap((h,i)=>h.type==='lab_message_hat'&&h.getFieldValue('MESSAGE').trim()===m?[i]:[])])))}\n_lab_message_done = {}\n_lab_tread = 112\n_lab_lists = {}\n_lab_text_values = {}\n_lab_pid_state = {}\n_lab_log_name = ''\n_lab_wheel = ${Number(settings.wheel)||56}\n_lab_timer_start = time.ticks_ms()\n_lab_pair_ready = False\n_lab_messages = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,0])))}\n\n${definitions}\n${tasks.join('\n')}\ntry:\n    _lab_task_count = [${tasks.length}]\n    runloop.run(_lab_service(), ${tasks.map((_,i)=>`_lab_track(_lab_task_${i})`).join(', ')})\nexcept _LabStop:\n    pass\nfinally:\n    _lab_stop_all()\n`;
+  const source=`# SPIKE Block Lab 0.6.0 / Standard SPIKE App 3 Hub OS\n# Hardware verification pending. All control runs on the hub.\nimport runloop, motor, motor_pair, distance_sensor, color_sensor, force_sensor, color, time, math\nfrom hub import port, light_matrix, light, sound, button, motion_sensor\n\n${RUNTIME}\n${COMMON_RUNTIME}\n${EXTRA_RUNTIME}\n${RETURN_RUNTIME}\n_lab_motion_config['managed'] = ${managed?'True':'False'}\n_lab_receivers = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,hats.flatMap((h,i)=>h.type==='lab_message_hat'&&h.getFieldValue('MESSAGE').trim()===m?[i]:[])])))}\n_lab_message_done = {}\n_lab_tread = 112\n_lab_lists = {}\n_lab_text_values = {}\n_lab_pid_state = {}\n_lab_log_name = ''\n_lab_wheel = ${Number(settings.wheel)||56}\n_lab_timer_start = time.ticks_ms()\n_lab_pair_ready = False\n_lab_messages = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,0])))}\n\n${definitions}\n${tasks.join('\n')}\ntry:\n    _lab_task_count = [${tasks.length}]\n    runloop.run(_lab_service(), ${tasks.map((_,i)=>`_lab_track(_lab_task_${i})`).join(', ')})\nexcept _LabStop:\n    pass\nfinally:\n    _lab_stop_all()\n`;
   return {source,count:reachable.size,threads:hats.length,devices:Object.fromEntries(used)};
 }
 const indent=(s,n)=>s.split('\n').filter((line,i,a)=>i<a.length-1||line).map(line=>' '.repeat(n)+line+'\n').join('');
