@@ -62,7 +62,7 @@ test('all standard-Hub-OS samples generate Python after project save and reload'
 });
 test('My Block calls await async definitions and preserve input arguments',()=>{
   const source=generate('myblock').source;
-  assert.match(source,/async def _E5/);assert.match(source,/await _E5[^\n]+\(10\)/);assert.match(source,/await _lab_drive\(_lab_positive\(20, 100\), _lab_positive\(_E8/);
+  assert.match(source,/async def _E5/);assert.match(source,/await _E5[^\n]+\(10\)/);assert.match(source,/await _lab_drive\(_lab_range\(20, -100, 100\), _lab_positive\(_E8/);
 });
 test('parallel roots share one final cleanup and variable-change code uses MicroPython builtins',()=>{
   const parallel=generate('parallel');assert.equal(parallel.threads,2);

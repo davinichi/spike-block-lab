@@ -184,3 +184,40 @@ except ValueError:pass
 assert scope['_lab_motion_ports']()==(1,2)
 `,generate(classroomSample('sound')));
 });
+
+test('signed movement speeds reverse straight and turn commands with and without managed motion',()=>{
+ const cases=[];
+ for(const type of ['lab_drive_forward','lab_drive_backward','lab_spin_right','lab_spin_left','lab_pivot_right','lab_pivot_left'])for(const speed of [20,-20])for(const managed of [false,true]){
+  const entry=structuredClone(palette.find(b=>b.type===type));entry.inputs.SPEED={shadow:{type:'math_number',fields:{NUM:speed}}};
+  let source=generate(program(entry));
+  source=source.replace('_lab_motion_config[\'managed\'] = False',`_lab_motion_config['managed'] = ${managed?'True':'False'}`);
+  if(managed)source=source.replace('\ntry:\n    _lab_task_count',"\nasync def _lab_managed_move(ports, velocities, amount, unit):\n    calls.append(('managed', list(velocities), amount, unit))\ntry:\n    _lab_task_count");
+  cases.push({type,speed,managed,source});
+ }
+ python(`import asyncio,json,sys,types,time,math
+for case in json.load(sys.stdin):
+    calls=[]
+    for mod in ['motor','motor_pair','distance_sensor','color_sensor','force_sensor','color','hub','runloop']:sys.modules[mod]=types.ModuleType(mod)
+    motor=sys.modules['motor'];motor.READY=0;motor.BRAKE=1;motor.stop=lambda *a,**k:None
+    pair=sys.modules['motor_pair'];pair.PAIR_1=0;pair.pair=lambda *a:None
+    async def move(slot,degrees,steering,*,velocity):calls.append(('drive',degrees,velocity));return 0
+    async def tank(slot,degrees,left,right,*,stop):calls.append(('turn',left,right));return 0
+    pair.move_for_degrees=move;pair.move_tank_for_degrees=tank
+    async def pause(ms):await asyncio.sleep(0)
+    async def all_tasks(*tasks):await asyncio.gather(*tasks)
+    loop=sys.modules['runloop'];loop.sleep_ms=pause;loop.run=lambda *tasks:asyncio.run(all_tasks(*tasks))
+    hub=sys.modules['hub'];hub.port=types.SimpleNamespace(**{c:i for i,c in enumerate('ABCDEF')});hub.sound=types.SimpleNamespace(stop=lambda:None)
+    hub.light_matrix=hub.light=hub.button=hub.motion_sensor=types.SimpleNamespace()
+    time.ticks_ms=lambda:0;time.ticks_diff=lambda a,b:a-b
+    exec(compile(case['source'],'signed-motion','exec'),{'calls':calls})
+    kind=case['type'];v=case['speed']*10.5
+    if kind.startswith('lab_drive'):
+        v*=(-1 if kind.endswith('backward') else 1)
+        if case['managed']:assert calls[0][0]=='managed' and calls[0][1]==[-v,v],(case,calls)
+        else:assert calls[0][0]=='drive' and calls[0][1]*v>0 and calls[0][2]==abs(v),(case,calls)
+    else:
+        left,right=(v,0 if 'pivot' in kind else -v) if kind.endswith('right') else (0 if 'pivot' in kind else -v,v)
+        if case['managed']:assert calls[0][0]=='managed' and calls[0][1]==[-left,right],(case,calls)
+        else:assert calls[0]==('turn',left,right),(case,calls)
+`,cases);
+});

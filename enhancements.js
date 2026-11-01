@@ -303,7 +303,9 @@ async def _lab_turn(left, right, speed, angle, pivot, direction):
     _lab_pair(left, right)
     if not _lab_use_managed():
         return await _lab_native_turn(left, right, speed, angle, pivot, direction)
-    velocity = _lab_speed(_lab_positive(speed, 100))
+    velocity = _lab_speed(speed)
+    if velocity == 0:
+        raise ValueError('Speed cannot be zero')
     degrees = _lab_positive(angle, 3600) * _lab_tread / _lab_wheel * (2 if pivot else 1)
     lv, rv = (velocity, 0 if pivot else -velocity) if direction > 0 else (0 if pivot else -velocity, velocity)
     await _lab_managed_move((left, right), (-lv, rv), degrees, 'angle')

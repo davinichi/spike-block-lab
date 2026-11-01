@@ -1,19 +1,17 @@
-import {sampleWorkspace} from './blocks.js';
 const num=n=>({type:'math_number',fields:{NUM:n}});
 const input=block=>({block});
 const node=(type,fields={},inputs={})=>({type,fields,inputs:Object.fromEntries(Object.entries(inputs).map(([k,v])=>[k,input(typeof v==='number'?num(v):v)]))});
 function chain(nodes){let next;for(const b of [...nodes].reverse())next={...b,...(next?{next:{block:next}}:{})};return next;}
 const start=(nodes,x=50,y=40)=>({type:'spike_start',x,y,next:{block:chain(nodes)}});
-const image=name=>node('spike_image',{IMAGE:name});
+const pixel=brightness=>node('lab_pixel',{}, {X:2,Y:2,BRIGHTNESS:brightness});
 const wait=seconds=>node('lab_wait',{}, {SECONDS:seconds});
 const tone=()=>node('lab_tone_ms',{}, {FREQUENCY:440,MS:300,VOLUME:25});
 const pair=()=>node('lab_pair',{LEFT:'B',RIGHT:'C'});
 const drive=(speed,amount=10)=>node(speed<0?'lab_drive_backward':'lab_drive_forward',{},{SPEED:Math.abs(speed),CM:amount});
 export function classroomSample(name) {
-  if(name==='lights')return sampleWorkspace('lights');
+  if(name==='lights')return {blocks:{languageVersion:0,blocks:[start([node('lab_display_clear'),pixel(100),wait(1),pixel(0),wait(1),node('lab_text',{}, {TEXT:{type:'text',fields:{TEXT:'HELLO'}}})])]}};
   if(name==='returns'||name==='multiReturns'){
     const outputs=name==='returns'?['平均']:['合計','差'];
-    const arg=n=>node('lab_argument',{},{});
     const a={type:'lab_argument',extraState:{name:'a',parameterId:'return-a'}},b={type:'lab_argument',extraState:{name:'b',parameterId:'return-b'}};
     const expression=op=>node('lab_op_'+op,{}, {A:structuredClone(a),B:structuredClone(b)});
     const def={type:'procedures_defreturn',fields:{NAME:name==='returns'?'平均を求める':'和と差'},x:480,y:60,extraState:{params:[{name:'a',id:'return-a'},{name:'b',id:'return-b'}],outputs},inputs:{RETURN:input(name==='returns'?node('lab_op_div',{}, {A:expression('add'),B:2}):expression('add')),...(outputs.length>1?{RETURN1:input(expression('sub'))}:{})}};
@@ -33,7 +31,7 @@ export function classroomSample(name) {
     color:[start([node('lab_wait_until',{}, {BOOL:node('lab_color_is',{PORT:'D',COLOR:'RED'})}),tone()])],
     variables:[start([node('variables_set',{VAR:{id:'count',name:'回数'}},{VALUE:0}),node('controls_repeat_ext',{}, {TIMES:3,DO:chain([node('math_change',{VAR:{id:'count',name:'回数'}},{DELTA:1}),node('lab_text',{}, {TEXT:node('variables_get',{VAR:{id:'count',name:'回数'}})}),wait(.5)])})])],
     myblock:[start([pair(),{...node('procedures_callnoreturn',{}, {ARG0:10}),extraState:{name:'前に進む',params:['距離']}}]),{...node('procedures_defnoreturn',{NAME:'前に進む'},{STACK:drive(20,node('variables_get',{VAR:{id:'distance-arg',name:'距離'}}))}),x:420,y:50,extraState:{params:[{name:'距離',id:'distance-arg'}]}}],
-    parallel:[start([pair(),drive(20,30)]),start([node('controls_repeat_ext',{}, {TIMES:5,DO:chain([image('heart'),wait(.2),image('smile'),wait(.2)])})],450,50)],
+    parallel:[start([pair(),drive(20,30)]),start([node('controls_repeat_ext',{}, {TIMES:5,DO:chain([pixel(100),wait(.2),pixel(0),wait(.2)])})],450,50)],
     message:[start([wait(1),node('lab_broadcast',{MESSAGE:'合図'})]),{type:'lab_message_hat',fields:{MESSAGE:'合図'},x:450,y:50,next:{block:tone()}}]
   }[name];
   if(!blockList)throw Error('サンプルが見つかりません。');

@@ -1,8 +1,8 @@
 import {registerReturnGenerators,RETURN_RUNTIME} from './return-runtime.js';
-import {registerEnhancements,EXTRA_RUNTIME,checkMessageCycles} from './enhancements.js?v=0.6.0';
+import {registerEnhancements,EXTRA_RUNTIME,checkMessageCycles} from './enhancements.js?v=0.7.0';
 import {IMAGES,PORTS} from './model.js';
 import {STANDARD_TYPES} from './classroom-blocks.js';
-import {registerCommonGenerators,COMMON_RUNTIME} from './common-runtime.js?v=0.6.0';
+import {registerCommonGenerators,COMMON_RUNTIME} from './common-runtime.js?v=0.7.0';
 const VALID=new Set([...STANDARD_TYPES,'spike_start','spike_image','spike_wait','spike_motor','spike_repeat','spike_forever','spike_if_distance']);
 export function generateStandard(workspace,generator,settings={}) {
   const roots=workspace.getTopBlocks(true).filter(b=>b.isEnabled());
@@ -129,7 +129,7 @@ export function generateStandard(workspace,generator,settings={}) {
   for(const key of Object.keys(g.definitions_))if(g.definitions_[key].startsWith('async def '))g.definitions_[key]=g.definitions_[key].replace(/^(async def [^\n]+\n)/,'$1'+g.INDENT+'global _lab_wheel, _lab_tread, _lab_timer_start, _lab_log_name\n');
   const managed=[...reachable].some(id=>['lab_motor_change_speed','lab_sync'].includes(workspace.getBlockById(id).type));
   const definitions=g.finish('');
-  const source=`# SPIKE Block Lab 0.6.0 / Standard SPIKE App 3 Hub OS\n# Hardware verification pending. All control runs on the hub.\nimport runloop, motor, motor_pair, distance_sensor, color_sensor, force_sensor, color, time, math\nfrom hub import port, light_matrix, light, sound, button, motion_sensor\n\n${RUNTIME}\n${COMMON_RUNTIME}\n${EXTRA_RUNTIME}\n${RETURN_RUNTIME}\n_lab_motion_config['managed'] = ${managed?'True':'False'}\n_lab_receivers = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,hats.flatMap((h,i)=>h.type==='lab_message_hat'&&h.getFieldValue('MESSAGE').trim()===m?[i]:[])])))}\n_lab_message_done = {}\n_lab_tread = 112\n_lab_lists = {}\n_lab_text_values = {}\n_lab_pid_state = {}\n_lab_log_name = ''\n_lab_wheel = ${Number(settings.wheel)||56}\n_lab_timer_start = time.ticks_ms()\n_lab_pair_ready = False\n_lab_messages = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,0])))}\n\n${definitions}\n${tasks.join('\n')}\ntry:\n    _lab_task_count = [${tasks.length}]\n    runloop.run(_lab_service(), ${tasks.map((_,i)=>`_lab_track(_lab_task_${i})`).join(', ')})\nexcept _LabStop:\n    pass\nfinally:\n    _lab_stop_all()\n`;
+  const source=`# SPIKE Block Lab 0.7.0 / Standard SPIKE App 3 Hub OS\n# Hardware verification pending. All control runs on the hub.\nimport runloop, motor, motor_pair, distance_sensor, color_sensor, force_sensor, color, time, math\nfrom hub import port, light_matrix, light, sound, button, motion_sensor\n\n${RUNTIME}\n${COMMON_RUNTIME}\n${EXTRA_RUNTIME}\n${RETURN_RUNTIME}\n_lab_motion_config['managed'] = ${managed?'True':'False'}\n_lab_receivers = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,hats.flatMap((h,i)=>h.type==='lab_message_hat'&&h.getFieldValue('MESSAGE').trim()===m?[i]:[])])))}\n_lab_message_done = {}\n_lab_tread = 112\n_lab_lists = {}\n_lab_text_values = {}\n_lab_pid_state = {}\n_lab_log_name = ''\n_lab_wheel = ${Number(settings.wheel)||56}\n_lab_timer_start = time.ticks_ms()\n_lab_pair_ready = False\n_lab_messages = ${JSON.stringify(Object.fromEntries([...messages].map(m=>[m,0])))}\n\n${definitions}\n${tasks.join('\n')}\ntry:\n    _lab_task_count = [${tasks.length}]\n    runloop.run(_lab_service(), ${tasks.map((_,i)=>`_lab_track(_lab_task_${i})`).join(', ')})\nexcept _LabStop:\n    pass\nfinally:\n    _lab_stop_all()\n`;
   return {source,count:reachable.size,threads:hats.length,devices:Object.fromEntries(used)};
 }
 const indent=(s,n)=>s.split('\n').filter((line,i,a)=>i<a.length-1||line).map(line=>' '.repeat(n)+line+'\n').join('');

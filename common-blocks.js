@@ -20,9 +20,9 @@ for(const paired of [false,true])for(const action of ['run','angle','rotation','
 define('lab_motor_group_stop','モーター %1 を %2 で停止',[field('PORTS',[...ports.map(p=>[p,p]),...pairs,['すべて','ALL']]),field('MODE',[['ブレーキ','BRAKE'],['惰性','COAST'],['保持','HOLD']])],{...stmt,colour:motor});
 define('lab_tread','トレッド（タイヤ中心どうしの間隔）を %1 mm にする',[{type:'field_number',name:'TREAD',value:112,min:10,max:1000}],{...stmt,colour:motion,tooltip:'左右のタイヤの中心間を測ります。スピンターンとピボットターンの角度計算に使います。'});
 for(const [direction,label] of [['forward','前に進む'],['backward','後ろに下がる']])
-  define('lab_drive_'+direction,'速さ %1 ％で %2 cm '+label,[value('SPEED'),value('CM')],{...stmt,colour:motion,tooltip:'速さと距離は正の値。動きに使う左右のモーターとタイヤ直径を先に設定します。'});
+  define('lab_drive_'+direction,'速さ %1 ％で %2 cm '+label,[value('SPEED'),value('CM')],{...stmt,colour:motion,tooltip:'速さは−100〜100％（0を除く）、距離は正の値。負の速さで表示と逆向きに進みます。左右のモーターとタイヤ直径を先に設定します。'});
 for(const kind of ['spin','pivot'])for(const [direction,label] of [['right','右'],['left','左']])
-  define('lab_'+kind+'_'+direction,'速さ %1 ％で '+label+'に %2 度'+(kind==='spin'?'スピンターン':'ピボットターン'),[value('SPEED'),value('ANGLE')],{...stmt,colour:motion,tooltip:kind==='spin'?'左右の車輪を逆方向に回してその場で旋回。車体の角度を指定します。タイヤ直径とトレッドを先に設定します。':'内側の車輪を止め、外側だけを回して旋回。車体の角度を指定します。タイヤ直径とトレッドを先に設定します。'});
+  define('lab_'+kind+'_'+direction,'速さ %1 ％で '+label+'に %2 度'+(kind==='spin'?'スピンターン':'ピボットターン'),[value('SPEED'),value('ANGLE')],{...stmt,colour:motion,tooltip:kind==='spin'?'左右の車輪を逆方向に回してその場で旋回。車体の角度を指定します。速さは−100〜100％（0を除く）。負の速さで各車輪が逆回転します。タイヤ直径とトレッドを先に設定します。':'内側の車輪を止め、外側だけを回して旋回。車体の角度を指定します。速さは−100〜100％（0を除く）。負の速さで各車輪が逆回転します。タイヤ直径とトレッドを先に設定します。'});
 for(const action of ['run','angle','time']) {
   const amount=action==='angle'?'DEGREES':'SECONDS';
   define('lab_steering_'+action,'ステアリング %1 速さ %2 ％で '+({run:'回し続ける',angle:'外側を %3 度回す',time:'%3 秒走る'}[action]),[value('TURN'),value('SPEED'),...(action==='run'?[]:[value(amount)])],{...stmt,colour:motion,tooltip:'発展用。ステアリング−100〜100。0は直進。これは車体の旋回角度ではありません。角度指定は外側のモーター軸の角度です。'});
@@ -103,7 +103,7 @@ export function commonToolbox() {
     category('音','#a570b3',[block('lab_tone_ms',{FREQUENCY:440,MS:200,VOLUME:25})]),
     category('制御',control,[block('lab_wait',{SECONDS:1}),block('controls_if'),{...block('controls_if'),extraState:{hasElse:true}},block('lab_forever'),block('controls_repeat_ext',{TIMES:10}),block('controls_whileUntil',{}, {MODE:'UNTIL'}),block('controls_whileUntil',{}, {MODE:'WHILE'}),block('lab_wait_until'),block('lab_end'),block('lab_return'),label('PID制御'),block('lab_pid',{TARGET:0,MEASURED:0,KP:1,KI:0,KD:0}),block('lab_pid_reset')]),
     category('演算',operator,[block('math_number'),...extraPalette('operators'),...extraPalette('math'),block('logic_negate'),block('logic_boolean'),block('math_modulo',{DIVIDEND:1,DIVISOR:10}),block('math_random_int',{FROM:1,TO:10}),block('math_round',{NUM:1.5}),block('math_constrain',{VALUE:120,LOW:-100,HIGH:100})]),
-    category('表示','#9966ff',[label('SPIKE本体：5×5ライト／英数字を表示'),block('lab_display_clear'),block('lab_text',{TEXT:'Hello'}),block('spike_image'),block('lab_display_number',{VALUE:12.5}),block('lab_display_abacus',{VALUE:7800}),block('lab_pixel',{X:2,Y:2,BRIGHTNESS:100})]),
+    category('表示','#9966ff',[label('SPIKE本体：5×5ライト／英数字を表示'),block('lab_display_clear'),block('lab_text',{TEXT:'Hello'}),block('lab_display_number',{VALUE:12.5}),block('lab_display_abacus',{VALUE:7800}),block('lab_pixel',{X:2,Y:2,BRIGHTNESS:100})]),
     category('ランプ','#9966ff',[block('lab_light'),block('lab_light_off'),...extraPalette('lamp')]),
     category('データ','#ff8c1a',[label('文字列'),block('text'),block('lab_text_get'),block('lab_text_set',{VALUE:'Hello'}),block('text_join'),block('text_length',{VALUE:'Hello'}),block('text_isEmpty',{VALUE:'Hello'}),...extraPalette('text'),label('数値リスト（同じ名前で共有）'),...['clear','add','set','delete','item','length','contains','stat'].map(action=>block('lab_list_'+action,{...(['set','delete','item'].includes(action)?{INDEX:1}:{}),...(['add','set','contains'].includes(action)?{VALUE:0}:{})}))]),
     category('記録','#c58245',[label('本体にCSVを保存・再接続して取り出す'),block('lab_log_start'),block('lab_log_value',{VALUE:0}),block('lab_log_end')]),

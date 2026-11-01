@@ -10,7 +10,7 @@ export function registerCommonGenerators({g,emit,v,stat,fail}) {
   });
   emit('lab_motor_group_stop',b=>{const selected=b.getFieldValue('PORTS'),ports=selected==='ALL'?['A','B','C','D','E','F']:selected.split(',');return stat(ports.map(p=>`_lab_stop_port(port.${p}, motor.${b.getFieldValue('MODE')}, ${selected==='ALL'?'True':'False'})\n`).join(''));});
   emit('lab_tread',b=>stat(`_lab_tread = ${Number(b.getFieldValue('TREAD'))}\n`));
-  for(const direction of ['forward','backward'])emit('lab_drive_'+direction,b=>stat(`await _lab_drive(${direction==='backward'?'-':''}_lab_positive(${v(b,'SPEED')}, 100), _lab_positive(${v(b,'CM')}, 360000), 'cm', 0)\n`));
+  for(const direction of ['forward','backward'])emit('lab_drive_'+direction,b=>stat(`await _lab_drive(${direction==='backward'?'-':''}_lab_range(${v(b,'SPEED')}, -100, 100), _lab_positive(${v(b,'CM')}, 360000), 'cm', 0)\n`));
   for(const kind of ['spin','pivot'])for(const direction of ['right','left'])emit('lab_'+kind+'_'+direction,b=>stat(`await _lab_turn(${pair(b)}, ${v(b,'SPEED')}, ${v(b,'ANGLE')}, ${kind==='pivot'?'True':'False'}, ${direction==='right'?1:-1})\n`));
   for(const action of ['run','angle','time']) {
     const amount=b=>action==='run'?'0':v(b,action==='angle'?'DEGREES':'SECONDS');
@@ -101,7 +101,9 @@ async def _lab_motor_group(ports, speed, amount, unit):
 
 async def _lab_turn(left, right, speed, angle, pivot, direction):
     _lab_pair(left, right)
-    velocity = _lab_speed(_lab_positive(speed, 100))
+    velocity = _lab_speed(speed)
+    if velocity == 0:
+        raise ValueError('Speed cannot be zero')
     degrees = max(1, int(_lab_positive(angle, 3600) * _lab_tread / _lab_wheel * (2 if pivot else 1)))
     lv, rv = (velocity, 0 if pivot else -velocity) if direction > 0 else (0 if pivot else -velocity, velocity)
     if pivot:
