@@ -1,4 +1,4 @@
-name: Check prototype
+name: Check SBL 1.0.0
 on:
   push:
     branches: [main]
@@ -16,8 +16,8 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm test
       - run: npm run build
+      - run: npm test
       - run: npm run export:sample
       - name: Check Python syntax and ZIP integrity
         run: |
@@ -32,7 +32,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: spike-block-lab-preview-and-samples
+          name: spike-block-lab-1.0.0-and-samples
           path: |
             dist/
             generated/standard/

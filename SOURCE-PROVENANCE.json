@@ -1,0 +1,878 @@
+{
+  "version": "1.0.0",
+  "synced_on": "2026-11-27",
+  "source_commit": "66710338955a3dc25585a13dd9dec160767a564e",
+  "site_url": "https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "fdfa7b607b52326cb536a984c43634aaa9afd5fb2c3df583c525f68615a80fad",
+      "repository_path": ".gitattributes"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "57bd41c30bc42306dc6f11c02713cd444940909b67e97fb877f1670f7c501360",
+      "repository_path": ".gitignore"
+    },
+    {
+      "path": "COMMON-GROUPS-COMPATIBILITY.md",
+      "sha256": "179388b510a5cac62ddb4b0956d58bb6a23dcfd952537137a725fc13f6313cee",
+      "repository_path": "docs/COMMON-GROUPS-COMPATIBILITY.md"
+    },
+    {
+      "path": "EBL-RT-COMMON-GROUPS.txt",
+      "sha256": "53183b106f7ee7779204dc3ae1713363847632d140938f3dd79744fb7e7e6ca8",
+      "repository_path": "docs/EBL-RT-COMMON-GROUPS.txt"
+    },
+    {
+      "path": "RAMP-COMPATIBILITY.md",
+      "sha256": "0e6748cb139e3dea20c0d7ca14f7d70c13b5b9f36aa6c0bdd5fe31128701d7d7",
+      "repository_path": "docs/RAMP-COMPATIBILITY.md"
+    },
+    {
+      "path": "RT-NOTICE.txt",
+      "sha256": "3bb3ba04cad043afe5d16d7fb1574094e06b616e71bff7cc1b068e5995336501",
+      "repository_path": "docs/RT-NOTICE.txt"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.10.0.pdf",
+      "sha256": "8a3aea2ee0e48925ddef3afd9375e78ab1cddaffec8222438d0be6f54c19dc91",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.10.0.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.10.1.pdf",
+      "sha256": "cfddd3b643c0b6a1d5130bdad1384027acff95ae5ba7303b050e9a5cf6964534",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.10.1.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.0.pdf",
+      "sha256": "901a685af0f62c8a6020ee4b854e3c8fbef92aa0ada72524c9c4719d44117a44",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.0.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.1.pdf",
+      "sha256": "4a5760a9df729189632d1d19d691fe8b50afaca49edfff4177a61c8960f3aaae",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.1.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.2.pdf",
+      "sha256": "8d2e1d2454f2383c619f4dc01e85556b6cc1656366afaab44137a69d0fcabf6f",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.2.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.3.pdf",
+      "sha256": "a124761b5a3a588da5b936aa40906ab88f409451e8240c1d42474565070ea23a",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.3.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.4.pdf",
+      "sha256": "1e716b64f61dc6d3b84d0a90ff7d93cee3d3e8abd78cc52a8a981e167e4745f0",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.4.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.5.pdf",
+      "sha256": "07516882580dc90acef594dc1ddf87ecac0b0e6d5ac23103b7a39674f54d4ede",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.5.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.11.6.pdf",
+      "sha256": "812f560d7975747cbbcc4a0912f3bc13e18d3bfea9ed44ff8b25beef035e17a6",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.11.6.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.7.1.pdf",
+      "sha256": "8e6e2fcdb81317cc60e996243ab95e111261d85a85fb38ca37119bd44b4142b5",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.7.1.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.7.2.pdf",
+      "sha256": "3e3348e56494ffb81c97be104ca765056502f2d67eda6f4e950d89ca73afc12b",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.7.2.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.7.3.pdf",
+      "sha256": "f2151dd6e238e812621f0fd670b359204d614d56609628db5694cdb414cf7c9c",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.7.3.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.7.4.pdf",
+      "sha256": "caa83f13641143aef30f0fb3ca1a20f2ac78ca7aae85e3d17f1670eb30b8d82d",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.7.4.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.7.5.pdf",
+      "sha256": "06ffbf09d85e198db8dc56c4f4f65e5d85abf909e43410102c678ab04b22f0d2",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.7.5.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.0.pdf",
+      "sha256": "fb3571284ccafcc4d3911787aea4fed217b99e16f35dd6ccca0e6527a1459736",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.0.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.1.pdf",
+      "sha256": "0b2e92d11199752284dc7ea5fb5d5f72302496e41d6901caaf897fc02140d1b4",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.1.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.2.pdf",
+      "sha256": "7bd6a66b06fd9ce56f584f841f4a461c0f70e0c2eb729804fba9a287f1772754",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.2.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.3.pdf",
+      "sha256": "5bb4a51f7c9178428cc3a2f85a1cb3ee6384c86844902e5810767945f8b2766c",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.3.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.4.pdf",
+      "sha256": "532c605ee5870b7cac191554096b5817930a9783f8b012c5deee0098de4f4a8b",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.4.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.5.pdf",
+      "sha256": "d7f98780b4a02266908f051bbb0f525112dabc108b01c493b9aef8023d7f328f",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.5.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.6.pdf",
+      "sha256": "9ed5312c302619fd4cc7071c06eb8809a11a17e1d0e54a2ab761b12d9298e6c0",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.6.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.7.pdf",
+      "sha256": "c789715ed664247f7140f6df8843a99797b060e8d3fb619ceb8a8df53deebea4",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.7.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.8.8.pdf",
+      "sha256": "444f2e3e8c3a76f18dcfe5b3327ddb6ce9d9838aebaaebe961926b9639591b66",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.8.8.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.0.pdf",
+      "sha256": "60695652b50058be2b5648a0082707eb42f5bdd6d84bf5f5abc9ed14e32ab293",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.0.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.1.pdf",
+      "sha256": "a96b3e32a3b9b3c5db3b738794979f404339404036098c524ab381a2b147df64",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.1.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.10.pdf",
+      "sha256": "12e5fdb6599c366fce041602e048460b9e8e510eec1ab724e91f1244501da47e",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.10.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.11.pdf",
+      "sha256": "198b70e01ef68d9f6423b42e857db9a63c834465f79f122b8f19ccccca559d31",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.11.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.2.pdf",
+      "sha256": "8a8db87736b90f6939bffff2364cac09ebda86602c2f26d5d1e08266465532fc",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.2.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.3.pdf",
+      "sha256": "3a5d52e6ea838b09a49106db7e9d96c388959d05f63718b3d2c5e47d2ea0e062",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.3.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.4.pdf",
+      "sha256": "3e9b85719e7eb27435ef7a1d0fe854a2e38da9ba133a6d83edd03578d98ccfdb",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.4.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.5.pdf",
+      "sha256": "a39127e29326f9eb21c11d39df61047fb4d9ce8761bc2c2d2ade6585309e191a",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.5.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.6.pdf",
+      "sha256": "11ef68b69ba75f4742ddc581ecc1bc174d6e3c00e95c9aa2703c7ac1f959078d",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.6.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.7.pdf",
+      "sha256": "64ff22da4aaeb719f72eafdbc3fe6d4d668a8f7b54832ff42873356fce911f5f",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.7.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.8.pdf",
+      "sha256": "83c5d6013c66bac7329d925fdd4d1e91f6153acc7d9ce9a1bf2426163a1c2499",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.8.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v0.9.9.pdf",
+      "sha256": "483c4ea30df5d8c6c0cb14e303287adb712cc3ba389879df0689963023241b23",
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.9.pdf"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v1.0.0.pdf",
+      "sha256": "f312f344dfcdbb9f2ffc607e74c629540afd30edff547c5eb9d2546c1019640e",
+      "repository_path": "docs/manuals/SPIKE-Block-Lab-manual-v1.0.0.pdf"
+    },
+    {
+      "path": "TESTING.md",
+      "sha256": "597d4d4c45db995a2f5cd6d2fc30f1e0f0cd595a2d4d315edba77023e9a5df1a",
+      "repository_path": "docs/TESTING.md"
+    },
+    {
+      "path": "THIRD_PARTY.md",
+      "sha256": "0351e0287761c84e41fb0bc1960089594b1c77c691a878874e1b9853850f0018",
+      "repository_path": "THIRD_PARTY.md"
+    },
+    {
+      "path": "app.js",
+      "sha256": "6512044e08719a2abc8fb9e5baace7c50bb561c2aec116e42b67fc7aae450199",
+      "repository_path": "src/app.js"
+    },
+    {
+      "path": "arm-completion.test.mjs",
+      "sha256": "4a5d0ddf4405ba11c1cb1848a1c24b9623fcad824912b4599c8bc7f7feb267d7",
+      "repository_path": "tests/arm-completion.test.mjs"
+    },
+    {
+      "path": "ble.test.mjs",
+      "sha256": "86e7aba629fd1c14c18bdeb4e0f439d3789cac2d048208039f785db390cefa6d",
+      "repository_path": "tests/ble.test.mjs"
+    },
+    {
+      "path": "blocks.js",
+      "sha256": "a74ccf26f37b29c491b8d49ba0b61a854ddc4e3d24dd7ee0569d9103d836c9f7",
+      "repository_path": "src/blocks.js"
+    },
+    {
+      "path": "braking-v083-reference.py",
+      "sha256": "c9e6fb88428b71c4a34489f5ce20ffcd00b8a678fc38f1e8f04f25212ec27aea",
+      "repository_path": "tests/reference/braking-v083-reference.py"
+    },
+    {
+      "path": "braking-v084-reference.py",
+      "sha256": "aa746fbfaf2d9443248410e4f1de55857e043b787a82e0503bcb448b43a64f42",
+      "repository_path": "tests/reference/braking-v084-reference.py"
+    },
+    {
+      "path": "build-english.mjs",
+      "sha256": "c3029bc4bd25d4aa3fa933850fb462fa05be714c1dcc2270f0a4659a91800afa",
+      "repository_path": "scripts/source/build-english.mjs"
+    },
+    {
+      "path": "build.mjs",
+      "sha256": "e0264bb9f526e73668e36ef2cd01c1d8e8e15f676b85327b08eaf6a6e4bed9ee",
+      "repository_path": "scripts/source/build.mjs"
+    },
+    {
+      "path": "classroom-blocks.js",
+      "sha256": "b3a466f43ea73fe933174c4782b811b695f865952c040923d604c75caf6ee6d5",
+      "repository_path": "src/classroom-blocks.js"
+    },
+    {
+      "path": "classroom-samples.js",
+      "sha256": "2cd725a47e61b0679d869ea16bac818798bb34b1edf4aa9e6cb2d961f640ca76",
+      "repository_path": "src/classroom-samples.js"
+    },
+    {
+      "path": "classroom-ui.test.mjs",
+      "sha256": "a92ee803e9904d3410a62b12e2a91b78eee095a5c664365839aae774e800b4e1",
+      "repository_path": "tests/classroom-ui.test.mjs"
+    },
+    {
+      "path": "code-panel.js",
+      "sha256": "e8d3c065fdc33a066a3a0b1f035520d746394feba6fb58fb1bba07a43103e790",
+      "repository_path": "src/code-panel.js"
+    },
+    {
+      "path": "code-panel.test.mjs",
+      "sha256": "6a3cadc3191602dc17e71fe78d3dd338108bbe0e5ff284bee255e70b808a12dc",
+      "repository_path": "tests/code-panel.test.mjs"
+    },
+    {
+      "path": "common-blocks.js",
+      "sha256": "f52b17dfa1ffc76998c3cadad1cb546b377a844930a20a14ca8c06402fe28846",
+      "repository_path": "src/common-blocks.js"
+    },
+    {
+      "path": "common-runtime.js",
+      "sha256": "689392675be01576eb3502efe13ab85ea0a0d1501c4afadca819a33197d04694",
+      "repository_path": "src/common-runtime.js"
+    },
+    {
+      "path": "common.test.mjs",
+      "sha256": "38aae543ba4e67b2cd83c4267c133a5026ea6708675bdd2d6b0ed804e7387c87",
+      "repository_path": "tests/common.test.mjs"
+    },
+    {
+      "path": "credits.html",
+      "sha256": "8ce9f92c3c9ea1931fcd55d302bfafe5fc973880de52867c8c896b2eca235efb",
+      "repository_path": "src/credits.html"
+    },
+    {
+      "path": "distance-condition.test.mjs",
+      "sha256": "dc3aab8a64cf6e0f9df54b213f3693c88c3f8a0840763b0aeb4db9aafde6857e",
+      "repository_path": "tests/distance-condition.test.mjs"
+    },
+    {
+      "path": "ebl-ramp-reference.json",
+      "sha256": "3d887c49198165b45be2818dfc8242b4972a8ff0741d0d477a3299478bec6037",
+      "repository_path": "tests/fixtures/ebl-ramp-reference.json"
+    },
+    {
+      "path": "edition.js",
+      "sha256": "0dd5bb43f15a581663c83ffe61246600a6eb49b1decdf35dba0a324c407c6365",
+      "repository_path": "src/edition.js"
+    },
+    {
+      "path": "enhancements.js",
+      "sha256": "9d058c86f15fc39d6f15febf15168dbdfe4b9ebdc07d4382b183cf256575c526",
+      "repository_path": "src/enhancements.js"
+    },
+    {
+      "path": "enhancements.test.mjs",
+      "sha256": "4e9956fda17f80c13a56bb9c5592f1628d07267d43e470273adbc44674dfacc0",
+      "repository_path": "tests/enhancements.test.mjs"
+    },
+    {
+      "path": "export-sample.mjs",
+      "sha256": "2526ede35e83dee55546e6c5160df8df2b769d09ca6115634e43633a420c59b5",
+      "repository_path": "scripts/source/export-sample.mjs"
+    },
+    {
+      "path": "extract-shared-reference.mjs",
+      "sha256": "bdea8b0565ae0125cf54fecdadc8691fb7b985f3c967f2b73193534be82ab63e",
+      "repository_path": "scripts/source/extract-shared-reference.mjs"
+    },
+    {
+      "path": "fixed-loops.test.mjs",
+      "sha256": "e793ae2d21955d6aff3f1bb2d230a89020cfc0b90c33880977b83c081e388226",
+      "repository_path": "tests/fixed-loops.test.mjs"
+    },
+    {
+      "path": "generate.js",
+      "sha256": "69bf23ebfd4fa5036c43db858f31591813d7218d43f46ea517255e61e84c030d",
+      "repository_path": "src/generate.js"
+    },
+    {
+      "path": "guide-en.html",
+      "sha256": "c8c2230d95db1dbd37bdab1adee5044e8ce7e3243e0b452703ba26523852ab2e",
+      "repository_path": "docs/guide-en.html"
+    },
+    {
+      "path": "gyro-drive.test.mjs",
+      "sha256": "4c643664ac62149b02e5b0039091ab80b62c5c3a34334502c1f1176feb809921",
+      "repository_path": "tests/gyro-drive.test.mjs"
+    },
+    {
+      "path": "gyro-initialize.js",
+      "sha256": "5e58406032eac7a34f406462716f9f75936e87ae3cc6a396c4df621365253048",
+      "repository_path": "src/gyro-initialize.js"
+    },
+    {
+      "path": "gyro-sensors.test.mjs",
+      "sha256": "c7c90915756fb426475ad832e1dd23517b3675959acade41f2df793ad1dbcdbd",
+      "repository_path": "tests/gyro-sensors.test.mjs"
+    },
+    {
+      "path": "gyro-turn.js",
+      "sha256": "319bd17a8f06f6df3b137be9302e32829244ae327f82db38158ced5777f33bbb",
+      "repository_path": "src/gyro-turn.js"
+    },
+    {
+      "path": "gyro-turn.test.mjs",
+      "sha256": "b6acf4c867f204cb547754bd1107f4133692470ac02a8c10c9eb8b129ea9a7f7",
+      "repository_path": "tests/gyro-turn.test.mjs"
+    },
+    {
+      "path": "i18n-blocks.json",
+      "sha256": "fc8a698819883e6ab72f8142d510a2b927797a910160d4874658e5d72b7c593b",
+      "repository_path": "src/locales/i18n-blocks.json"
+    },
+    {
+      "path": "i18n-gyro.json",
+      "sha256": "103fac0ec8d56e64e624bfe4aadec597ce8a462e416d1c84015c7ddd7a9d5204",
+      "repository_path": "src/locales/i18n-gyro.json"
+    },
+    {
+      "path": "i18n-python.json",
+      "sha256": "4f081c91ca790875efd56a9feb004980db00859d5236e2df0fc03238c03d5921",
+      "repository_path": "src/locales/i18n-python.json"
+    },
+    {
+      "path": "i18n-slots.json",
+      "sha256": "1a9bb0fbdf47ee372fcf60ccc39316bed878a2aae9ec2f632d00ab450232b6da",
+      "repository_path": "src/locales/i18n-slots.json"
+    },
+    {
+      "path": "i18n-ui.json",
+      "sha256": "eb1742119ec99e6533ad573f410598b9206d1f43768299266d03a269cccd9578",
+      "repository_path": "src/locales/i18n-ui.json"
+    },
+    {
+      "path": "i18n-usb.json",
+      "sha256": "313406c611aee466f1a854e89dbc8b851a128201c0f7eaccf62fe307b6e7a567",
+      "repository_path": "src/locales/i18n-usb.json"
+    },
+    {
+      "path": "i18n.test.mjs",
+      "sha256": "7ce821a024c0246a3938cc109c0b26c8a5f2530f62298878ea7fee5945e4c699",
+      "repository_path": "tests/i18n.test.mjs"
+    },
+    {
+      "path": "index.html",
+      "sha256": "26ebbceefc7e6dfc2a6d8587ba52f31272a551d98110c31a584cb81a6a335578",
+      "repository_path": "src/index.html"
+    },
+    {
+      "path": "language-switch.js",
+      "sha256": "d65ca8fdee54ff544d58c418d706d8db8d727270016d84616c785aac40b4c145",
+      "repository_path": "src/language-switch.js"
+    },
+    {
+      "path": "make-manual.py",
+      "sha256": "6e4ddc5c5baf6303c4293a3075c594370320953c0804b32076c3d014a4bbc4ae",
+      "repository_path": "scripts/source/make-manual.py"
+    },
+    {
+      "path": "manual-data.json",
+      "sha256": "afcd7d365e647c1b63b3ada19f3d86b630f60d3eb330eb713df78155c78011d4",
+      "repository_path": "docs/manuals/manual-data.json"
+    },
+    {
+      "path": "manual-overview.jpg",
+      "sha256": "ce597a1a63359744ab8963d762df31f9a028641a26f2e734eb00e87f80229333",
+      "repository_path": "assets/manual-overview.jpg"
+    },
+    {
+      "path": "manual-v0.10.0.html",
+      "sha256": "7d164c06ffef4029f4de4082cd2a789b2425cae537bce213692475a3686c5272",
+      "repository_path": "docs/manuals/archive/manual-v0.10.0.html"
+    },
+    {
+      "path": "manual-v0.10.1.html",
+      "sha256": "d7fcfad7963a46f0144dd9dcb7c558cdbd22ed49c9ac7d7078fa02f4bde936d4",
+      "repository_path": "docs/manuals/archive/manual-v0.10.1.html"
+    },
+    {
+      "path": "manual-v0.11.0.html",
+      "sha256": "43772002a1c994021615cfdfa747772d1d5fce793deedc337b497ac8f74c42b0",
+      "repository_path": "docs/manuals/archive/manual-v0.11.0.html"
+    },
+    {
+      "path": "manual-v0.11.1.html",
+      "sha256": "94e9bc033c1ca328932d712abac7f1ca6466dc20f59e92407538007af7bad6c4",
+      "repository_path": "docs/manuals/archive/manual-v0.11.1.html"
+    },
+    {
+      "path": "manual-v0.11.2.html",
+      "sha256": "c478e11076c0ac041444fe4d621046d0e3d685cf0da2b43799a3cdaa71ea58d5",
+      "repository_path": "docs/manuals/archive/manual-v0.11.2.html"
+    },
+    {
+      "path": "manual-v0.11.3.html",
+      "sha256": "d51c801cb2e0fce444f82b243b713428519cfe1f6eac71b3f8782c93916f8aca",
+      "repository_path": "docs/manuals/archive/manual-v0.11.3.html"
+    },
+    {
+      "path": "manual-v0.11.4.html",
+      "sha256": "207c3ce67f0da59383f7eb716501f6955be7866bab30b9aad99353b55ec409b2",
+      "repository_path": "docs/manuals/archive/manual-v0.11.4.html"
+    },
+    {
+      "path": "manual-v0.11.5.html",
+      "sha256": "bef5cce6db49ceba5a5bdcd607eeb754f7698764fce3aef75bb26e615dab7542",
+      "repository_path": "docs/manuals/archive/manual-v0.11.5.html"
+    },
+    {
+      "path": "manual-v0.11.6.html",
+      "sha256": "91a788f66d664f8f3349f292e810b9387146db82639ebe27b11d837f088eb708",
+      "repository_path": "docs/manuals/archive/manual-v0.11.6.html"
+    },
+    {
+      "path": "manual-v0.7.1.html",
+      "sha256": "2cc35bb774aee566ecf844da40f17d240bab270d87e77c7fb5a7a05d50cb766b",
+      "repository_path": "docs/manuals/archive/manual-v0.7.1.html"
+    },
+    {
+      "path": "manual-v0.7.2.html",
+      "sha256": "42ae254ffb388c13fe35c2926ccc6861767f6567aad4bece6aed28dcbfcbaa3e",
+      "repository_path": "docs/manuals/archive/manual-v0.7.2.html"
+    },
+    {
+      "path": "manual-v0.7.3.html",
+      "sha256": "73f80d10ee78d2c60b6d7aa3c3ea60758fe7c511ec294962bb76ec47aeb26873",
+      "repository_path": "docs/manuals/archive/manual-v0.7.3.html"
+    },
+    {
+      "path": "manual-v0.7.4.html",
+      "sha256": "807ee32c9ea122d873531ce8196260b0cdb9327508e37ae42322b00d82c4ba0f",
+      "repository_path": "docs/manuals/archive/manual-v0.7.4.html"
+    },
+    {
+      "path": "manual-v0.7.5.html",
+      "sha256": "c369c91ceed3c0bd7ab775687bf35b8661dcd6e3e9857148734e43fc57d16f29",
+      "repository_path": "docs/manuals/archive/manual-v0.7.5.html"
+    },
+    {
+      "path": "manual-v0.8.0.html",
+      "sha256": "025184722e64f1d95475aad3c39199b2d2f68761f2173c46ba359864be27052b",
+      "repository_path": "docs/manuals/archive/manual-v0.8.0.html"
+    },
+    {
+      "path": "manual-v0.8.1.html",
+      "sha256": "93a782c41bc35c8cc93b5dd37afb879fe10c6abbc83f503a7c1e5cb747beaaed",
+      "repository_path": "docs/manuals/archive/manual-v0.8.1.html"
+    },
+    {
+      "path": "manual-v0.8.2.html",
+      "sha256": "55f45e4ae603ff73f0ac1ab9bb56f390de9a5051acee0eda9c6d55e3c1c6fb15",
+      "repository_path": "docs/manuals/archive/manual-v0.8.2.html"
+    },
+    {
+      "path": "manual-v0.8.3.html",
+      "sha256": "60871ba3321d212ed288f93192bd47b856ac53f0671cc73838802efd4fea8654",
+      "repository_path": "docs/manuals/archive/manual-v0.8.3.html"
+    },
+    {
+      "path": "manual-v0.8.4.html",
+      "sha256": "a370e6a96d3d365a6dba0bd3bed799409e7f7ca076dba30d3bf8c3ca9995d429",
+      "repository_path": "docs/manuals/archive/manual-v0.8.4.html"
+    },
+    {
+      "path": "manual-v0.8.5.html",
+      "sha256": "3e463377f09af7b4e0721e61a16ebb8abdcc9a1c73e7cdecbcdf7627683a5249",
+      "repository_path": "docs/manuals/archive/manual-v0.8.5.html"
+    },
+    {
+      "path": "manual-v0.8.6.html",
+      "sha256": "4926426e7470bfd22e4b480fd545533549d6cb713ceff69576d85f3a55190853",
+      "repository_path": "docs/manuals/archive/manual-v0.8.6.html"
+    },
+    {
+      "path": "manual-v0.8.7.html",
+      "sha256": "c1491a95b34481f98364fa18de63d6892d2fb9e2392a6ce876e8d2e2558688a4",
+      "repository_path": "docs/manuals/archive/manual-v0.8.7.html"
+    },
+    {
+      "path": "manual-v0.8.8.html",
+      "sha256": "d56445a132fc8eb97f17c6e0329194896c3273291eb0243b4fc6af1d0a9ef88b",
+      "repository_path": "docs/manuals/archive/manual-v0.8.8.html"
+    },
+    {
+      "path": "manual-v0.9.0.html",
+      "sha256": "af075165a6724944101cd371ca54bdf97c32ff7ee34c663e3aaecb739cd2662e",
+      "repository_path": "docs/manuals/archive/manual-v0.9.0.html"
+    },
+    {
+      "path": "manual-v0.9.1.html",
+      "sha256": "91aee3d008581efc7b56ed23f9934b7073cae08eafe55475ab7870cf47c8ab73",
+      "repository_path": "docs/manuals/archive/manual-v0.9.1.html"
+    },
+    {
+      "path": "manual-v0.9.10.html",
+      "sha256": "9e5e5a1d312ea40751d4226f888054f112244c571d4c7e17fbe2899d32c56651",
+      "repository_path": "docs/manuals/archive/manual-v0.9.10.html"
+    },
+    {
+      "path": "manual-v0.9.11.html",
+      "sha256": "f710072111e773f7db34fb2be628ce38c12365495101812181a877c46f42199e",
+      "repository_path": "docs/manuals/archive/manual-v0.9.11.html"
+    },
+    {
+      "path": "manual-v0.9.2.html",
+      "sha256": "01e6c50b3eee0bde04bbafc637fbba345617ec1cc18d62009661b16ae411076b",
+      "repository_path": "docs/manuals/archive/manual-v0.9.2.html"
+    },
+    {
+      "path": "manual-v0.9.3.html",
+      "sha256": "b17bf382af5703c0ae50316e32d29300a2a0444125feba0740b493b4e24064e5",
+      "repository_path": "docs/manuals/archive/manual-v0.9.3.html"
+    },
+    {
+      "path": "manual-v0.9.4.html",
+      "sha256": "8fa3290ae93d956522ebe50912e6057b8f10ac37a405bead019ececce59b0e7e",
+      "repository_path": "docs/manuals/archive/manual-v0.9.4.html"
+    },
+    {
+      "path": "manual-v0.9.5.html",
+      "sha256": "ffbd13fa2e6f280ec471ead8e0a99984fd6960cae508fccbad02121726fd9019",
+      "repository_path": "docs/manuals/archive/manual-v0.9.5.html"
+    },
+    {
+      "path": "manual-v0.9.6.html",
+      "sha256": "25e1bc609e47f4a72c7fec9a28322fb7277535b2fe5525b753983f09b0f5a742",
+      "repository_path": "docs/manuals/archive/manual-v0.9.6.html"
+    },
+    {
+      "path": "manual-v0.9.7.html",
+      "sha256": "a4c6b9e51ded60f7de2834ddc8fadd650c7112b48dc3e48844a7966e57605bc6",
+      "repository_path": "docs/manuals/archive/manual-v0.9.7.html"
+    },
+    {
+      "path": "manual-v0.9.8.html",
+      "sha256": "f2c9b49259a55647b575c03e2fee39c3682be614983a586bb7761c28eff0b96a",
+      "repository_path": "docs/manuals/archive/manual-v0.9.8.html"
+    },
+    {
+      "path": "manual-v0.9.9.html",
+      "sha256": "2474465baf039b5522b0fe94b1d19fb2e536917f908a9c446a99e2948fe15f2b",
+      "repository_path": "docs/manuals/archive/manual-v0.9.9.html"
+    },
+    {
+      "path": "manual-v1.0.0.html",
+      "sha256": "ee645190817ed88852aaf13809b6753215d757b8a80f272bebfa6062b53466e2",
+      "repository_path": "docs/manuals/manual-v1.0.0.html"
+    },
+    {
+      "path": "manual.test.mjs",
+      "sha256": "9adc86762d896a0fa2fa03045376d5cf0235488504a6dab4ad7cd543de00c177",
+      "repository_path": "tests/manual.test.mjs"
+    },
+    {
+      "path": "model.js",
+      "sha256": "a86a7a6c8c228689938f2696610f266792aa58dc29da984ac3310d773317c3f8",
+      "repository_path": "src/model.js"
+    },
+    {
+      "path": "model.test.mjs",
+      "sha256": "30222dc45fab86728ff36daf8ac5d2f235ecdbb79c43bfe054247b0851815ab9",
+      "repository_path": "tests/model.test.mjs"
+    },
+    {
+      "path": "motor-palette.test.mjs",
+      "sha256": "194d02a59941eea71e74e64137a56715706be67148a46dd2ff910464c0319807",
+      "repository_path": "tests/motor-palette.test.mjs"
+    },
+    {
+      "path": "motor-sync.js",
+      "sha256": "a2cbacfc69d79073afceef209ff6edc6b3ee0e509414feef7c0e6620908cf875",
+      "repository_path": "src/motor-sync.js"
+    },
+    {
+      "path": "motor-sync.test.mjs",
+      "sha256": "62975e6a94c704f3f54b0d059fbd6e6944866a70492480a001163dc80aae7ba7",
+      "repository_path": "tests/motor-sync.test.mjs"
+    },
+    {
+      "path": "myblocks.js",
+      "sha256": "86fa465d326860b1308214cb2bec1ab7bf3efff191026d4a473867525d058a1d",
+      "repository_path": "src/myblocks.js"
+    },
+    {
+      "path": "myblocks.test.mjs",
+      "sha256": "c0ea4ed9de4513d84a4df58e079d6166727c4d54adfc926257cc4a0aafc7a775",
+      "repository_path": "tests/myblocks.test.mjs"
+    },
+    {
+      "path": "notices.js",
+      "sha256": "29498f1c1cd3618220d1134e7be2e41337c4d62bbeb249bcce1655fcb7cf2c9a",
+      "repository_path": "src/notices.js"
+    },
+    {
+      "path": "notices.test.mjs",
+      "sha256": "8c7e05ec45e48c72ceb00b75bd0a961ee173b4f9ace9eeee851b70442f6050d6",
+      "repository_path": "tests/notices.test.mjs"
+    },
+    {
+      "path": "numeric-inputs.js",
+      "sha256": "acd281bad9ade0f794185fd8443cc98e8baaca72ad29166fb1c51c29298174d2",
+      "repository_path": "src/numeric-inputs.js"
+    },
+    {
+      "path": "numeric-inputs.test.mjs",
+      "sha256": "e28a05cc4bdf4544603394097c5e171abec274407dbe5d251512813751eee0cb",
+      "repository_path": "tests/numeric-inputs.test.mjs"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "ee8393acca3b026f5e68711d7589e52eb2a55b9c6176ab1647cf05e3a7036f54",
+      "repository_path": "package-lock.json"
+    },
+    {
+      "path": "package.json",
+      "sha256": "944f0e19eb237bf5f9aa0de4fb8bf8241683e8ebfed73fdf877ba2e353aac494",
+      "repository_path": "package.json"
+    },
+    {
+      "path": "pair-options.test.mjs",
+      "sha256": "a38186ca96324214a51e5f7b5c131c4e6450fa45eac6688ecf6fe9580da7d4ec",
+      "repository_path": "tests/pair-options.test.mjs"
+    },
+    {
+      "path": "pid-cycle.test.mjs",
+      "sha256": "d137089d2906f8b3f2e40babc0d8c27c85884bc85fe76bcfeeaaf7a6cfb4ee15",
+      "repository_path": "tests/pid-cycle.test.mjs"
+    },
+    {
+      "path": "primary-school-sample.js",
+      "sha256": "309a1d110aedb5fd97ada630404ef87b8f9c7182aa905e271264be2aaf083aa0",
+      "repository_path": "src/primary-school-sample.js"
+    },
+    {
+      "path": "primary-school.test.mjs",
+      "sha256": "b1474a36543592e1bd4550ff1882e86f96a90115df383925ac13f9411384121b",
+      "repository_path": "tests/primary-school.test.mjs"
+    },
+    {
+      "path": "python-comments.js",
+      "sha256": "57a2b6eab91561c201efbb4ba4b5a8664f971b2abb1e91b7cb3d7535a4674e40",
+      "repository_path": "src/python-comments.js"
+    },
+    {
+      "path": "python-files.js",
+      "sha256": "58207b2a06b67d1ef96a7e1972620774ac9cbf9d0c56be74f6da75494ea44371",
+      "repository_path": "src/python-files.js"
+    },
+    {
+      "path": "python-files.test.mjs",
+      "sha256": "6e3bacb639921603ccb2b30f8a9896a9220c0ba696a80ee93ed1b019dcb0b3d2",
+      "repository_path": "tests/python-files.test.mjs"
+    },
+    {
+      "path": "ramp-parity.test.mjs",
+      "sha256": "8324d676e68a7e07846ba65d1bd7d2d0b9c56fe0150469ffd82a2c88aef9bc72",
+      "repository_path": "tests/ramp-parity.test.mjs"
+    },
+    {
+      "path": "recording.js",
+      "sha256": "df74b15b21121c36a9b83dae237d5e093eac46b220a4730ad21d973a455d3375",
+      "repository_path": "src/recording.js"
+    },
+    {
+      "path": "return-runtime.js",
+      "sha256": "92541cf5470b8c410d9e2d163a0862397af754bd398bfc6b7f982e5917935fa9",
+      "repository_path": "src/return-runtime.js"
+    },
+    {
+      "path": "returns.js",
+      "sha256": "8879bb75572f312ebb4e28f5b3ee531c3243477006826633442cb443ce0f378e",
+      "repository_path": "src/returns.js"
+    },
+    {
+      "path": "returns.test.mjs",
+      "sha256": "403d744e0bf1a51d8c76e8d5a13804d65b0a53765c68368fd7e23489ac3e5e1f",
+      "repository_path": "tests/returns.test.mjs"
+    },
+    {
+      "path": "rt-template.cdl",
+      "sha256": "d24892951b81181e4a221116dc428dd643c5ebda14bda65f55513dedd214c112",
+      "repository_path": "templates/rt-template.cdl"
+    },
+    {
+      "path": "sensor-monitor.js",
+      "sha256": "82f2ee7dfbdd06636da09536d9c3e6325cf5a609715d6623fea5ab527a3f4cca",
+      "repository_path": "src/sensor-monitor.js"
+    },
+    {
+      "path": "sensor-monitor.test.mjs",
+      "sha256": "4f279234a669cbae8d9b72557ab1d604610b7885a4409c28b6e8b2657a5d069d",
+      "repository_path": "tests/sensor-monitor.test.mjs"
+    },
+    {
+      "path": "sensor-notification-fixture.json",
+      "sha256": "078fe48779c359f980a212bad657212c7066bf5c63d4643ece0ec83af853ab28",
+      "repository_path": "tests/fixtures/sensor-notification-fixture.json"
+    },
+    {
+      "path": "sensor-saturation-fixtures.json",
+      "sha256": "fdac16c277a8889944fcc6b2aefd094c092130cda37e914bbcf9e65ca1fcb240",
+      "repository_path": "tests/fixtures/sensor-saturation-fixtures.json"
+    },
+    {
+      "path": "server.mjs",
+      "sha256": "8a2261c2e224065395be43e2d3ad77c3153504932a57917401f21bd0f1495a35",
+      "repository_path": "scripts/source/server.mjs"
+    },
+    {
+      "path": "shared-groups-reference.json",
+      "sha256": "e91d4f4f9d2fac855b2766f0dbc352dc92b5498260f3388763be6a5438928494",
+      "repository_path": "tests/fixtures/shared-groups-reference.json"
+    },
+    {
+      "path": "shared-groups.js",
+      "sha256": "445ec9c3efc76d8abbfca3404e5b51794b5b9160dc0ae021ef85fd4b427c683b",
+      "repository_path": "src/shared-groups.js"
+    },
+    {
+      "path": "shared-groups.test.mjs",
+      "sha256": "230e4e0a4a79cd5e7a0207eac26a3c9f16e9a0a8865633e6834e8520e0e8c5da",
+      "repository_path": "tests/shared-groups.test.mjs"
+    },
+    {
+      "path": "slot-manager.js",
+      "sha256": "80e43b5932a88f5ed7e62202f12a6817406aee9a3eb0d0e0b310e1782033f50d",
+      "repository_path": "src/slot-manager.js"
+    },
+    {
+      "path": "slot-manager.test.mjs",
+      "sha256": "ed2f7313c18f9d20f6b8293c0172530fb23eb1f253c442322d895a5e3bbe7225",
+      "repository_path": "tests/slot-manager.test.mjs"
+    },
+    {
+      "path": "speed-clamp.test.mjs",
+      "sha256": "7c3479c50088675169ea0c861dae88bd5be27635480ae14e25bcad5584c909b4",
+      "repository_path": "tests/speed-clamp.test.mjs"
+    },
+    {
+      "path": "spike-ble.js",
+      "sha256": "f91d1f1e0d41679f2af4bde3506073b15a02ab89359fc7ed40d979541aa51c4f",
+      "repository_path": "src/spike-ble.js"
+    },
+    {
+      "path": "spike-usb.js",
+      "sha256": "6d75c7c2b13ec2562ba378a6fb17c031bc0c64cf5442e81ccea3211ec6d41cb4",
+      "repository_path": "src/spike-usb.js"
+    },
+    {
+      "path": "standard.js",
+      "sha256": "6ed1467f0de417bc2e5e91cdbf3bc6100bf3565eec5d8f3ca83b5bcdebff6979",
+      "repository_path": "src/standard.js"
+    },
+    {
+      "path": "standard.test.mjs",
+      "sha256": "9a6266cfa6685d7370ddac02dad49286f3aff3d8e18826d168fb46e10ce109c8",
+      "repository_path": "tests/standard.test.mjs"
+    },
+    {
+      "path": "style.css",
+      "sha256": "a1e4dc2d4b05002854da37f16046a1a860c9a874d41fb91ad518bcc0178795b2",
+      "repository_path": "src/style.css"
+    },
+    {
+      "path": "sync-stability.test.mjs",
+      "sha256": "d8c8ff7d0fab340a41ff99d8d2f778a956627dda3208fb8801ab04a78e665332",
+      "repository_path": "tests/sync-stability.test.mjs"
+    },
+    {
+      "path": "sync-v087-reference.py",
+      "sha256": "f949d313e4de4e8ed9f046ee5f6189a3933aa65435906226160e21008cbbb285",
+      "repository_path": "tests/reference/sync-v087-reference.py"
+    },
+    {
+      "path": "usb.test.mjs",
+      "sha256": "fc413260d7bb7371b6fb919178d306a05c61bebebb7dc1232a59fff838970636",
+      "repository_path": "tests/usb.test.mjs"
+    },
+    {
+      "path": "zip.js",
+      "sha256": "3a7468065f6c2df308034ca1e979e4472ecdcd3b97d5522d3614e7c2cde09750",
+      "repository_path": "src/zip.js"
+    }
+  ],
+  "excluded": [
+    "README.md (GitHub-specific documentation)",
+    ".openai/ (Sites hosting identity)",
+    "previously archived manual files retained from GitHub"
+  ],
+  "layout": "Classified source; scripts/run.mjs stages original basenames for unchanged build/test imports.",
+  "adapted_files": [
+    "package.json (entry commands)",
+    "scripts/run.mjs (layout adapter)",
+    "scripts/file-map.json (path map)",
+    ".github/workflows/check.yml (build before tests)",
+    "README.md",
+    "CHANGELOG.md",
+    ".gitignore (generated staging directory)"
+  ]
+}

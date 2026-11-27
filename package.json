@@ -1,19 +1,19 @@
 {
   "name": "spike-block-lab",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24" },
-  "scripts": {
-    "start": "node server.mjs",
-    "build": "node build.mjs",
-    "test": "node --test *.test.mjs",
-    "export:sample": "node export-sample.mjs"
+  "engines": {
+    "node": ">=24"
   },
-  "dependencies": { "blockly": "13.4.0" }
+  "scripts": {
+    "start": "node scripts/run.mjs start",
+    "build": "node scripts/run.mjs build",
+    "test": "node scripts/run.mjs test",
+    "export:sample": "node scripts/run.mjs export",
+    "manual": "node scripts/run.mjs manual"
+  },
+  "dependencies": {
+    "blockly": "13.4.0"
+  }
 }
-
-
-
-
-

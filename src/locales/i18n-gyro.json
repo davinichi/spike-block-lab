@@ -1,0 +1,21 @@
+{
+  "本体ジャイロの %1 角度（度）": "hub gyro %1 angle (degrees)",
+  "本体ジャイロの向きを0にする": "reset hub gyro heading to 0",
+  "本体ジャイロを静止確認して初期化 最大 %1 秒待つ": "initialize hub gyro after a stillness check; wait at most %1 seconds",
+  "距離センサ %1 のランプを明るさ %2 ％にする": "set distance sensor %1 lights to %2 % brightness",
+  "本体ジャイロの %1 角速度（度/秒）": "hub gyro %1 angular velocity (degrees/second)",
+  "本体の %1 加速度（mG）": "hub %1 acceleration (mG)",
+  "X軸": "X axis",
+  "Y軸": "Y axis",
+  "Z軸": "Z axis",
+  "距離センサーのランプ": "Distance-sensor lights",
+  "本体ジャイロの値と初期化": "Hub gyro readings and initialization",
+  "ハブ内蔵ジャイロの角度です。向きは約−180〜180度で折り返します。距離センサーにはジャイロはありません。": "Hub motion-sensor angle. Heading wraps near -180/180 degrees. The distance sensor has no gyro.",
+  "現在の向きを0度の基準にします。傾きは初期化せず、ドリフトを防止する校正ではありません。": "Set the current heading to zero. Tilt is unchanged. This is not drift-prevention calibration.",
+  "本体を動かさずに使います。3軸の角度変動が0.5度以内で1秒続いたら向きを0にします。時間内に静止を確認できないとエラーになります。走行中のドリフト防止・補正ではありません。": "Keep the hub still. Reset heading after three-axis angle variation stays within 0.5 degrees for one second. Timeout reports an error. This does not prevent or correct drift while moving.",
+  "距離センサーの4つのランプを同じ明るさにします。0％で消灯、100％で最大。測定用の光ではありません。": "Set all four distance-sensor lights to the same brightness. 0% is off; 100% is maximum. These are display lights.",
+  "本体の物理X・Y・Z軸まわりの回転速度。フィルター済みの値です。向きの角度とは別で、向きの0リセットでも値は変わりません。": "Filtered rotation rate about the physical hub X/Y/Z axes. This differs from heading; resetting heading does not change this value.",
+  "本体の物理X・Y・Z軸の加速度。1000mG＝1G。重力を含み、静止中も必ず0にはなりません。フィルター済みの値です。": "Filtered acceleration on physical hub X/Y/Z axes. 1000mG = 1G. Includes gravity, so a stationary hub need not read zero.",
+  "<h3>距離センサーのランプと本体ジャイロ</h3><p>「表示」の距離センサーのランプは0％で消灯、100％で最大です。「センサー」の本体ジャイロは向き・前後の傾き・左右の傾きを度で読みます。X・Y・Z軸の角速度（度/秒）と加速度（mG）も取得できます。1000mG＝1Gで、加速度は重力を含みます。静止確認付き初期化は、3軸の角度変動が0.5度以内で1秒続いたら向きだけ0にします。本体を静止させ、最大待ち時間は1.1〜30秒で指定します。姿勢の基準合わせを助けますが、走行中のドリフト防止や内部校正ではありません。距離センサーにジャイロは内蔵されていません。追加機能は実機未確認です。</p>": "<h3>Distance-sensor lights and hub motion</h3><p>Set distance-sensor lights to 0–100% in Display. In Sensors, read hub angles, X/Y/Z angular velocity in degrees/second and acceleration in mG (1000mG = 1G, including gravity). Initialization checks angle stability for one second, then resets heading. Keep the hub still; choose a maximum wait of 1.1–30 seconds. This aids startup referencing, not internal calibration or drift prevention. Hardware behavior is unverified.</p>",
+  "予定外の停止を検知（5秒直進）": "Detect a motor stall (5-second straight drive)"
+}
