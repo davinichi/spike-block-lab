@@ -2,16 +2,16 @@
 
 Chromebook・WindowsのブラウザーからLEGO Education SPIKE PrimeをプログラミングするWebアプリです。ブロックで作ったプログラムをPythonへ変換し、本体に保存して動かします。
 
-**公開中のアプリと、このリポジトリの収録ソースはv1.0.0運用版です。**
+**公開中のアプリと、このリポジトリの収録ソースはv1.0.1運用版です。**
 
 更新日：2026年11月27日。
 
 ## 利用先・マニュアル・変更履歴
 
-- [SBL v1.0.0を開く](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/)
-- [現行マニュアル（HTML）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.0.html)
-- [現行マニュアル（PDF）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.0.pdf)
-- [v0.7.0〜v1.0.0の変遷履歴](CHANGELOG.md)
+- [SBL v1.0.1を開く](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/)
+- [現行マニュアル（HTML）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.1.html)
+- [現行マニュアル（PDF）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.1.pdf)
+- [v0.7.0〜v1.0.1の変遷履歴](CHANGELOG.md)
 - [現行の実機確認項目](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/TESTING.md)
 
 ## v1.0の運用方針
@@ -22,9 +22,9 @@ EBL、EBL-RT Web版、EBL-RT Windowsアプリはプレビュー版として開�
 
 開発の目的は、基本のプログラミングから計測・データ処理へ学びを広げることです。Windows PCの老朽化を理由に開発したものではありません。
 
-## 公開版v1.0.0の主な機能
+## 公開版v1.0.1の主な機能
 
-以下は公開サイトと、このリポジトリのv1.0.0ソースの機能です。
+以下は公開サイトと、このリポジトリのv1.0.1ソースの機能です。
 
 - 左右モーターの共通設定、距離移動、スピン・ピボット、ジャイロ旋回・直進。
 - モーター単独制御、回転方向を個別設定する専用同期、絶対角度指定（360度は0度）。
@@ -37,6 +37,10 @@ EBL、EBL-RT Web版、EBL-RT Windowsアプリはプレビュー版として開�
 - 教員向け資料を「教員・指導者用」へ集約。上部の「ヒント・お知らせ」、操作の近くのエラー・保存通知、下部の詳しい通信ログ。
 
 PID走行・左右同期の専用記録はデバッグ版向けです。通常の公開一覧には出しませんが、旧作品を読み込む処理は維持します。ジャイロ初期化はドリフトを完全に防止するものではありません。
+
+## 数値欄の全角・半角（v1.0.1）
+
+全角の数字・マイナス・小数点を半角に自動変換します。例：`－１２．５` → `-12.5`。編集エリア上部に「半角に直しました」と約4秒表示します。IME変換中は書き換えず確定後に処理し、変数名・マイブロック名・文字列は変更しません。既存の数値制約と保存形式は維持しています。
 
 ## 作品の保存と実行
 
@@ -55,7 +59,7 @@ LEGO純正の `.llsp3` やEBLの `.ev3lab` との直接互換性はありませ�
 | `tests/` | 自動試験 |
 | `tests/fixtures/`・`tests/reference/` | 試験データ・比較用処理 |
 | `docs/` | 操作・検証・互換性資料 |
-| `docs/manuals/` | v1.0.0のHTML・PDF・元データ |
+| `docs/manuals/` | v1.0.1のHTML・PDF・元データ |
 | `docs/manuals/archive/` | 過去のマニュアル |
 | `assets/` | 画像 |
 | `templates/` | 将来検討用のテンプレート |
@@ -67,7 +71,7 @@ LEGO純正の `.llsp3` やEBLの `.ev3lab` との直接互換性はありませ�
 
 ## GitHub収録ソースを使う場合
 
-収録ソースの `package.json` は **1.0.0** です。公開版の正本コミット `66710338955a3dc25585a13dd9dec160767a564e` から、アプリ・試験・生成用資料・現行マニュアルを同期しました。照合元と各ファイルのハッシュは [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json) に記録しています。Sites固有のホスティング設定はコピーせず、GitHubの既存ワークフローと過去資料は保持しています。
+収録ソースの `package.json` は **1.0.1** です。公開版の正本コミット `d37fecd2111fc3ef9bcc25c5e347a7945504ce77` から、アプリ・試験・生成用資料・現行マニュアルを同期しました。照合元と各ファイルのハッシュは [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json) に記録しています。Sites固有のホスティング設定はコピーせず、GitHubの既存ワークフローと過去資料は保持しています。
 
 手元で確認する場合はNode.js 24以上・Python 3を用意し、次の順で実行します。
 
@@ -78,11 +82,11 @@ npm test
 npm start
 ```
 
-ブラウザーで http://127.0.0.1:8766/ を開きます。この手順で起動するのはv1.0.0です。公開用ファイルは `dist/` に生成します。詳細な日本語PDF・HTMLは収録済みです。マニュアルを再生成する場合はReportLabと日本語フォントが必要です。
+ブラウザーで http://127.0.0.1:8766/ を開きます。この手順で起動するのはv1.0.1です。公開用ファイルは `dist/` に生成します。詳細な日本語PDF・HTMLは収録済みです。マニュアルを再生成する場合はReportLabと日本語フォントが必要です。
 
 ## 検証範囲
 
-公開版v1.0.0への移行時は自動試験175件と最終の翻訳・マニュアル確認5件が成功しました。実機の追加試験は行っていません。GitHubへのソース同期後、新しい作業フォルダーでビルドと全175件の自動試験に合格しました。実機の追加試験は行っていません。
+公開版v1.0.1への移行時は自動試験175件と最終の翻訳・マニュアル確認5件が成功しました。実機の追加試験は行っていません。GitHubへのソース同期後、新しい作業フォルダーでビルドと全179件の自動試験に合格しました。実機の追加試験は行っていません。
 
 各機能の実機確認範囲・未確認項目は現行マニュアルと実機テスト表に残しています。
 

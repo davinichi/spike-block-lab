@@ -1,8 +1,8 @@
 # SBL（SPIKE Block Lab）の変遷履歴
 
-更新日：2026年11月27日。対象は **標準SPIKE Hub OS用のSBL** です。現行運用版は **v1.0.0** です。
+更新日：2026年11月27日。対象は **標準SPIKE Hub OS用のSBL** です。現行運用版は **v1.0.1** です。
 
-[公開アプリ](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/) ／ [現行HTMLマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.0.html) ／ [現行PDFマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.0.pdf) ／ [共通の利用案内](https://github.com/davinichi/ev3-block-lab/blob/main/docs/CURRENT-USE-20261127.md)
+[公開アプリ](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/) ／ [現行HTMLマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.1.html) ／ [現行PDFマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.1.pdf) ／ [共通の利用案内](https://github.com/davinichi/ev3-block-lab/blob/main/docs/CURRENT-USE-20261127.md)
 
 ## 版番号と資料の読み方
 
@@ -84,6 +84,13 @@ v0.2〜v0.5では、Bluetooth転送・実行、モーター・動き・センサ
 - 分かりにくいブロック数・処理数、初期の「実機テスト待ち」、フッターの試作ツール表記を整理。出典・ライセンスをUTF-8の閲覧ページへ変更。
 - プログラムのエラーは編集エリア上部、接続・転送エラーは操作の近く、保存通知は保存ボタン付近へ配置。詳細な通信ログは下部へ維持。
 - 上部を「ヒント・お知らせ」にし、通常は「ブロックをつないで、動きを作ろう。」、エラー時は修正内容を表示。縦ラインを外した。「該当ブロックへ」ボタンは保留。
+
+## v1.0.1：数値入力の全角・半角の修正（2026年11月27日）
+
+- 数値欄で全角の数字・マイナス・小数点を半角へ自動変換し、「半角に直しました」と約4秒表示。
+- IME確定後に処理し、日本語の名前・文字列は維持。数値制約・保存形式を変更せず、Undoにも対応。
+- 自動試験179件成功、実画面で全角入力・通知・Undoを確認。モーター計算と通信処理は変更せず、実機の追加試験は未実施。
+- HTML／PDFマニュアルを更新。作品・ログのアプリ版情報も1.0.1へ統一。
 
 ## v1.0.0：運用版への移行（2026年11月27日）
 

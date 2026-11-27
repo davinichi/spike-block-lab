@@ -363,5 +363,6 @@
   "初めてのモーター動作は車輪を浮かせて確認してください。": "For your first motor test, lift the wheels off the surface.",
   "標準Hub OS向け · 編集データはこのブラウザに保存": "Standard Hub OS · Project data is saved in this browser",
   "v1.0の運用方針": "Version 1.0 maintenance policy",
-  "SBLは運用版です。当面は機能追加を休止し、不具合修正を随時行います。": "SBL is the operational release. Feature additions are on hold; bug fixes will continue."
+  "SBLは運用版です。当面は機能追加を休止し、不具合修正を随時行います。": "SBL is the operational release. Feature additions are on hold; bug fixes will continue.",
+  "半角に直しました": "Converted to half-width characters"
 }

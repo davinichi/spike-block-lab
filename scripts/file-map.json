@@ -88,7 +88,7 @@
   "manual-v0.9.7.html": "docs/manuals/archive/manual-v0.9.7.html",
   "manual-v0.9.8.html": "docs/manuals/archive/manual-v0.9.8.html",
   "manual-v0.9.9.html": "docs/manuals/archive/manual-v0.9.9.html",
-  "manual-v1.0.0.html": "docs/manuals/manual-v1.0.0.html",
+  "manual-v1.0.0.html": "docs/manuals/archive/manual-v1.0.0.html",
   "manual.test.mjs": "tests/manual.test.mjs",
   "model.js": "src/model.js",
   "model.test.mjs": "tests/model.test.mjs",
@@ -171,7 +171,7 @@
   "SPIKE-Block-Lab-manual-v0.9.7.pdf": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.7.pdf",
   "SPIKE-Block-Lab-manual-v0.9.8.pdf": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.8.pdf",
   "SPIKE-Block-Lab-manual-v0.9.9.pdf": "docs/manuals/archive/SPIKE-Block-Lab-manual-v0.9.9.pdf",
-  "SPIKE-Block-Lab-manual-v1.0.0.pdf": "docs/manuals/SPIKE-Block-Lab-manual-v1.0.0.pdf",
+  "SPIKE-Block-Lab-manual-v1.0.0.pdf": "docs/manuals/archive/SPIKE-Block-Lab-manual-v1.0.0.pdf",
   "spike-usb.js": "src/spike-usb.js",
   "standard.js": "src/standard.js",
   "standard.test.mjs": "tests/standard.test.mjs",
@@ -180,5 +180,9 @@
   "sync-v087-reference.py": "tests/reference/sync-v087-reference.py",
   "TESTING.md": "docs/TESTING.md",
   "usb.test.mjs": "tests/usb.test.mjs",
-  "zip.js": "src/zip.js"
+  "zip.js": "src/zip.js",
+  "SPIKE-Block-Lab-manual-v1.0.1.pdf": "docs/manuals/SPIKE-Block-Lab-manual-v1.0.1.pdf",
+  "manual-v1.0.1.html": "docs/manuals/manual-v1.0.1.html",
+  "numeric-text.js": "src/numeric-text.js",
+  "numeric-text.test.mjs": "tests/numeric-text.test.mjs"
 }

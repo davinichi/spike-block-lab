@@ -1,7 +1,7 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "synced_on": "2026-11-27",
-  "source_commit": "66710338955a3dc25585a13dd9dec160767a564e",
+  "source_commit": "d37fecd2111fc3ef9bcc25c5e347a7945504ce77",
   "site_url": "https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/",
   "files": [
     {
@@ -212,11 +212,11 @@
     {
       "path": "SPIKE-Block-Lab-manual-v1.0.0.pdf",
       "sha256": "f312f344dfcdbb9f2ffc607e74c629540afd30edff547c5eb9d2546c1019640e",
-      "repository_path": "docs/manuals/SPIKE-Block-Lab-manual-v1.0.0.pdf"
+      "repository_path": "docs/manuals/archive/SPIKE-Block-Lab-manual-v1.0.0.pdf"
     },
     {
       "path": "TESTING.md",
-      "sha256": "597d4d4c45db995a2f5cd6d2fc30f1e0f0cd595a2d4d315edba77023e9a5df1a",
+      "sha256": "ed9a21320db1ab78d9efc141a76bab63b82ffad2e86a21f9764245f6065c9ad0",
       "repository_path": "docs/TESTING.md"
     },
     {
@@ -226,7 +226,7 @@
     },
     {
       "path": "app.js",
-      "sha256": "6512044e08719a2abc8fb9e5baace7c50bb561c2aec116e42b67fc7aae450199",
+      "sha256": "ab2b4451d63d38014a3d287c17e7e0768c6651e7cbaebbcd5f2477c71d55b67c",
       "repository_path": "src/app.js"
     },
     {
@@ -261,7 +261,7 @@
     },
     {
       "path": "build.mjs",
-      "sha256": "e0264bb9f526e73668e36ef2cd01c1d8e8e15f676b85327b08eaf6a6e4bed9ee",
+      "sha256": "afe8c23e470b18b886e2489101505ffe2be881c04aa8924be1f62b14a985ed41",
       "repository_path": "scripts/source/build.mjs"
     },
     {
@@ -406,7 +406,7 @@
     },
     {
       "path": "i18n-ui.json",
-      "sha256": "eb1742119ec99e6533ad573f410598b9206d1f43768299266d03a269cccd9578",
+      "sha256": "b05e03d6029c089242ec4624589b3f76131a350fbbeaceb219b953bcac70cf8f",
       "repository_path": "src/locales/i18n-ui.json"
     },
     {
@@ -421,7 +421,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "26ebbceefc7e6dfc2a6d8587ba52f31272a551d98110c31a584cb81a6a335578",
+      "sha256": "12453ea59624bd1ecc9f7a886f3c3ab3c27b59ae3b1db5fe7d94189310139284",
       "repository_path": "src/index.html"
     },
     {
@@ -436,7 +436,7 @@
     },
     {
       "path": "manual-data.json",
-      "sha256": "afcd7d365e647c1b63b3ada19f3d86b630f60d3eb330eb713df78155c78011d4",
+      "sha256": "45949ec8e553ee4938fcaac7af253a9fe1e7f4713c473cc9e684d446629f0823",
       "repository_path": "docs/manuals/manual-data.json"
     },
     {
@@ -622,7 +622,7 @@
     {
       "path": "manual-v1.0.0.html",
       "sha256": "ee645190817ed88852aaf13809b6753215d757b8a80f272bebfa6062b53466e2",
-      "repository_path": "docs/manuals/manual-v1.0.0.html"
+      "repository_path": "docs/manuals/archive/manual-v1.0.0.html"
     },
     {
       "path": "manual.test.mjs",
@@ -631,7 +631,7 @@
     },
     {
       "path": "model.js",
-      "sha256": "a86a7a6c8c228689938f2696610f266792aa58dc29da984ac3310d773317c3f8",
+      "sha256": "92ced4b9ec6e300b783b9b89ef5f794d33047efdf264ebbcf2d6f8c1adde8243",
       "repository_path": "src/model.js"
     },
     {
@@ -686,12 +686,12 @@
     },
     {
       "path": "package-lock.json",
-      "sha256": "ee8393acca3b026f5e68711d7589e52eb2a55b9c6176ab1647cf05e3a7036f54",
+      "sha256": "c102a3666be7d0d9644e1f25f0be55c68d103752a64bd690149e2b6de2e19fec",
       "repository_path": "package-lock.json"
     },
     {
       "path": "package.json",
-      "sha256": "944f0e19eb237bf5f9aa0de4fb8bf8241683e8ebfed73fdf877ba2e353aac494",
+      "sha256": "9d1c6d642e1d91e5b653606f3e5149776548fec7e58f7f22a038d120c2bb3f70",
       "repository_path": "package.json"
     },
     {
@@ -836,7 +836,7 @@
     },
     {
       "path": "style.css",
-      "sha256": "a1e4dc2d4b05002854da37f16046a1a860c9a874d41fb91ad518bcc0178795b2",
+      "sha256": "be5020bc5c7185f0d7e21c35869e73d1cddafb18d79efaf8e96d5d64062e6684",
       "repository_path": "src/style.css"
     },
     {
@@ -858,6 +858,26 @@
       "path": "zip.js",
       "sha256": "3a7468065f6c2df308034ca1e979e4472ecdcd3b97d5522d3614e7c2cde09750",
       "repository_path": "src/zip.js"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v1.0.1.pdf",
+      "sha256": "18a9180ea4380641713168bb703b458c85aea582d1acf86f714d9905d3b10bc4",
+      "repository_path": "docs/manuals/SPIKE-Block-Lab-manual-v1.0.1.pdf"
+    },
+    {
+      "path": "manual-v1.0.1.html",
+      "sha256": "efd31da649a59eb24b5ba6db3dda31e82f9c0938b4f252ec8b9def544b26edaf",
+      "repository_path": "docs/manuals/manual-v1.0.1.html"
+    },
+    {
+      "path": "numeric-text.js",
+      "sha256": "193ad3b36c00a0a9a86386c76381e533c0a63f4934749a708e929c073a83df92",
+      "repository_path": "src/numeric-text.js"
+    },
+    {
+      "path": "numeric-text.test.mjs",
+      "sha256": "3b3131fc8f4e52f2af6fc80a893fc946ed9f5a4445d3f47a36ba5597d8e88b7d",
+      "repository_path": "tests/numeric-text.test.mjs"
     }
   ],
   "excluded": [

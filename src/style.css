@@ -221,3 +221,5 @@ header{position:relative;z-index:1500;min-height:60px;padding:8px 14px;gap:8px 1
 .editor-toolbar .editor-hint{flex:1 1 220px;min-width:0;font-size:14px;line-height:1.6;color:#36575d}
 .editor-toolbar .editor-hint[hidden]{display:none}
 .editor-toolbar .program-notice{border:0;border-left:0;padding:5px 8px}
+
+.number-input-notice{font-size:16px;line-height:1.5;font-weight:700;color:#126c67;background:#e7f5f0;padding:4px 10px;border-radius:5px}.number-input-notice[hidden]{display:none}

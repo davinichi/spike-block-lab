@@ -1,5 +1,5 @@
 // Shared, target-independent program model. No Blockly, DOM or device APIs.
-export const VERSION = '0.11.6';
+export const VERSION = '1.0.1';
 export const PORTS = ['A', 'B', 'C', 'D', 'E', 'F'];
 export const IMAGES = {
   smile: ['00000','01010','00000','10001','01110'],
