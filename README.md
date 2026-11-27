@@ -14,6 +14,8 @@ Chromebook・WindowsのブラウザーからLEGO Education SPIKE Primeをプロ�
 - [v0.7.0〜v1.0.1の変遷履歴](CHANGELOG.md)
 - [現行の実機確認項目](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/TESTING.md)
 
+次期版の追加候補は [変更候補一覧](docs/ROADMAP.md) に記録しています。
+
 ## v1.0の運用方針
 
 SBLは授業での安定した利用を優先し、当面は機能追加を休止します。不具合は随時修正し、既存作品の互換性を維持します。運用版への移行は、全機能の実機確認完了を意味しません。
