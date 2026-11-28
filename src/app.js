@@ -16,7 +16,7 @@ import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroo
 import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=1.0.1-fixed-loops1';
 import {setBlockLanguage} from './blocks.js';
 import {generateStandard} from './standard.js?v=1.0.1';
-import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js?v=1.0.1-school2';
+import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js?v=1.0.2-school20261128';
 import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=transport4';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
 if(!DEBUG_EDITION)for(const value of ['pidRecording','syncGentle','syncNone','syncTrap','syncS','distanceRamp'])document.querySelector(`#sample option[value="${value}"]`)?.remove();

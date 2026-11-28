@@ -1,7 +1,7 @@
 {
   "version": "1.0.2",
   "synced_on": "2026-11-28",
-  "source_commit": "6ebdba0063d33849e974e7a70761c24cf6d1a9cd",
+  "source_commit": "6ba090a0283c7e74e3e0514adc026da9af423ddd",
   "site_url": "https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/",
   "files": [
     {
@@ -226,7 +226,7 @@
     },
     {
       "path": "app.js",
-      "sha256": "83260acb2dad72daf5968f9365d1ec6ba84f8a78b7bd8c2a02418067e12f9dad",
+      "sha256": "03fe6b15ee3a59d35c07d286392d000938fff5194a50c7b573b9b5a23c0197e3",
       "repository_path": "src/app.js"
     },
     {
@@ -271,7 +271,7 @@
     },
     {
       "path": "classroom-samples.js",
-      "sha256": "2cd725a47e61b0679d869ea16bac818798bb34b1edf4aa9e6cb2d961f640ca76",
+      "sha256": "6f86f2eccf3eb15c6e29b2c644b3909c60ff37dd0a849de400f06272b32bf646",
       "repository_path": "src/classroom-samples.js"
     },
     {
@@ -421,7 +421,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "4f2e1eb56b769e43c720fcc2c4e822e8d5c013640ab13fbbd2ed4027a5db3ecc",
+      "sha256": "ead58fc2e1f69f7d10833b94573233ddba7fd6f48bed9d80f63b8a2d4c798e57",
       "repository_path": "src/index.html"
     },
     {
@@ -706,12 +706,12 @@
     },
     {
       "path": "primary-school-sample.js",
-      "sha256": "309a1d110aedb5fd97ada630404ef87b8f9c7182aa905e271264be2aaf083aa0",
+      "sha256": "d49df5fbdefc8f60318d185fec7f0d434d777e93080a4c35dfb3145209b6c13e",
       "repository_path": "src/primary-school-sample.js"
     },
     {
       "path": "primary-school.test.mjs",
-      "sha256": "b1474a36543592e1bd4550ff1882e86f96a90115df383925ac13f9411384121b",
+      "sha256": "34c4d4709ffcf04c079a30ce18c3ccf3f3a7653a928707f5d9a69f9a68a1769f",
       "repository_path": "tests/primary-school.test.mjs"
     },
     {
@@ -899,5 +899,15 @@
     "README.md",
     "CHANGELOG.md",
     ".gitignore (generated staging directory)"
+  ],
+  "primary_school_samples_20261128": [
+    {
+      "file": "Primary_School_1.spikelab",
+      "sha256": "cad40327cf18867f2cfdd14d7e4a450bc5cb51f82afed0433d309bcc822170d2"
+    },
+    {
+      "file": "Primary_School_2.spikelab",
+      "sha256": "7adf54ba45aaddc5702f441775638d1423020fe135450174732fde6877535233"
+    }
   ]
 }

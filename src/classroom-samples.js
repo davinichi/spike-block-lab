@@ -1,4 +1,4 @@
-import {PRIMARY_SCHOOL_WORKSPACES} from './primary-school-sample.js?v=primary-school-02';
+import {PRIMARY_SCHOOL_WORKSPACES} from './primary-school-sample.js?v=primary-school-20261128';
 const num=n=>({type:'math_number',fields:{NUM:n}});
 const input=block=>({[block.type==='math_number'?'shadow':'block']:block});
 const node=(type,fields={},inputs={})=>({type,fields,inputs:Object.fromEntries(Object.entries(inputs).map(([k,v])=>[k,input(typeof v==='number'?num(v):v)]))});

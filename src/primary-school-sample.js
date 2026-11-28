@@ -1,4 +1,5 @@
-// User-provided sample workspaces. Clone before loading or editing.
+// User-provided sample workspaces, replaced 2026-11-28. Clone before loading or editing.
+// Source files: Primary_School_1.spikelab and Primary_School_2.spikelab.
 export const PRIMARY_SCHOOL_WORKSPACES = {
   "Primary_School_01": {
     "blocks": {
@@ -22,8 +23,8 @@ export const PRIMARY_SCHOOL_WORKSPACES = {
         {
           "type": "procedures_defnoreturn",
           "id": "V^`VikfF3|!JqFoqA*Bc",
-          "x": 42,
-          "y": 168,
+          "x": 67,
+          "y": 161,
           "icons": {
             "comment": {
               "text": "この関数の説明…",
@@ -181,7 +182,7 @@ export const PRIMARY_SCHOOL_WORKSPACES = {
             }
           },
           "fields": {
-            "NAME": "2_うしろに１マス下がる"
+            "NAME": "2_うしろに１マスさがる"
           },
           "inputs": {
             "STACK": {
@@ -475,7 +476,7 @@ export const PRIMARY_SCHOOL_WORKSPACES = {
             }
           },
           "fields": {
-            "NAME": "01_前進"
+            "NAME": "01_直進"
           },
           "inputs": {
             "STACK": {

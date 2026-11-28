@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -26,5 +27,12 @@ test('school samples clone independently and keep their generated program throug
    assert.equal(generateStandard(again,pythonGenerator).programSource,code.programSource);
    const changed=classroomSample(name);changed.blocks.blocks.length=0;assert.deepEqual(classroomSample(name),original);
   }finally{ws.dispose();again.dispose();}
+ }
+});
+
+test('school samples match the two replacements supplied on 2026-11-28',()=>{
+ const expected={"Primary_School_01": "7adaf6b300e874f5a54ba612e4dafd189090c8a4712dee15c28815ee90ee79ec", "Primary_School_02": "55538572bef3452e7d704590e4e20584e7a16d5b84c980cda2d3a284e22746da"};
+ for(const [name,key] of [['primarySchool01','Primary_School_01'],['primarySchool02','Primary_School_02']]){
+  assert.equal(createHash('sha256').update(JSON.stringify(classroomSample(name))).digest('hex'),expected[key],name);
  }
 });
