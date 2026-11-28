@@ -1,8 +1,14 @@
 # SBL（SPIKE Block Lab）の変遷履歴
 
-更新日：2026年11月27日。対象は **標準SPIKE Hub OS用のSBL** です。現行運用版は **v1.0.1** です。
+更新日：2026年11月28日。対象は **標準SPIKE Hub OS用のSBL** です。現行運用版は **v1.0.2** です。
 
 [公開アプリ](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/) ／ [現行HTMLマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.1.html) ／ [現行PDFマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.1.pdf) ／ [共通の利用案内](https://github.com/davinichi/ev3-block-lab/blob/main/docs/CURRENT-USE-20261127.md)
+
+## v1.0.2（2026年11月28日）
+
+- サンプル・保存済み作品・自動保存復元で、対応済みブロックを未対応と誤判定する不具合を修正。キャッシュ識別子の違いで作品モデルが二重に読み込まれ、検証側に現在のブロックが登録されていなかった問題を解消しました。
+- ブラウザーの入口と同じ読み込み方で全サンプルと保存再読込を検証する回帰テストを追加。未対応ブロックと500個上限の検証は維持。全181テスト成功。ブラウザーでもPrimary_School_01の選択・自動保存復元を確認しました。実機動作は未確認です。
+- 操作仕様の変更はなく、マニュアルはv1.0.1を継続利用できます。
 
 ## 版番号と資料の読み方
 

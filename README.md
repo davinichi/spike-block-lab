@@ -2,16 +2,16 @@
 
 Chromebook・WindowsのブラウザーからLEGO Education SPIKE PrimeをプログラミングするWebアプリです。ブロックで作ったプログラムをPythonへ変換し、本体に保存して動かします。
 
-**公開中のアプリと、このリポジトリの収録ソースはv1.0.1運用版です。**
+**公開中のアプリと、このリポジトリの収録ソースはv1.0.2運用版です。**
 
-更新日：2026年11月27日。
+更新日：2026年11月28日。
 
 ## 利用先・マニュアル・変更履歴
 
-- [SBL v1.0.1を開く](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/)
+- [SBL v1.0.2を開く](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/)
 - [現行マニュアル（HTML）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.1.html)
 - [現行マニュアル（PDF）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.1.pdf)
-- [v0.7.0〜v1.0.1の変遷履歴](CHANGELOG.md)
+- [v0.7.0〜v1.0.2の変遷履歴](CHANGELOG.md)
 - [現行の実機確認項目](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/TESTING.md)
 
 次期版の追加候補は [変更候補一覧](docs/ROADMAP.md) に記録しています。
@@ -279,3 +279,7 @@ Blocklyと独自制御ブロックで異なっていたPythonの字下げを4ス
 
 
 </details>
+
+### v1.0.2 読み込みの不具合修正
+
+サンプルや保存済み作品で「未対応のブロック、または500個を超える作品です」と誤判定される問題を修正しました。全サンプルの検証・保存再読込、自動テスト181件、ブラウザーでの授業用サンプル読込と自動復元を確認済みです。ページを再読み込みして v1.0.2 を確認してください。操作マニュアルは v1.0.1 の内容を引き続き使用できます。実機動作は今回未確認です。

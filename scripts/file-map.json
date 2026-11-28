@@ -184,5 +184,6 @@
   "SPIKE-Block-Lab-manual-v1.0.1.pdf": "docs/manuals/SPIKE-Block-Lab-manual-v1.0.1.pdf",
   "manual-v1.0.1.html": "docs/manuals/manual-v1.0.1.html",
   "numeric-text.js": "src/numeric-text.js",
-  "numeric-text.test.mjs": "tests/numeric-text.test.mjs"
+  "numeric-text.test.mjs": "tests/numeric-text.test.mjs",
+  "sample-loading.test.mjs": "tests/sample-loading.test.mjs"
 }

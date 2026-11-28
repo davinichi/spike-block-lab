@@ -1,7 +1,7 @@
 {
-  "version": "1.0.1",
-  "synced_on": "2026-11-27",
-  "source_commit": "d37fecd2111fc3ef9bcc25c5e347a7945504ce77",
+  "version": "1.0.2",
+  "synced_on": "2026-11-28",
+  "source_commit": "6ebdba0063d33849e974e7a70761c24cf6d1a9cd",
   "site_url": "https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/",
   "files": [
     {
@@ -216,7 +216,7 @@
     },
     {
       "path": "TESTING.md",
-      "sha256": "ed9a21320db1ab78d9efc141a76bab63b82ffad2e86a21f9764245f6065c9ad0",
+      "sha256": "267f78233d6db45f79b510cb1f6c7328545e6a87ca94dbda3ea1363c60ff4d34",
       "repository_path": "docs/TESTING.md"
     },
     {
@@ -226,7 +226,7 @@
     },
     {
       "path": "app.js",
-      "sha256": "ab2b4451d63d38014a3d287c17e7e0768c6651e7cbaebbcd5f2477c71d55b67c",
+      "sha256": "83260acb2dad72daf5968f9365d1ec6ba84f8a78b7bd8c2a02418067e12f9dad",
       "repository_path": "src/app.js"
     },
     {
@@ -421,7 +421,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "12453ea59624bd1ecc9f7a886f3c3ab3c27b59ae3b1db5fe7d94189310139284",
+      "sha256": "4f2e1eb56b769e43c720fcc2c4e822e8d5c013640ab13fbbd2ed4027a5db3ecc",
       "repository_path": "src/index.html"
     },
     {
@@ -631,7 +631,7 @@
     },
     {
       "path": "model.js",
-      "sha256": "92ced4b9ec6e300b783b9b89ef5f794d33047efdf264ebbcf2d6f8c1adde8243",
+      "sha256": "290111f41c03d81246dfb097b267858f255c25824d50c6109106540e580dc692",
       "repository_path": "src/model.js"
     },
     {
@@ -686,12 +686,12 @@
     },
     {
       "path": "package-lock.json",
-      "sha256": "c102a3666be7d0d9644e1f25f0be55c68d103752a64bd690149e2b6de2e19fec",
+      "sha256": "5e62ebdcebca9c190a899f2d774730c196e5dca2392363d1c7766ce4b8cb7b1f",
       "repository_path": "package-lock.json"
     },
     {
       "path": "package.json",
-      "sha256": "9d1c6d642e1d91e5b653606f3e5149776548fec7e58f7f22a038d120c2bb3f70",
+      "sha256": "9917d1554b768242fd09c4c0b5b068ec66278d420541795cbe8a4aa5ec2a9962",
       "repository_path": "package.json"
     },
     {
@@ -878,6 +878,11 @@
       "path": "numeric-text.test.mjs",
       "sha256": "3b3131fc8f4e52f2af6fc80a893fc946ed9f5a4445d3f47a36ba5597d8e88b7d",
       "repository_path": "tests/numeric-text.test.mjs"
+    },
+    {
+      "path": "sample-loading.test.mjs",
+      "repository_path": "tests/sample-loading.test.mjs",
+      "sha256": "8306502011c1e16909e0f5907e01810b22809c7255e2b6c09e314f0986fecb8b"
     }
   ],
   "excluded": [

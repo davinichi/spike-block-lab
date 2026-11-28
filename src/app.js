@@ -11,7 +11,7 @@ import {numericInputDefaults,ensureNumericInputShadows} from './numeric-inputs.j
 import {isMyBlockDefinition,outputNames} from './returns.js?v=1.0.1';
 import {recordingReader,RecordingReceiver} from './recording.js';
 import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=1.0.1';
-import {VERSION,validateProject} from './model.js?v=1.0.1';
+import {VERSION,validateProject} from './model.js';
 import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=1.0.1-fixed-loops1';
 import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=1.0.1-fixed-loops1';
 import {setBlockLanguage} from './blocks.js';
