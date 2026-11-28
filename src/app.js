@@ -1,3 +1,4 @@
+import {convertProject,isForeignProject,installInteropUI} from './project-interop.js';
 import {installNumericTextNormalization} from './numeric-text.js?v=1.0.1';
 import {installNotices} from './notices.js?v=hint-label1';
 import {installSlotManager} from './slot-manager.js?v=1.0.1';
@@ -12,10 +13,10 @@ import {isMyBlockDefinition,outputNames} from './returns.js?v=1.0.1';
 import {recordingReader,RecordingReceiver} from './recording.js';
 import {configureMyBlockBlocks,installMyBlockFlyout,saveMyBlock} from './myblocks.js?v=1.0.1';
 import {VERSION,validateProject} from './model.js';
-import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=1.0.1-fixed-loops1';
+import {setupClassroom,classroomToolbox,ensureComparisonInputs} from './classroom-blocks.js?v=1.1.0-interop1';
 import {installCommonWorkspace,syncArgumentColours} from './common-blocks.js?v=1.0.1-fixed-loops1';
 import {setBlockLanguage} from './blocks.js';
-import {generateStandard} from './standard.js?v=1.0.1';
+import {generateStandard} from './standard.js?v=1.1.0-interop1';
 import {classroomSample,SAMPLE_NAMES} from './classroom-samples.js?v=1.0.2-school20261128';
 import {SpikeConnection,bluetoothEnvironment} from './spike-ble.js?v=transport4';
 const $=id=>document.getElementById(id), STORAGE='spike-block-lab-v1';
@@ -62,12 +63,14 @@ async function startSensorReading(){
  try{await connection.observe(500);}catch(error){sensorMonitor.fail(error.message);renderSensors();throw error;}
 }
 renderSensors();setInterval(renderSensors,1000);
-function project(){return {format:'spike-block-lab',version:1,appVersion:VERSION,name:$('projectName').value,language:$('language').value,workspace:Blockly.serialization.workspaces.save(workspace)};}
+const projectInterop=installInteropUI({document,target:'sbl',download,getProject:()=>project()});
+function project(){return {...(workspace.importedFrom?{importedFrom:workspace.importedFrom}:{}),format:'spike-block-lab',version:1,appVersion:VERSION,name:$('projectName').value,language:$('language').value,workspace:Blockly.serialization.workspaces.save(workspace)};}
 function saveLocal(){if(loading)return;try{localStorage.setItem(STORAGE,JSON.stringify(project()));$('saveState').textContent='✓ この端末に自動保存済み';if(autosaveFailed){autosaveFailed=false;feedback('',false,'save');}}catch{autosaveFailed=true;$('saveState').textContent='自動保存できません。「保存」でファイルに残してください。';feedback('自動保存できません。「保存」でファイルに残してください。',true,'save');}}
 function restore(data){
   validateProject(data);const backup=project();loading=true;
   try{setBlockLanguage(Blockly,data.language);workspace.updateToolbox(classroomToolbox(data.language));Blockly.serialization.workspaces.load(data.workspace,workspace);$('projectName').value=data.name;$('language').value=data.language;workspace.clearUndo();}
   catch(error){setBlockLanguage(Blockly,backup.language);workspace.updateToolbox(classroomToolbox(backup.language));Blockly.serialization.workspaces.load(backup.workspace,workspace);throw error;}finally{loading=false;}
+  workspace.importedFrom=data.importedFrom;projectInterop.update();
   transferred=null;dirty=false;check();saveLocal();
 }
 function check(){
@@ -119,7 +122,7 @@ workspace.addChangeListener(event=>{if(loading||checking||event.isUiEvent)return
 $('projectName').oninput=()=>{dirty=true;saveLocal();};
 $('saveProject').onclick=()=>{try{download(JSON.stringify(project(),null,2),filename()+'.spikelab');dirty=false;feedback('作品ファイルのダウンロードを開始しました。',false,'save');}catch(error){feedback(error.message,true,'save');log(error.message);}};
 $('openProject').onclick=()=>{if(!dirty||confirm('現在の作品を置き換えます。残す場合は先に保存してください。'))$('projectFile').click();};
-$('projectFile').onchange=()=>action(async()=>{const file=$('projectFile').files[0];if(!file)return;try{if(file.size>1024*1024)throw Error('1 MiBまでの作品を選んでください。');restore(JSON.parse(await file.text()));}finally{$('projectFile').value='';}},'program');
+$('projectFile').onchange=()=>action(async()=>{const file=$('projectFile').files[0];if(!file)return;try{if(file.size>2*1024*1024)throw Error('2 MiBまでの作品を選んでください。');const data=JSON.parse(await file.text());if(isForeignProject(data,'sbl')){const report=convertProject(data,'sbl',file.name);validateProject(report.project);if(!await projectInterop.review(report))return;restore(report.project);dirty=true;}else restore(data);}finally{$('projectFile').value='';}},'program');
 $('newProject').onclick=()=>{if(dirty&&!confirm('新しくつくります。今の作品を残す場合は先に保存してください。'))return;restore({format:'spike-block-lab',version:1,name:'MyProgram',language:$('language').value,workspace:{blocks:{languageVersion:0,blocks:[{type:'spike_start',x:60,y:40}]}}});dirty=true;};
 $('sample').onchange=()=>{const name=$('sample').value;$('sample').value='';if(!name)return;if(dirty&&!confirm('サンプルに置き換えます。残したい作品は先に保存してください。'))return;restore({format:'spike-block-lab',version:1,name:SAMPLE_NAMES[name],language:$('language').value,workspace:classroomSample(name)});if(name==='primarySchool01'||name==='primarySchool02'){const start=workspace.getTopBlocks(false).find(block=>block.type==='spike_start');if(start)requestAnimationFrame(()=>{workspace.setScale(.85);workspace.centerOnBlock(start.id);});}dirty=true;};
 $('language').onchange=()=>{restore(project());dirty=true;};

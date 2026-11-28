@@ -1,4 +1,5 @@
 import {setupReturnBlocks} from './returns.js?v=0.11.6';
+import {installInteropBlocks} from './project-interop.js';
 import {setupBlocks} from './blocks.js';
 import {BLOCK_TYPES,PORTS} from './model.js';
 import {COMMON_TYPES,setupCommon,commonToolbox} from './common-blocks.js?v=0.11.6-fixed-loops1';
@@ -21,7 +22,7 @@ const port=(name='PORT')=>({type:'field_dropdown',name,options:PORTS.map(p=>[p,p
 const choice=(name,options)=>({type:'field_dropdown',name,options});
 const colors=[['赤','RED'],['黄','YELLOW'],['緑','GREEN'],['青','BLUE'],['白','WHITE'],['黒','BLACK'],['紫','MAGENTA'],['色なし','UNKNOWN']];
 export function setupClassroom(Blockly) {
-  setupBlocks(Blockly);
+  setupBlocks(Blockly);installInteropBlocks(Blockly);
   Blockly.Msg.PROCEDURES_DEFNORETURN_PROCEDURE='マイブロック';
   Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE='定義';
   Blockly.Msg.PROCEDURES_CALL_BEFORE_PARAMS='';

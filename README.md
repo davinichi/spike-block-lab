@@ -2,16 +2,16 @@
 
 Chromebook・WindowsのブラウザーからLEGO Education SPIKE PrimeをプログラミングするWebアプリです。ブロックで作ったプログラムをPythonへ変換し、本体に保存して動かします。
 
-**公開中のアプリと、このリポジトリの収録ソースはv1.0.2運用版です。**
+**公開中のアプリと、このリポジトリの収録ソースはv1.1.0運用版です。**
 
 更新日：2026年11月28日。
 
 ## 利用先・マニュアル・変更履歴
 
-- [SBL v1.0.2を開く](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/)
-- [現行マニュアル（HTML）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.1.html)
-- [現行マニュアル（PDF）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.1.pdf)
-- [v0.7.0〜v1.0.2の変遷履歴](CHANGELOG.md)
+- [SBL v1.1.0を開く](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/)
+- [現行マニュアル（HTML）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.1.0.html)
+- [現行マニュアル（PDF）](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.1.0.pdf)
+- [v0.7.0〜v1.1.0の変遷履歴](CHANGELOG.md)
 - [現行の実機確認項目](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/TESTING.md)
 
 次期版の追加候補は [変更候補一覧](docs/ROADMAP.md) に記録しています。
@@ -287,3 +287,7 @@ Blocklyと独自制御ブロックで異なっていたPythonの字下げを4ス
 ### 授業用サンプルの差し替え（2026年11月28日）
 
 サンプル一覧の先頭2件を、利用者から提供された `Primary_School_1.spikelab` と `Primary_School_2.spikelab` に入れ替えました。作品内の名前に合わせ、一覧の表示は `Primary_School_01`、`Primary_School_02` を維持しています。添付作品の全ワークスペースとの一致、読み込み・保存再読込・Python生成を検証済みです。実機動作は今回未確認です。アプリの版番号はv1.0.2のままです。
+
+## v1.1.0：SBL・EBL作品の相互読み込み
+
+[使い方・対応範囲・元作品の保持](docs/PROJECT-INTEROP.md)。共通ブロックを変換し、機種固有のブロックは赤い要確認として内部の内容ごと保持します。残っている間は転送しません。変換後は別名にし、元作品も含めて保存します。自動試験186件とブラウザー操作で確認済み、実機は未確認です。

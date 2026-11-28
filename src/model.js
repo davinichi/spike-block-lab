@@ -1,5 +1,5 @@
 // Shared, target-independent program model. No Blockly, DOM or device APIs.
-export const VERSION = '1.0.2';
+export const VERSION = '1.1.0';
 export const PORTS = ['A', 'B', 'C', 'D', 'E', 'F'];
 export const IMAGES = {
   smile: ['00000','01010','00000','10001','01110'],
@@ -47,7 +47,7 @@ export function validateProgram(program) {
   if (!count) fail('「スタート」の下にブロックをつないでみましょう。');
   return { devices, count };
 }
-export const BLOCK_TYPES = new Set(['spike_start','spike_wait','spike_image','spike_motor','spike_repeat','spike_forever','spike_if_distance']);
+export const BLOCK_TYPES = new Set(['blocklab_unconverted','spike_start','spike_wait','spike_image','spike_motor','spike_repeat','spike_forever','spike_if_distance']);
 export function validateProject(project) {
   if (project?.format !== 'spike-block-lab' || project.version !== 1 || !project.workspace?.blocks ||
       typeof project.name !== 'string' || project.name.length > 80 || !['basic','standard'].includes(project.language)) throw Error('SPIKE Block Labの作品ファイルを選んでください。');
@@ -56,6 +56,7 @@ export function validateProject(project) {
     if (depth > 100) throw Error('作品の入れ子が深すぎます。');
     if (!x || typeof x !== 'object') return;
     if (x.type && (!BLOCK_TYPES.has(x.type) || ++count > 500)) throw Error('未対応のブロック、または500個を超える作品です。');
+    if(x.type==='blocklab_unconverted'){if(!x.extraState?.original?.type)throw Error('要確認ブロックの内容を確認してください。');if(x.next)visit(x.next,depth+1);return;}
     for (const child of Object.values(x)) visit(child, depth + 1);
   }
   visit(project.workspace);

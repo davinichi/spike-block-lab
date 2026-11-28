@@ -1,3 +1,4 @@
+import {assertConverted} from './project-interop.js';
 import {GYRO_INITIALIZE_RUNTIME} from './gyro-initialize.js?v=0.11.6';
 import {preparePythonNames,installPythonComments,taskComment,myBlockComment} from './python-comments.js?v=0.11.6';
 import {combinePythonFiles} from './python-files.js?v=0.11.6';
@@ -11,6 +12,7 @@ import {STANDARD_TYPES} from './classroom-blocks.js';
 import {registerCommonGenerators,COMMON_RUNTIME} from './common-runtime.js?v=0.11.6';
 const VALID=new Set([...STANDARD_TYPES,'spike_start','spike_image','spike_wait','spike_motor','spike_repeat','spike_forever','spike_if_distance']);
 export function generateStandard(workspace,generator,settings={}) {
+  assertConverted(workspace);
   const roots=workspace.getTopBlocks(true).filter(b=>b.isEnabled());
   const hats=roots.filter(b=>['spike_start','lab_when','lab_when_changed','lab_message_hat'].includes(b.type));
   if(!hats.length)throw Error('「スタート」またはイベントのブロックを置いてください。');

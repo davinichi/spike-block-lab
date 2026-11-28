@@ -25,6 +25,7 @@ export async function buildEnglish(root,out,files){
         .replace('href="style.css','href="../style.css')
         .replaceAll('href="SPIKE-Block-Lab-manual-','href="../SPIKE-Block-Lab-manual-')
         .replaceAll('href="manual-v','href="../manual-v')
+        .replaceAll('href="project-interop-guide.html"','href="../project-interop-guide.html"')
         .replaceAll('href="TESTING.md"','href="../TESTING.md"')
         .replaceAll('href="credits.html"','href="../credits.html"')
         .replaceAll('href="THIRD_PARTY.md"','href="../THIRD_PARTY.md"')

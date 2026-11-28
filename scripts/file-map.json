@@ -185,5 +185,13 @@
   "manual-v1.0.1.html": "docs/manuals/manual-v1.0.1.html",
   "numeric-text.js": "src/numeric-text.js",
   "numeric-text.test.mjs": "tests/numeric-text.test.mjs",
-  "sample-loading.test.mjs": "tests/sample-loading.test.mjs"
+  "sample-loading.test.mjs": "tests/sample-loading.test.mjs",
+  "PROJECT-INTEROP.md": "docs/PROJECT-INTEROP.md",
+  "SPIKE-Block-Lab-manual-v1.1.0.pdf": "docs/manuals/SPIKE-Block-Lab-manual-v1.1.0.pdf",
+  "manual-v1.1.0.html": "docs/manuals/manual-v1.1.0.html",
+  "project-interop-fixtures.js": "tests/fixtures/project-interop-fixtures.js",
+  "project-interop-guide.html": "docs/manuals/project-interop-guide.html",
+  "project-interop-guide.pdf": "docs/manuals/project-interop-guide.pdf",
+  "project-interop.js": "src/project-interop.js",
+  "project-interop.test.mjs": "tests/project-interop.test.mjs"
 }

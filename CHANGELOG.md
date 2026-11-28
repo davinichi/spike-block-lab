@@ -1,8 +1,14 @@
 # SBL（SPIKE Block Lab）の変遷履歴
 
-更新日：2026年11月28日。対象は **標準SPIKE Hub OS用のSBL** です。現行運用版は **v1.0.2** です。
+更新日：2026年11月28日。対象は **標準SPIKE Hub OS用のSBL** です。現行運用版は **v1.1.0** です。
 
-[公開アプリ](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/) ／ [現行HTMLマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.0.1.html) ／ [現行PDFマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.0.1.pdf) ／ [共通の利用案内](https://github.com/davinichi/ev3-block-lab/blob/main/docs/CURRENT-USE-20261127.md)
+[公開アプリ](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/) ／ [現行HTMLマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/manual-v1.1.0.html) ／ [現行PDFマニュアル](https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/SPIKE-Block-Lab-manual-v1.1.0.pdf) ／ [共通の利用案内](https://github.com/davinichi/ev3-block-lab/blob/main/docs/CURRENT-USE-20261127.md)
+
+## v1.1.0（2026年11月28日）
+
+- 利用者の依頼により、EBLとの共通ブロックの相互読み込みを追加。機種固有部分は元の内容を保持する要確認ブロックにし、残っている間は生成・転送を停止。
+- 変換確認、キャンセル、別名保存、変換前の作品のダウンロードに対応。保存再読込後も元作品を保持。
+- HTML／PDFマニュアルを更新。SBL186件・EBL325件の自動試験成功、ブラウザーで両方向の読み込みを確認。実機は未確認。
 
 ## v1.0.2（2026年11月28日）
 

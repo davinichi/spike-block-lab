@@ -1,7 +1,7 @@
 {
-  "version": "1.0.2",
+  "version": "1.1.0",
   "synced_on": "2026-11-28",
-  "source_commit": "6ba090a0283c7e74e3e0514adc026da9af423ddd",
+  "source_commit": "4b660e835920818cff8a07fa7e234d5806784557",
   "site_url": "https://spike-block-lab-davinichi-preview.davinichi-9576.chatgpt.site/",
   "files": [
     {
@@ -216,7 +216,7 @@
     },
     {
       "path": "TESTING.md",
-      "sha256": "267f78233d6db45f79b510cb1f6c7328545e6a87ca94dbda3ea1363c60ff4d34",
+      "sha256": "c50fc595a51b8aab20f6d901ef181b3ae7dea74201c7441751aae8af74559ea2",
       "repository_path": "docs/TESTING.md"
     },
     {
@@ -226,7 +226,7 @@
     },
     {
       "path": "app.js",
-      "sha256": "03fe6b15ee3a59d35c07d286392d000938fff5194a50c7b573b9b5a23c0197e3",
+      "sha256": "8de12661f17f31aee17a1f6ad562082af1b24e5a83503122f3f95c8b390cca2c",
       "repository_path": "src/app.js"
     },
     {
@@ -256,17 +256,17 @@
     },
     {
       "path": "build-english.mjs",
-      "sha256": "c3029bc4bd25d4aa3fa933850fb462fa05be714c1dcc2270f0a4659a91800afa",
+      "sha256": "2ec0ff3078c810bd0c21c7323c2d55af64ab9e0ee3cf8eed26537ae801625d9e",
       "repository_path": "scripts/source/build-english.mjs"
     },
     {
       "path": "build.mjs",
-      "sha256": "afe8c23e470b18b886e2489101505ffe2be881c04aa8924be1f62b14a985ed41",
+      "sha256": "88e2c1f840504b1d8f5256155da2288dee4bae42788ae620a37ee874998ca606",
       "repository_path": "scripts/source/build.mjs"
     },
     {
       "path": "classroom-blocks.js",
-      "sha256": "b3a466f43ea73fe933174c4782b811b695f865952c040923d604c75caf6ee6d5",
+      "sha256": "7e10c462ea3f8337cef133a6db709dbb18f344d0100bfed8da48a7fb3a3ebff9",
       "repository_path": "src/classroom-blocks.js"
     },
     {
@@ -356,7 +356,7 @@
     },
     {
       "path": "guide-en.html",
-      "sha256": "c8c2230d95db1dbd37bdab1adee5044e8ce7e3243e0b452703ba26523852ab2e",
+      "sha256": "f653aaf4ddd411639621cf67a7e3791fc053819ca2cdefabe8c5ee751a38f2e3",
       "repository_path": "docs/guide-en.html"
     },
     {
@@ -421,7 +421,7 @@
     },
     {
       "path": "index.html",
-      "sha256": "ead58fc2e1f69f7d10833b94573233ddba7fd6f48bed9d80f63b8a2d4c798e57",
+      "sha256": "576216c211c6b3fd69a4d4fd2f258a54a7b6cddf2ab0028b520256603026b670",
       "repository_path": "src/index.html"
     },
     {
@@ -436,7 +436,7 @@
     },
     {
       "path": "manual-data.json",
-      "sha256": "45949ec8e553ee4938fcaac7af253a9fe1e7f4713c473cc9e684d446629f0823",
+      "sha256": "cd1fb9beaf0ac31b7415687b8a38e687eb4b8fc68666ad2b6f1340af1525ac22",
       "repository_path": "docs/manuals/manual-data.json"
     },
     {
@@ -631,7 +631,7 @@
     },
     {
       "path": "model.js",
-      "sha256": "290111f41c03d81246dfb097b267858f255c25824d50c6109106540e580dc692",
+      "sha256": "7c1103775c3f7065d59d6c5596a6b42770498de4ef48bdc75c41f19b8495e4d0",
       "repository_path": "src/model.js"
     },
     {
@@ -686,12 +686,12 @@
     },
     {
       "path": "package-lock.json",
-      "sha256": "5e62ebdcebca9c190a899f2d774730c196e5dca2392363d1c7766ce4b8cb7b1f",
+      "sha256": "6645ca76982bab20df3c03b01c24a26ffe58ea65675bf27ffee5be1c2053f7ec",
       "repository_path": "package-lock.json"
     },
     {
       "path": "package.json",
-      "sha256": "9917d1554b768242fd09c4c0b5b068ec66278d420541795cbe8a4aa5ec2a9962",
+      "sha256": "1f56a40d66ba81aa7410beabe5a4210738fa791d82985a9d47d1dea467f9c63b",
       "repository_path": "package.json"
     },
     {
@@ -826,7 +826,7 @@
     },
     {
       "path": "standard.js",
-      "sha256": "6ed1467f0de417bc2e5e91cdbf3bc6100bf3565eec5d8f3ca83b5bcdebff6979",
+      "sha256": "9958e7ce0d373b828bc604e148be6685a63aab524a1fd4998d71d4ae779d3c72",
       "repository_path": "src/standard.js"
     },
     {
@@ -883,6 +883,46 @@
       "path": "sample-loading.test.mjs",
       "repository_path": "tests/sample-loading.test.mjs",
       "sha256": "8306502011c1e16909e0f5907e01810b22809c7255e2b6c09e314f0986fecb8b"
+    },
+    {
+      "path": "PROJECT-INTEROP.md",
+      "sha256": "12d7724b6bbd0c96b9d483cc3e8be8d9771070812e9a3ecd7b3dd3caf23251a6",
+      "repository_path": "docs/PROJECT-INTEROP.md"
+    },
+    {
+      "path": "SPIKE-Block-Lab-manual-v1.1.0.pdf",
+      "sha256": "785cb93632667c04009628b59a1d413170b41e2b2ce6aa375e6208fee04b41d2",
+      "repository_path": "docs/manuals/SPIKE-Block-Lab-manual-v1.1.0.pdf"
+    },
+    {
+      "path": "manual-v1.1.0.html",
+      "sha256": "d85e3e9680b179995b0576d31f6af08b82f2f0458d0889f710eb3c82de5e36b1",
+      "repository_path": "docs/manuals/manual-v1.1.0.html"
+    },
+    {
+      "path": "project-interop-fixtures.js",
+      "sha256": "1e31d1cfbe7063e3a6382bdfa3538fd907bdb4bb906407d874fd54f8ed492553",
+      "repository_path": "tests/fixtures/project-interop-fixtures.js"
+    },
+    {
+      "path": "project-interop-guide.html",
+      "sha256": "7f47aa9a57863ba927eee84fe8506ece3cb4c8462158a537efbacb2d1686b8b9",
+      "repository_path": "docs/manuals/project-interop-guide.html"
+    },
+    {
+      "path": "project-interop-guide.pdf",
+      "sha256": "7fb111d248d8024cd00e55297d534ff181656756ddb13be9c6a05a90a25c5ecf",
+      "repository_path": "docs/manuals/project-interop-guide.pdf"
+    },
+    {
+      "path": "project-interop.js",
+      "sha256": "eea3238b654a55fe811d159b7930e58f4500cad3048783c3c82e1ec9b4ea32f5",
+      "repository_path": "src/project-interop.js"
+    },
+    {
+      "path": "project-interop.test.mjs",
+      "sha256": "ecafb8576dc1f4fe63a3606c73b6d8d45b58b23dcd5122160c4f91a9ed734ae7",
+      "repository_path": "tests/project-interop.test.mjs"
     }
   ],
   "excluded": [
